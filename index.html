@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HomeUp — Automation Templates</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #FF6B35;
+    --bg: #0f0f0f;
+    --surface: #161616;
+    --surface2: #1a1a1a;
+    --surface3: #1e1e1e;
+    --border: #252525;
+    --border2: #2e2e2e;
+    --text: #f0ede8;
+    --muted: #777;
+    --dim: #555;
+    --green: #52b788;
+    --green-bg: #2d6a4f;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP BAR */
+  #topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+  .brand { font-weight: 700; font-size: 15px; letter-spacing: 0.02em; }
+  .brand-sep { color: var(--dim); font-size: 13px; margin-left: 4px; }
+  .topbar-right { display: flex; align-items: center; gap: 20px; }
+  .progress-wrap { display: flex; align-items: center; gap: 8px; }
+  .progress-track { width: 120px; height: 4px; background: #2a2a2a; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.3s; }
+  .progress-label { font-size: 12px; color: #888; }
+
+  button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  .btn-save {
+    background: var(--surface3);
+    color: #aaa;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .btn-save.saved { background: var(--green-bg); color: var(--green); border-color: var(--green-bg); }
+
+  .btn-export {
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .btn-export:disabled { opacity: 0.6; cursor: wait; }
+
+  /* LAYOUT */
+  #layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 240px;
+    background: #131313;
+    border-right: 1px solid #222;
+    padding: 20px 0;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    padding: 0 16px 12px;
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .sidebar-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-left: 2px solid transparent;
+    color: var(--muted);
+    text-align: left;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .sidebar-item:hover { color: var(--text); background: #181818; }
+  .sidebar-item.active {
+    background: var(--surface3);
+    border-left-color: var(--orange);
+    color: var(--text);
+  }
+  .sidebar-item .icon { font-size: 16px; }
+  .sidebar-item .meta { flex: 1; min-width: 0; }
+  .sidebar-item .meta-name { font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sidebar-item.active .meta-name { font-weight: 600; }
+  .sidebar-item .meta-count { font-size: 11px; color: var(--dim); margin-top: 2px; }
+  .sidebar-item .meta-count.complete { color: var(--green); }
+
+  /* MAIN */
+  #main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 40px;
+  }
+
+  .section-header { margin-bottom: 24px; }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .section-title .icon { font-size: 24px; }
+  .section-title h2 { font-size: 22px; font-weight: 700; font-family: 'DM Serif Display', serif; }
+  .section-desc { color: var(--muted); font-size: 14px; }
+
+  /* CHANNEL TABS */
+  .channel-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .ch-tab {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    background: var(--surface3);
+    color: #888;
+    border: 1px solid #2a2a2a;
+    transition: all 0.15s;
+  }
+  .ch-tab:hover { color: var(--text); border-color: #444; }
+  .ch-tab.active { background: var(--orange); color: white; border-color: var(--orange); font-weight: 600; }
+  .ch-tab.done { color: var(--green); border-color: var(--green-bg); }
+
+  /* EDITOR */
+  .editor-wrap {}
+  .editor-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .editor-meta label { font-size: 14px; font-weight: 600; color: #ccc; }
+  .char-count { font-size: 12px; color: var(--dim); }
+  .char-count.warn { color: #e63946; }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 16px;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  textarea:focus, input[type="text"]:focus { border-color: var(--orange); }
+
+  .var-tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .var-tag {
+    background: var(--surface3);
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: var(--orange);
+    font-size: 12px;
+    padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .var-tag:hover { background: #2a2a2a; }
+
+  /* FAQ */
+  .faq-list { display: flex; flex-direction: column; gap: 16px; }
+  .faq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+  .faq-card:focus-within { border-color: #333; }
+  .faq-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .faq-num {
+    background: var(--orange);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 8px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .faq-complete { font-size: 11px; color: var(--green); }
+  .faq-card input[type="text"] {
+    border-radius: 7px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    min-height: unset;
+  }
+  .faq-card textarea {
+    border-radius: 7px;
+    padding: 10px 14px;
+    font-size: 13px;
+    min-height: 80px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="topbar-left">
+    <div class="dot"></div>
+    <span class="brand">HomeUp</span>
+    <span class="brand-sep">/ Automation Templates</span>
+  </div>
+  <div class="topbar-right">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="progress-label" id="progressLabel">0/0 filled</span>
+    </div>
+    <button class="btn-save" id="btnSave" onclick="handleSave()">Save</button>
+    <button class="btn-export" id="btnExport" onclick="exportPDF()">Export PDF</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div id="layout">
+  <div id="sidebar">
+    <div class="sidebar-label">Sections</div>
+    <div id="sidebarItems"></div>
+  </div>
+  <div id="main"></div>
+</div>
+
+<script>
+const SECTIONS = [
+  { id: "organic_comments", label: "Organic Replies — Comments", icon: "💬", channels: ["TikTok Comment","Instagram Comment","Facebook Comment"], type: "channels", desc: "Auto-reply sent when someone comments on a post" },
+  { id: "organic_dms",      label: "Organic Replies — DMs",      icon: "📩", channels: ["TikTok DM","Instagram DM","Facebook Messenger"], type: "channels", desc: "Auto-reply sent when someone DMs directly" },
+  { id: "wa_replies",       label: "WhatsApp Replies",            icon: "📱", channels: ["Organic WhatsApp","Paid WhatsApp (IG)","Paid WhatsApp (FB)"], type: "channels", desc: "First reply sent when a lead enters WhatsApp" },
+  { id: "booked_flow",      label: "Booked Appointment Flow",     icon: "📅", channels: ["Immediate Confirmation","1 Day Before","30 Minutes Before"], type: "channels", desc: "Reminders & instructions sent after booking" },
+  { id: "followups",        label: "Follow-Up Sequences",         icon: "🔁", channels: ["7-Day Follow-Up","30-Day Follow-Up","90-Day Follow-Up"], type: "channels", desc: "Sent when a lead does not reply or book" },
+  { id: "bot_faqs",         label: "Bot FAQs",                    icon: "🤖", type: "faqs", desc: "Question & Answer pairs for the WhatsApp chatbot", count: 30 },
+];
+
+// State
+const state = {
+  active: "organic_comments",
+  activeChannel: {},
+  messages: {},
+  faqs: Array.from({length: 30}, () => ({q:"", a:""})),
+};
+
+// Init messages
+SECTIONS.forEach(s => {
+  if (s.type === "channels") {
+    state.messages[s.id] = {};
+    s.channels.forEach(ch => state.messages[s.id][ch] = "");
+  }
+});
+
+function getActiveChannel(sectionId) {
+  const sec = SECTIONS.find(s => s.id === sectionId);
+  return state.activeChannel[sectionId] || sec.channels[0];
+}
+
+function getStats(sectionId) {
+  const sec = SECTIONS.find(s => s.id === sectionId);
+  let filled = 0, total = 0;
+  if (sec.type === "channels") {
+    sec.channels.forEach(ch => { total++; if (state.messages[sectionId][ch]?.trim()) filled++; });
+  } else {
+    state.faqs.forEach(f => { total++; if (f.q?.trim() && f.a?.trim()) filled++; });
+  }
+  return {filled, total};
+}
+
+function getTotalStats() {
+  let filled = 0, total = 0;
+  SECTIONS.forEach(sec => {
+    const s = getStats(sec.id);
+    filled += s.filled; total += s.total;
+  });
+  return {filled, total};
+}
+
+function updateProgress() {
+  const {filled, total} = getTotalStats();
+  const pct = total ? Math.round(filled/total*100) : 0;
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent = `${filled}/${total} filled`;
+}
+
+function renderSidebar() {
+  const container = document.getElementById("sidebarItems");
+  container.innerHTML = "";
+  SECTIONS.forEach(sec => {
+    const {filled, total} = getStats(sec.id);
+    const isActive = state.active === sec.id;
+    const btn = document.createElement("button");
+    btn.className = "sidebar-item" + (isActive ? " active" : "");
+    btn.innerHTML = `
+      <span class="icon">${sec.icon}</span>
+      <div class="meta">
+        <div class="meta-name">${sec.label}</div>
+        <div class="meta-count ${filled===total ? 'complete' : ''}">${filled}/${total}</div>
+      </div>`;
+    btn.onclick = () => { state.active = sec.id; render(); };
+    container.appendChild(btn);
+  });
+}
+
+function renderMain() {
+  const main = document.getElementById("main");
+  const sec = SECTIONS.find(s => s.id === state.active);
+
+  let html = `
+    <div class="section-header">
+      <div class="section-title">
+        <span class="icon">${sec.icon}</span>
+        <h2>${sec.label}</h2>
+      </div>
+      <p class="section-desc">${sec.desc}</p>
+    </div>`;
+
+  if (sec.type === "channels") {
+    const activeCh = getActiveChannel(sec.id);
+    // Tabs
+    html += `<div class="channel-tabs">`;
+    sec.channels.forEach(ch => {
+      const isDone = state.messages[sec.id][ch]?.trim();
+      const isAct = activeCh === ch;
+      html += `<button class="ch-tab ${isAct ? 'active' : isDone ? 'done' : ''}" onclick="switchChannel('${sec.id}','${ch}')">${isDone && !isAct ? '✓ ' : ''}${ch}</button>`;
+    });
+    html += `</div>`;
+
+    const val = state.messages[sec.id][activeCh] || "";
+    html += `
+      <div class="editor-wrap">
+        <div class="editor-meta">
+          <label>${activeCh} — Message</label>
+          <span class="char-count ${val.length > 1000 ? 'warn' : ''}">${val.length} chars</span>
+        </div>
+        <textarea rows="10" id="msgEditor" placeholder="Write your automated ${activeCh.toLowerCase()} message here…\n\nTip: Use {name} for the lead's name, {link} for the booking link.">${escHtml(val)}</textarea>
+        <div class="var-tags">
+          <button class="var-tag" onclick="insertVar('{name}')">&#123;name&#125;</button>
+          <button class="var-tag" onclick="insertVar('{link}')">&#123;link&#125;</button>
+          <button class="var-tag" onclick="insertVar('{date}')">&#123;date&#125;</button>
+          <button class="var-tag" onclick="insertVar('{time}')">&#123;time&#125;</button>
+        </div>
+      </div>`;
+
+  } else {
+    html += `<div class="faq-list">`;
+    state.faqs.forEach((faq, i) => {
+      html += `
+        <div class="faq-card">
+          <div class="faq-card-header">
+            <div class="faq-num">Q${i+1}</div>
+            ${faq.q && faq.a ? '<div class="faq-complete">✓ Complete</div>' : ''}
+          </div>
+          <input type="text" placeholder="Enter the question the bot should recognise…" value="${escHtml(faq.q)}" oninput="updateFAQ(${i},'q',this.value)" />
+          <textarea rows="3" placeholder="Enter the bot's reply…" oninput="updateFAQ(${i},'a',this.value)">${escHtml(faq.a)}</textarea>
+        </div>`;
+    });
+    html += `</div>`;
+  }
+
+  main.innerHTML = html;
+
+  // Attach textarea live listener for channels
+  const editor = document.getElementById("msgEditor");
+  if (editor) {
+    editor.addEventListener("input", () => {
+      const sec = SECTIONS.find(s => s.id === state.active);
+      const ch = getActiveChannel(state.active);
+      state.messages[state.active][ch] = editor.value;
+      // Update char count
+      const cc = editor.closest(".editor-wrap").querySelector(".char-count");
+      cc.textContent = editor.value.length + " chars";
+      cc.className = "char-count" + (editor.value.length > 1000 ? " warn" : "");
+      updateProgress();
+      renderSidebar();
+    });
+  }
+}
+
+function render() {
+  renderSidebar();
+  renderMain();
+  updateProgress();
+}
+
+function switchChannel(sectionId, ch) {
+  state.activeChannel[sectionId] = ch;
+  render();
+}
+
+function insertVar(tag) {
+  const editor = document.getElementById("msgEditor");
+  if (!editor) return;
+  const start = editor.selectionStart, end = editor.selectionEnd;
+  const val = editor.value;
+  editor.value = val.slice(0, start) + tag + val.slice(end);
+  editor.selectionStart = editor.selectionEnd = start + tag.length;
+  editor.focus();
+  const sec = SECTIONS.find(s => s.id === state.active);
+  const ch = getActiveChannel(state.active);
+  state.messages[state.active][ch] = editor.value;
+  updateProgress();
+  renderSidebar();
+}
+
+function updateFAQ(index, field, value) {
+  state.faqs[index][field] = value;
+  updateProgress();
+  renderSidebar();
+  // Update complete badge without full re-render
+  const cards = document.querySelectorAll(".faq-card");
+  if (cards[index]) {
+    const header = cards[index].querySelector(".faq-card-header");
+    const existing = header.querySelector(".faq-complete");
+    if (state.faqs[index].q && state.faqs[index].a) {
+      if (!existing) header.insertAdjacentHTML("beforeend", '<div class="faq-complete">✓ Complete</div>');
+    } else {
+      if (existing) existing.remove();
+    }
+  }
+}
+
+function handleSave() {
+  const btn = document.getElementById("btnSave");
+  btn.textContent = "✓ Saved";
+  btn.classList.add("saved");
+  setTimeout(() => { btn.textContent = "Save"; btn.classList.remove("saved"); }, 2000);
+}
+
+function escHtml(str) {
+  return (str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function exportPDF() {
+  const btn = document.getElementById("btnExport");
+  btn.disabled = true;
+  btn.textContent = "Exporting…";
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "pt", format: "letter" });
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const margin = 48;
+  const contentW = W - margin * 2;
+  let y = margin;
+
+  const addPage = () => { doc.addPage(); y = margin; };
+  const checkY = (needed) => { if (y + needed > H - margin) addPage(); };
+
+  // Header
+  doc.setFillColor(20, 20, 20);
+  doc.rect(0, 0, W, 64, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text("HomeUp — Automation Message Templates", margin, 38);
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(180, 180, 180);
+  doc.text(`Exported ${new Date().toLocaleDateString("en-SG", {day:"numeric",month:"long",year:"numeric"})}`, margin, 54);
+  y = 80;
+
+  SECTIONS.forEach(sec => {
+    checkY(60);
+    doc.setFillColor(255, 107, 53);
+    doc.roundedRect(margin, y, contentW, 30, 4, 4, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${sec.label}`, margin + 12, y + 20);
+    y += 40;
+
+    if (sec.type === "channels") {
+      sec.channels.forEach(ch => {
+        checkY(40);
+        const msg = state.messages[sec.id]?.[ch] || "";
+        doc.setTextColor(80, 80, 80);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text(ch, margin + 8, y);
+        y += 14;
+        const lines = doc.splitTextToSize(msg || "(No message entered)", contentW - 24);
+        const boxH = lines.length * 14 + 16;
+        checkY(boxH + 8);
+        doc.setFillColor(248, 248, 248);
+        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "F");
+        doc.setDrawColor(220, 220, 220);
+        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "S");
+        doc.setTextColor(msg ? 30 : 160, msg ? 30 : 160, msg ? 30 : 160);
+        doc.setFont("helvetica", "normal");
+        doc.text(lines, margin + 14, y + 14);
+        y += boxH + 16;
+      });
+    } else {
+      state.faqs.forEach((faq, i) => {
+        if (!faq.q && !faq.a) return;
+        const qLines = doc.splitTextToSize(faq.q || "(No question)", contentW - 32);
+        const aLines = doc.splitTextToSize(faq.a || "(No answer)", contentW - 32);
+        const boxH = (qLines.length + aLines.length) * 13 + 32;
+        checkY(boxH + 8);
+        doc.setFillColor(252, 252, 252);
+        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "F");
+        doc.setDrawColor(230, 230, 230);
+        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "S");
+        doc.setTextColor(255, 107, 53);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.text(`Q${i+1}`, margin + 14, y + 14);
+        doc.setTextColor(30, 30, 30);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(qLines, margin + 30, y + 14);
+        const aY = y + qLines.length * 13 + 18;
+        doc.setTextColor(255, 107, 53);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.text("A:", margin + 14, aY);
+        doc.setTextColor(60, 60, 60);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(aLines, margin + 30, aY);
+        y += boxH + 12;
+      });
+    }
+    y += 12;
+  });
+
+  doc.save("HomeUp_Automation_Templates.pdf");
+  btn.disabled = false;
+  btn.textContent = "Export PDF";
+}
+
+// Boot
+render();
+</script>
+</body>
+</html>
