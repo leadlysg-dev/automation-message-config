@@ -3,253 +3,413 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>HomeUp — Automation Templates</title>
+<title>GHL Client Onboarding</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --orange: #FF6B35;
-    --bg: #0f0f0f;
-    --surface: #161616;
-    --surface2: #1a1a1a;
-    --surface3: #1e1e1e;
-    --border: #252525;
-    --border2: #2e2e2e;
-    --text: #f0ede8;
-    --muted: #777;
-    --dim: #555;
-    --green: #52b788;
-    --green-bg: #2d6a4f;
-  }
+:root {
+  --accent: #FF6B35;
+  --accent-light: #FFF3EE;
+  --accent-mid: #FFD9C9;
+  --bg: #F4F5F7;
+  --surface: #FFFFFF;
+  --surface2: #F9FAFB;
+  --border: #E5E7EB;
+  --border2: #D1D5DB;
+  --text: #111827;
+  --muted: #6B7280;
+  --dim: #9CA3AF;
+  --green: #059669;
+  --green-bg: #D1FAE5;
+  --green-border: #A7F3D0;
+  --red: #DC2626;
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 
-  /* TOP BAR */
-  #topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    z-index: 100;
-  }
-  .topbar-left { display: flex; align-items: center; gap: 12px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
-  .brand { font-weight: 700; font-size: 15px; letter-spacing: 0.02em; }
-  .brand-sep { color: var(--dim); font-size: 13px; margin-left: 4px; }
-  .topbar-right { display: flex; align-items: center; gap: 20px; }
-  .progress-wrap { display: flex; align-items: center; gap: 8px; }
-  .progress-track { width: 120px; height: 4px; background: #2a2a2a; border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.3s; }
-  .progress-label { font-size: 12px; color: #888; }
+/* ── TOP BAR ── */
+#topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.brand { font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: 0.01em; }
+.brand-sep { color: var(--dim); font-size: 13px; margin-left: 2px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.progress-wrap { display: flex; align-items: center; gap: 9px; }
+.progress-track { width: 130px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
+.progress-label { font-size: 12px; color: var(--muted); font-weight: 500; min-width: 80px; }
 
-  button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-primary {
+  background: var(--accent); color: white; border: none;
+  border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:active { transform: scale(0.98); }
+.btn-ghost {
+  background: transparent; color: var(--muted); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 500;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { background: var(--bg); color: var(--text); border-color: var(--border2); }
 
-  .btn-save {
-    background: var(--surface3);
-    color: #aaa;
-    border: 1px solid #333;
-    border-radius: 6px;
-    padding: 6px 16px;
-    font-size: 13px;
-    transition: all 0.2s;
-  }
-  .btn-save.saved { background: var(--green-bg); color: var(--green); border-color: var(--green-bg); }
+/* ── LAYOUT ── */
+#layout { display: flex; flex: 1; overflow: hidden; }
 
-  .btn-export {
-    background: var(--orange);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    transition: opacity 0.2s;
-  }
-  .btn-export:disabled { opacity: 0.6; cursor: wait; }
+/* ── SIDEBAR ── */
+#sidebar {
+  width: 256px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 0;
+  flex-shrink: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-label {
+  padding: 0 18px 10px;
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.sidebar-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 18px;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  color: var(--muted);
+  text-align: left;
+  font-size: 13px;
+  transition: all 0.15s;
+  position: relative;
+}
+.sidebar-item:hover { color: var(--text); background: var(--bg); }
+.sidebar-item.active {
+  background: var(--accent-light);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+.sidebar-item.done { color: var(--text); }
+.sidebar-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.sidebar-text { flex: 1; min-width: 0; }
+.sidebar-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-sub { font-size: 11px; color: var(--dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-item.active .sidebar-sub { color: rgba(255,107,53,0.6); }
+.sidebar-badge {
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; flex-shrink: 0;
+  background: var(--border); color: var(--dim);
+}
+.sidebar-badge.done { background: var(--green-bg); color: var(--green); }
+.sidebar-badge.active { background: var(--accent); color: white; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 18px; }
 
-  /* LAYOUT */
-  #layout {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
+/* ── MAIN CONTENT ── */
+#main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 36px 44px;
+}
 
-  /* SIDEBAR */
-  #sidebar {
-    width: 240px;
-    background: #131313;
-    border-right: 1px solid #222;
-    padding: 20px 0;
-    flex-shrink: 0;
-    overflow-y: auto;
-  }
-  .sidebar-label {
-    padding: 0 16px 12px;
-    font-size: 11px;
-    color: var(--dim);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .sidebar-item {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    background: transparent;
-    border: none;
-    border-left: 2px solid transparent;
-    color: var(--muted);
-    text-align: left;
-    font-size: 13px;
-    transition: all 0.15s;
-  }
-  .sidebar-item:hover { color: var(--text); background: #181818; }
-  .sidebar-item.active {
-    background: var(--surface3);
-    border-left-color: var(--orange);
-    color: var(--text);
-  }
-  .sidebar-item .icon { font-size: 16px; }
-  .sidebar-item .meta { flex: 1; min-width: 0; }
-  .sidebar-item .meta-name { font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sidebar-item.active .meta-name { font-weight: 600; }
-  .sidebar-item .meta-count { font-size: 11px; color: var(--dim); margin-top: 2px; }
-  .sidebar-item .meta-count.complete { color: var(--green); }
+/* ── SECTION HEADER ── */
+.section-header {
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.section-eyebrow {
+  font-size: 11px; color: var(--accent); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
+}
+.section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.section-title h2 { font-size: 23px; font-weight: 700; font-family: 'DM Serif Display', serif; }
+.section-desc { color: var(--muted); font-size: 13.5px; line-height: 1.6; }
 
-  /* MAIN */
-  #main {
-    flex: 1;
-    overflow-y: auto;
-    padding: 32px 40px;
-  }
+/* ── SUB SECTION TITLE ── */
+.sub-title {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 24px 0 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sub-title:first-of-type { margin-top: 0; }
+.sub-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 
-  .section-header { margin-bottom: 24px; }
-  .section-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 6px;
-  }
-  .section-title .icon { font-size: 24px; }
-  .section-title h2 { font-size: 22px; font-weight: 700; font-family: 'DM Serif Display', serif; }
-  .section-desc { color: var(--muted); font-size: 14px; }
+/* ── FORM GRID ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 4px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 4px; }
+.form-full { grid-column: 1 / -1; }
+.field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+.field-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.field-req { color: var(--accent); }
+.field-hint { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
 
-  /* CHANNEL TABS */
-  .channel-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-  .ch-tab {
-    padding: 7px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    background: var(--surface3);
-    color: #888;
-    border: 1px solid #2a2a2a;
-    transition: all 0.15s;
-  }
-  .ch-tab:hover { color: var(--text); border-color: #444; }
-  .ch-tab.active { background: var(--orange); color: white; border-color: var(--orange); font-weight: 600; }
-  .ch-tab.done { color: var(--green); border-color: var(--green-bg); }
+input[type="text"], input[type="email"], input[type="url"],
+input[type="number"], input[type="time"], input[type="password"],
+select, textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13.5px;
+  padding: 9px 13px;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+textarea { resize: vertical; line-height: 1.65; }
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236B7280' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
-  /* EDITOR */
-  .editor-wrap {}
-  .editor-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .editor-meta label { font-size: 14px; font-weight: 600; color: #ccc; }
-  .char-count { font-size: 12px; color: var(--dim); }
-  .char-count.warn { color: #e63946; }
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 13.5px; font-weight: 700; color: var(--text);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
 
-  textarea, input[type="text"] {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: 10px;
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.7;
-    padding: 16px;
-    outline: none;
-    font-family: 'DM Sans', sans-serif;
-    transition: border-color 0.2s;
-    resize: vertical;
-  }
-  textarea:focus, input[type="text"]:focus { border-color: var(--orange); }
+/* ── RADIO & CHECKBOX CHIPS ── */
+.radio-group, .checkbox-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.radio-chip input[type="radio"], .checkbox-chip input[type="checkbox"] { display: none; }
+.radio-chip label, .checkbox-chip label {
+  display: block; padding: 7px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 13px; font-weight: 500;
+  color: var(--muted); cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.radio-chip input:checked + label,
+.checkbox-chip input:checked + label {
+  border-color: var(--accent); background: var(--accent-light);
+  color: var(--accent); font-weight: 600;
+}
+.radio-chip label:hover, .checkbox-chip label:hover {
+  border-color: var(--border2); color: var(--text); background: var(--bg);
+}
 
-  .var-tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
-  .var-tag {
-    background: var(--surface3);
-    border: 1px solid #333;
-    border-radius: 6px;
-    color: var(--orange);
-    font-size: 12px;
-    padding: 4px 10px;
-    transition: background 0.15s;
-  }
-  .var-tag:hover { background: #2a2a2a; }
+/* ── TOGGLE SWITCH ── */
+.toggle { position: relative; width: 34px; height: 19px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: var(--border2); border-radius: 20px;
+  cursor: pointer; transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: ""; position: absolute;
+  width: 13px; height: 13px; left: 3px; top: 3px;
+  background: white; border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle input:checked + .toggle-slider { background: var(--accent); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(15px); }
 
-  /* FAQ */
-  .faq-list { display: flex; flex-direction: column; gap: 16px; }
-  .faq-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    transition: border-color 0.2s;
-  }
-  .faq-card:focus-within { border-color: #333; }
-  .faq-card-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .faq-num {
-    background: var(--orange);
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    border-radius: 4px;
-    padding: 2px 8px;
-    min-width: 28px;
-    text-align: center;
-  }
-  .faq-complete { font-size: 11px; color: var(--green); }
-  .faq-card input[type="text"] {
-    border-radius: 7px;
-    padding: 10px 14px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    min-height: unset;
-  }
-  .faq-card textarea {
-    border-radius: 7px;
-    padding: 10px 14px;
-    font-size: 13px;
-    min-height: 80px;
-  }
+/* ── AVAILABILITY GRID ── */
+.avail-grid { display: flex; flex-direction: column; gap: 10px; }
+.avail-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.avail-row:last-child { border-bottom: none; }
+.avail-day { display: flex; align-items: center; gap: 10px; }
+.day-label { font-size: 13px; font-weight: 500; color: var(--text); min-width: 70px; }
+.avail-times { display: flex; align-items: center; gap: 10px; }
+.avail-times input[type="time"] { width: 118px; font-size: 13px; padding: 7px 10px; }
+.avail-sep { color: var(--muted); font-size: 13px; }
+.avail-times.disabled input { opacity: 0.35; pointer-events: none; }
+.avail-closed { font-size: 12px; color: var(--dim); font-style: italic; }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+/* ── CHANNEL TABS ── */
+.channel-tabs { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; }
+.ch-tab {
+  padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 500;
+  background: var(--bg); color: var(--muted); border: 1.5px solid var(--border);
+  transition: all 0.15s;
+}
+.ch-tab:hover { color: var(--text); border-color: var(--border2); background: var(--surface); }
+.ch-tab.active { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
+.ch-tab.done { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
+
+/* ── MESSAGE EDITOR ── */
+.editor-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+.editor-meta label { font-size: 13px; font-weight: 600; color: var(--text); }
+.char-count { font-size: 12px; color: var(--dim); }
+.char-count.warn { color: var(--red); }
+.var-tags { margin-top: 9px; display: flex; gap: 7px; flex-wrap: wrap; }
+.var-tag {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 6px; color: var(--accent); font-size: 12px;
+  font-weight: 600; padding: 4px 10px; transition: all 0.15s;
+}
+.var-tag:hover { background: var(--accent-light); border-color: var(--accent-mid); }
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 12px; }
+.faq-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; transition: border-color 0.2s;
+}
+.faq-card:focus-within { border-color: var(--accent); }
+.faq-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.faq-num {
+  background: var(--accent); color: white; font-size: 10px; font-weight: 700;
+  border-radius: 4px; padding: 2px 8px; min-width: 28px; text-align: center;
+}
+.faq-complete { font-size: 11px; color: var(--green); font-weight: 600; }
+.faq-card input { margin-bottom: 8px; }
+
+/* ── AUTO SECTION TABS ── */
+.auto-section-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 20px; padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.auto-sec-tab {
+  padding: 6px 13px; border-radius: 7px; font-size: 12.5px; font-weight: 500;
+  background: var(--bg); color: var(--muted); border: 1.5px solid var(--border);
+  transition: all 0.15s;
+}
+.auto-sec-tab:hover { color: var(--text); border-color: var(--border2); }
+.auto-sec-tab.active { background: var(--surface); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.auto-sec-tab.done { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
+
+/* ── INTEGRATION CARDS ── */
+.integration-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 14px; margin-bottom: 20px; overflow: hidden;
+}
+.integration-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 22px; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.integration-logo {
+  width: 42px; height: 42px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.int-logo-tiktok { background: #010101; }
+.int-logo-meta { background: linear-gradient(135deg, #1877F2, #0052CC); }
+.int-logo-whatsapp { background: #25D366; }
+.integration-info { flex: 1; }
+.integration-name { font-size: 14.5px; font-weight: 700; color: var(--text); }
+.integration-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.integration-badge {
+  font-size: 11px; font-weight: 600; padding: 4px 11px;
+  border-radius: 20px; background: var(--border); color: var(--muted);
+}
+.integration-badge.filled { background: var(--green-bg); color: var(--green); }
+.integration-body { padding: 22px; }
+
+/* ── SENSITIVE INPUT ── */
+.input-wrap { position: relative; }
+.input-wrap input { padding-right: 42px; font-family: monospace; letter-spacing: 0.05em; }
+.input-wrap input[type="text"] { font-family: 'DM Sans', sans-serif; letter-spacing: normal; }
+.eye-btn {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--muted); font-size: 15px; padding: 2px;
+}
+.eye-btn:hover { color: var(--text); }
+
+/* ── REVIEW SCREEN ── */
+#reviewScreen {
+  display: none; flex: 1; overflow-y: auto;
+  padding: 48px 48px 80px; background: var(--bg);
+}
+.review-header { text-align: center; margin-bottom: 36px; }
+.review-check {
+  width: 60px; height: 60px; background: var(--green-bg);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 26px; margin: 0 auto 14px;
+  border: 2px solid var(--green-border);
+}
+.review-title { font-size: 26px; font-weight: 700; font-family: 'DM Serif Display', serif; margin-bottom: 6px; }
+.review-sub { color: var(--muted); font-size: 14px; }
+.review-sections { max-width: 700px; margin: 0 auto; }
+.review-section {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 12px; margin-bottom: 14px; overflow: hidden;
+}
+.review-sec-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; cursor: pointer; user-select: none; transition: background 0.15s;
+}
+.review-sec-header:hover { background: var(--bg); }
+.review-sec-left { display: flex; align-items: center; gap: 10px; }
+.review-sec-title { font-size: 14px; font-weight: 700; }
+.review-sec-toggle { font-size: 12px; color: var(--dim); }
+.review-body { padding: 0 20px 16px; }
+.review-row {
+  display: flex; gap: 14px; padding: 9px 0;
+  border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.review-row:last-child { border-bottom: none; }
+.review-key { color: var(--muted); width: 170px; flex-shrink: 0; font-weight: 500; }
+.review-val { color: var(--text); flex: 1; white-space: pre-wrap; word-break: break-word; }
+.review-group-label {
+  font-size: 10px; font-weight: 700; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 14px 0 4px; border-bottom: 1px solid var(--border); margin-bottom: 4px;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #BBBFC7; }
 </style>
 </head>
 <body>
@@ -257,336 +417,425 @@
 <!-- TOP BAR -->
 <div id="topbar">
   <div class="topbar-left">
-    <div class="dot"></div>
-    <span class="brand">HomeUp</span>
-    <span class="brand-sep">/ Automation Templates</span>
+    <div class="brand-dot"></div>
+    <span class="brand">Leadly</span>
+    <span class="brand-sep">/ GHL Client Onboarding</span>
   </div>
   <div class="topbar-right">
     <div class="progress-wrap">
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <span class="progress-label" id="progressLabel">0/0 filled</span>
+      <span class="progress-label" id="progressLabel">0% complete</span>
     </div>
-    <button class="btn-save" id="btnSave" onclick="handleSave()">Save</button>
-    <button class="btn-export" id="btnExport" onclick="exportPDF()">Export PDF</button>
+    <button class="btn-ghost" id="btnSave" onclick="handleSave()">Save Draft</button>
+    <button class="btn-primary" onclick="showReview()">Review & Finish →</button>
   </div>
 </div>
 
 <!-- LAYOUT -->
 <div id="layout">
   <div id="sidebar">
-    <div class="sidebar-label">Sections</div>
+    <div class="sidebar-label">Onboarding Steps</div>
     <div id="sidebarItems"></div>
   </div>
   <div id="main"></div>
+  <div id="reviewScreen"></div>
 </div>
 
 <script>
-const SECTIONS = [
-  { id: "organic_comments", label: "Organic Replies — Comments", icon: "💬", channels: ["TikTok Comment","Instagram Comment","Facebook Comment"], type: "channels", desc: "Auto-reply sent when someone comments on a post" },
-  { id: "organic_dms",      label: "Organic Replies — DMs",      icon: "📩", channels: ["TikTok DM","Instagram DM","Facebook Messenger"], type: "channels", desc: "Auto-reply sent when someone DMs directly" },
-  { id: "wa_replies",       label: "WhatsApp Replies",            icon: "📱", channels: ["Organic WhatsApp","Paid WhatsApp (IG)","Paid WhatsApp (FB)"], type: "channels", desc: "First reply sent when a lead enters WhatsApp" },
-  { id: "booked_flow",      label: "Booked Appointment Flow",     icon: "📅", channels: ["Immediate Confirmation","1 Day Before","30 Minutes Before"], type: "channels", desc: "Reminders & instructions sent after booking" },
-  { id: "followups",        label: "Follow-Up Sequences",         icon: "🔁", channels: ["7-Day Follow-Up","30-Day Follow-Up","90-Day Follow-Up"], type: "channels", desc: "Sent when a lead does not reply or book" },
-  { id: "bot_faqs",         label: "Bot FAQs",                    icon: "🤖", type: "faqs", desc: "Question & Answer pairs for the WhatsApp chatbot", count: 30 },
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+const NAV = [
+  { id: "calendar",     label: "Calendar Setup",      icon: "📅", sub: "Availability & booking rules" },
+  { id: "automations",  label: "Automation Messages", icon: "💬", sub: "Auto-replies & chatbot FAQs" },
+  { id: "integrations", label: "Integrations",        icon: "🔗", sub: "TikTok, Meta & WhatsApp APIs" },
 ];
 
-// State
-const state = {
-  active: "organic_comments",
+const AUTO_SECS = [
+  { id: "organic_comments", label: "Organic Comments",    icon: "💬", channels: ["TikTok Comment","Instagram Comment","Facebook Comment"], desc: "Auto-reply when someone comments on a post" },
+  { id: "organic_dms",      label: "Organic DMs",         icon: "📩", channels: ["TikTok DM","Instagram DM","Facebook Messenger"],       desc: "Auto-reply when someone DMs directly" },
+  { id: "wa_replies",       label: "WhatsApp Replies",    icon: "📱", channels: ["Organic WhatsApp","Paid WA (IG)","Paid WA (FB)"],       desc: "First reply when a lead enters WhatsApp" },
+  { id: "booked_flow",      label: "Booked Appointment",  icon: "🗓", channels: ["Immediate Confirmation","1 Day Before","30 Min Before"], desc: "Reminders & instructions after booking" },
+  { id: "followups",        label: "Follow-Up Sequences", icon: "🔁", channels: ["7-Day Follow-Up","30-Day Follow-Up","90-Day Follow-Up"], desc: "Sent when lead doesn't reply or book" },
+  { id: "bot_faqs",         label: "Bot FAQs",            icon: "🤖", type: "faqs", desc: "Q&A pairs for the WhatsApp chatbot", count: 30 },
+];
+
+const S = {
+  activeSection: "calendar",
+  activeAutoSec: "organic_comments",
   activeChannel: {},
+  cal: {
+    name: "", type: "booking", timezone: "", calTitle: "",
+    slotDuration: "30", slotInterval: "30",
+    bufferBefore: "0", bufferAfter: "0",
+    minNotice: "24", bookingWindow: "60", maxPerDay: "",
+    confirmType: "auto",
+    meetingType: "phone", meetingLocation: "",
+    teamMember: "", notifEmail: "",
+    avail: {
+      Monday:    { on: true,  s: "09:00", e: "17:00" },
+      Tuesday:   { on: true,  s: "09:00", e: "17:00" },
+      Wednesday: { on: true,  s: "09:00", e: "17:00" },
+      Thursday:  { on: true,  s: "09:00", e: "17:00" },
+      Friday:    { on: true,  s: "09:00", e: "17:00" },
+      Saturday:  { on: false, s: "10:00", e: "14:00" },
+      Sunday:    { on: false, s: "10:00", e: "14:00" },
+    },
+  },
   messages: {},
   faqs: Array.from({length: 30}, () => ({q:"", a:""})),
+  int: {
+    tiktok:   { bizId: "", token: "", pixelId: "" },
+    meta:     { pageId: "", pageName: "", igUser: "", adAcct: "", pixelId: "", token: "" },
+    whatsapp: { phone: "", wabaId: "", token: "", webhookToken: "" },
+  },
 };
 
-// Init messages
-SECTIONS.forEach(s => {
-  if (s.type === "channels") {
-    state.messages[s.id] = {};
-    s.channels.forEach(ch => state.messages[s.id][ch] = "");
-  }
+AUTO_SECS.forEach(s => {
+  if (!s.type) { S.messages[s.id] = {}; s.channels.forEach(ch => S.messages[s.id][ch] = ""); }
 });
 
-function getActiveChannel(sectionId) {
-  const sec = SECTIONS.find(s => s.id === sectionId);
-  return state.activeChannel[sectionId] || sec.channels[0];
+function esc(str) {
+  return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-
-function getStats(sectionId) {
-  const sec = SECTIONS.find(s => s.id === sectionId);
-  let filled = 0, total = 0;
-  if (sec.type === "channels") {
-    sec.channels.forEach(ch => { total++; if (state.messages[sectionId][ch]?.trim()) filled++; });
-  } else {
-    state.faqs.forEach(f => { total++; if (f.q?.trim() && f.a?.trim()) filled++; });
-  }
-  return {filled, total};
+function activeCh(secId) {
+  const s = AUTO_SECS.find(x => x.id === secId);
+  return S.activeChannel[secId] || s.channels[0];
 }
-
-function getTotalStats() {
+function calcProgress() {
   let filled = 0, total = 0;
-  SECTIONS.forEach(sec => {
-    const s = getStats(sec.id);
-    filled += s.filled; total += s.total;
+  ["name","timezone","meetingType","notifEmail","teamMember"].forEach(f => { total++; if (S.cal[f]?.trim()) filled++; });
+  AUTO_SECS.forEach(sec => {
+    if (!sec.type) { sec.channels.forEach(ch => { total++; if (S.messages[sec.id][ch]?.trim()) filled++; }); }
+    else { S.faqs.forEach(f => { total++; if (f.q?.trim() && f.a?.trim()) filled++; }); }
   });
-  return {filled, total};
+  const ig = S.int;
+  ["bizId","token"].forEach(f => { total++; if (ig.tiktok[f]?.trim()) filled++; });
+  ["pageId","token","pixelId"].forEach(f => { total++; if (ig.meta[f]?.trim()) filled++; });
+  ["phone","wabaId","token"].forEach(f => { total++; if (ig.whatsapp[f]?.trim()) filled++; });
+  return { pct: total ? Math.round(filled/total*100) : 0 };
 }
-
 function updateProgress() {
-  const {filled, total} = getTotalStats();
-  const pct = total ? Math.round(filled/total*100) : 0;
+  const {pct} = calcProgress();
   document.getElementById("progressFill").style.width = pct + "%";
-  document.getElementById("progressLabel").textContent = `${filled}/${total} filled`;
+  document.getElementById("progressLabel").textContent = pct + "% complete";
 }
 
 function renderSidebar() {
-  const container = document.getElementById("sidebarItems");
-  container.innerHTML = "";
-  SECTIONS.forEach(sec => {
-    const {filled, total} = getStats(sec.id);
-    const isActive = state.active === sec.id;
-    const btn = document.createElement("button");
-    btn.className = "sidebar-item" + (isActive ? " active" : "");
-    btn.innerHTML = `
-      <span class="icon">${sec.icon}</span>
-      <div class="meta">
-        <div class="meta-name">${sec.label}</div>
-        <div class="meta-count ${filled===total ? 'complete' : ''}">${filled}/${total}</div>
+  document.getElementById("sidebarItems").innerHTML = NAV.map((nav, i) => {
+    const isActive = S.activeSection === nav.id;
+    let done = false;
+    if (nav.id === "calendar") done = !!(S.cal.name && S.cal.timezone && S.cal.notifEmail);
+    if (nav.id === "automations") done = Object.values(S.messages).some(m => Object.values(m).some(v => v.trim()));
+    if (nav.id === "integrations") done = !!(S.int.tiktok.bizId || S.int.meta.pageId || S.int.whatsapp.phone);
+    return `<button class="sidebar-item ${isActive?"active":done?"done":""}" onclick="goSection('${nav.id}')">
+      <span class="sidebar-icon">${nav.icon}</span>
+      <div class="sidebar-text"><div class="sidebar-name">${nav.label}</div><div class="sidebar-sub">${nav.sub}</div></div>
+      <div class="sidebar-badge ${isActive?"active":done?"done":""}">${done?"✓":i+1}</div>
+    </button>`;
+  }).join('<div class="sidebar-divider"></div>');
+}
+
+function renderCalendar() {
+  const c = S.cal;
+  const availHTML = DAYS.map(day => {
+    const d = c.avail[day];
+    return `<div class="avail-row">
+      <div class="avail-day">
+        <label class="toggle"><input type="checkbox" ${d.on?"checked":""} onchange="toggleDay('${day}',this.checked)"/><span class="toggle-slider"></span></label>
+        <span class="day-label">${day}</span>
+      </div>
+      <div class="avail-times ${d.on?"":"disabled"}">
+        <input type="time" value="${d.s}" onchange="setAvail('${day}','s',this.value)"/>
+        <span class="avail-sep">to</span>
+        <input type="time" value="${d.e}" onchange="setAvail('${day}','e',this.value)"/>
+        ${!d.on?'<span class="avail-closed">Closed</span>':""}
+      </div>
+    </div>`;
+  }).join("");
+  const tzOpts = [["","— Select timezone —"],["Asia/Singapore","Asia/Singapore (SGT, UTC+8)"],["Asia/Kuala_Lumpur","Asia/Kuala Lumpur (MYT, UTC+8)"],["Asia/Jakarta","Asia/Jakarta (WIB, UTC+7)"],["Asia/Bangkok","Asia/Bangkok (ICT, UTC+7)"],["Asia/Manila","Asia/Manila (PHT, UTC+8)"],["Asia/Hong_Kong","Asia/Hong Kong (HKT, UTC+8)"],["Asia/Dubai","Asia/Dubai (GST, UTC+4)"],["Asia/Tokyo","Asia/Tokyo (JST, UTC+9)"],["Australia/Sydney","Australia/Sydney (AEST)"],["Australia/Melbourne","Australia/Melbourne"],["Europe/London","Europe/London (GMT/BST)"],["Europe/Paris","Europe/Paris (CET)"],["America/New_York","America/New York (EST)"],["America/Chicago","America/Chicago (CST)"],["America/Los_Angeles","America/Los Angeles (PST)"],["UTC","UTC"]].map(([v,l])=>`<option value="${v}" ${c.timezone===v?"selected":""}>${l}</option>`).join("");
+  return `
+    <div class="section-header">
+      <div class="section-eyebrow">Step 1 of 3</div>
+      <div class="section-title"><h2>📅 Calendar Setup</h2></div>
+      <p class="section-desc">Configure your GHL booking calendar — availability, appointment settings, and meeting preferences.</p>
+    </div>
+    <div class="sub-title">General</div>
+    <div class="form-grid">
+      <div class="field-group"><label class="field-label">Calendar Name <span class="field-req">*</span></label><input type="text" placeholder="e.g. Discovery Call" value="${esc(c.name)}" oninput="setCal('name',this.value)"/></div>
+      <div class="field-group"><label class="field-label">Calendar Type</label><select onchange="setCal('type',this.value)"><option value="booking" ${c.type==="booking"?"selected":""}>Service / Booking Calendar</option><option value="round_robin" ${c.type==="round_robin"?"selected":""}>Round Robin</option><option value="class" ${c.type==="class"?"selected":""}>Class / Event</option><option value="personal" ${c.type==="personal"?"selected":""}>Personal Calendar</option></select></div>
+      <div class="field-group"><label class="field-label">Time Zone <span class="field-req">*</span></label><select onchange="setCal('timezone',this.value)">${tzOpts}</select></div>
+      <div class="field-group"><label class="field-label">Calendar Title <span style="color:var(--dim);font-weight:400;">(shown to clients)</span></label><input type="text" placeholder="e.g. Book a Free Strategy Call" value="${esc(c.calTitle)}" oninput="setCal('calTitle',this.value)"/></div>
+    </div>
+    <div class="sub-title">Appointment Settings</div>
+    <div class="form-grid">
+      <div class="field-group"><label class="field-label">Slot Duration</label><div class="radio-group">${["15","30","45","60","90"].map(v=>`<div class="radio-chip"><input type="radio" name="slotDur" id="sd${v}" value="${v}" ${c.slotDuration===v?"checked":""} onchange="setCal('slotDuration','${v}')"/><label for="sd${v}">${v} min</label></div>`).join("")}</div></div>
+      <div class="field-group"><label class="field-label">Slot Interval</label><div class="radio-group">${[["15","15 min"],["30","30 min"],["60","60 min"]].map(([v,l])=>`<div class="radio-chip"><input type="radio" name="slotInt" id="si${v}" value="${v}" ${c.slotInterval===v?"checked":""} onchange="setCal('slotInterval','${v}')"/><label for="si${v}">${l}</label></div>`).join("")}</div><div class="field-hint">How frequently booking slots appear</div></div>
+    </div>
+    <div class="form-grid">
+      <div class="field-group"><label class="field-label">Buffer Before</label><select onchange="setCal('bufferBefore',this.value)">${[["0","No buffer"],["5","5 min"],["10","10 min"],["15","15 min"],["30","30 min"]].map(([v,l])=>`<option value="${v}" ${c.bufferBefore===v?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field-group"><label class="field-label">Buffer After</label><select onchange="setCal('bufferAfter',this.value)">${[["0","No buffer"],["5","5 min"],["10","10 min"],["15","15 min"],["30","30 min"]].map(([v,l])=>`<option value="${v}" ${c.bufferAfter===v?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field-group"><label class="field-label">Minimum Scheduling Notice</label><select onchange="setCal('minNotice',this.value)">${[["1","1 hour"],["2","2 hours"],["4","4 hours"],["12","12 hours"],["24","24 hours"],["48","48 hours"],["72","72 hours"]].map(([v,l])=>`<option value="${v}" ${c.minNotice===v?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field-group"><label class="field-label">Booking Window</label><select onchange="setCal('bookingWindow',this.value)">${[["7","7 days"],["14","14 days"],["30","30 days"],["60","60 days"],["90","90 days"],["365","1 year"]].map(([v,l])=>`<option value="${v}" ${c.bookingWindow===v?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field-group"><label class="field-label">Max Bookings Per Day</label><input type="number" placeholder="Blank = unlimited" value="${esc(c.maxPerDay)}" min="1" oninput="setCal('maxPerDay',this.value)"/></div>
+      <div class="field-group"><label class="field-label">Confirmation Type</label><div class="radio-group"><div class="radio-chip"><input type="radio" name="confType" id="ctauto" value="auto" ${c.confirmType==="auto"?"checked":""} onchange="setCal('confirmType','auto')"/><label for="ctauto">Auto-confirm</label></div><div class="radio-chip"><input type="radio" name="confType" id="ctmanual" value="manual" ${c.confirmType==="manual"?"checked":""} onchange="setCal('confirmType','manual')"/><label for="ctmanual">Manual approval</label></div></div></div>
+    </div>
+    <div class="sub-title">Meeting Details</div>
+    <div class="form-grid">
+      <div class="field-group"><label class="field-label">Meeting Type <span class="field-req">*</span></label><div class="radio-group">${[["phone","📞 Phone"],["zoom","🎥 Zoom"],["inperson","📍 In-Person"],["custom","🔗 Custom"]].map(([v,l])=>`<div class="radio-chip"><input type="radio" name="meetType" id="mt${v}" value="${v}" ${c.meetingType===v?"checked":""} onchange="setCal('meetingType','${v}')"/><label for="mt${v}">${l}</label></div>`).join("")}</div></div>
+      <div class="field-group form-full"><label class="field-label">Meeting Location / Link</label><input type="text" placeholder="e.g. https://zoom.us/j/... or 123 Main St" value="${esc(c.meetingLocation)}" oninput="setCal('meetingLocation',this.value)"/></div>
+    </div>
+    <div class="sub-title">Availability</div>
+    <div class="card"><div class="avail-grid">${availHTML}</div></div>
+    <div class="sub-title">Team & Notifications</div>
+    <div class="form-grid">
+      <div class="field-group"><label class="field-label">Assigned Team Member <span class="field-req">*</span></label><input type="text" placeholder="e.g. Sarah Tan or Round Robin" value="${esc(c.teamMember)}" oninput="setCal('teamMember',this.value)"/></div>
+      <div class="field-group"><label class="field-label">Notification Email <span class="field-req">*</span></label><input type="email" placeholder="e.g. team@yourbusiness.com" value="${esc(c.notifEmail)}" oninput="setCal('notifEmail',this.value)"/><div class="field-hint">New booking alerts sent here</div></div>
+    </div>`;
+}
+
+function autoSecStats(sec) {
+  let filled = 0, total = 0;
+  if (!sec.type) { sec.channels.forEach(ch => { total++; if (S.messages[sec.id][ch]?.trim()) filled++; }); }
+  else { S.faqs.forEach(f => { total++; if (f.q?.trim() && f.a?.trim()) filled++; }); }
+  return { done: filled === total && total > 0 };
+}
+
+function renderAutomations() {
+  const cur = AUTO_SECS.find(s => s.id === S.activeAutoSec);
+  const secTabs = AUTO_SECS.map(s => {
+    const {done} = autoSecStats(s);
+    const isAct = s.id === S.activeAutoSec;
+    return `<button class="auto-sec-tab ${isAct?"active":done?"done":""}" onclick="goAutoSec('${s.id}')">${!isAct&&done?"✓ ":""}${s.icon} ${s.label}</button>`;
+  }).join("");
+  let content = "";
+  if (!cur.type) {
+    const ach = activeCh(cur.id);
+    const chTabs = cur.channels.map(ch => { const done=S.messages[cur.id][ch]?.trim(); const isAct=ach===ch; return `<button class="ch-tab ${isAct?"active":done?"done":""}" onclick="switchCh('${cur.id}','${ch}')">${done&&!isAct?"✓ ":""}${ch}</button>`; }).join("");
+    const val = S.messages[cur.id][ach] || "";
+    content = `<div class="channel-tabs">${chTabs}</div>
+      <div class="editor-meta"><label>${ach} — Message</label><span class="char-count ${val.length>1000?"warn":""}" id="charCount">${val.length} chars</span></div>
+      <textarea rows="10" id="msgEditor" placeholder="Write your automated message here…">${esc(val)}</textarea>
+      <div class="var-tags">
+        <button class="var-tag" onclick="insertVar('{name}')">&#123;name&#125;</button>
+        <button class="var-tag" onclick="insertVar('{link}')">&#123;link&#125;</button>
+        <button class="var-tag" onclick="insertVar('{date}')">&#123;date&#125;</button>
+        <button class="var-tag" onclick="insertVar('{time}')">&#123;time&#125;</button>
+        <button class="var-tag" onclick="insertVar('{phone}')">&#123;phone&#125;</button>
       </div>`;
-    btn.onclick = () => { state.active = sec.id; render(); };
-    container.appendChild(btn);
+  } else {
+    content = `<div class="faq-list">${S.faqs.map((faq,i)=>`<div class="faq-card"><div class="faq-card-header"><div class="faq-num">Q${i+1}</div>${faq.q&&faq.a?'<div class="faq-complete">✓ Complete</div>':""}</div><input type="text" placeholder="Question the bot should recognise…" value="${esc(faq.q)}" oninput="updateFAQ(${i},'q',this.value)"/><textarea rows="3" placeholder="Bot's reply…" oninput="updateFAQ(${i},'a',this.value)">${esc(faq.a)}</textarea></div>`).join("")}</div>`;
+  }
+  return `
+    <div class="section-header">
+      <div class="section-eyebrow">Step 2 of 3</div>
+      <div class="section-title"><h2>💬 Automation Messages</h2></div>
+      <p class="section-desc">Set up automated replies for every channel — organic, paid, WhatsApp, booked flows, follow-ups, and chatbot FAQs.</p>
+    </div>
+    <div class="auto-section-tabs">${secTabs}</div>
+    <div class="card">
+      <div class="card-title">${cur.icon} ${cur.label}</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">${cur.desc}</p>
+      ${content}
+    </div>`;
+}
+
+function intBadge(filled) { return `<div class="integration-badge ${filled?"filled":""}">${filled?"✓ Filled":"Pending"}</div>`; }
+
+function renderIntegrations() {
+  const {tiktok:tt, meta, whatsapp:wa} = S.int;
+  return `
+    <div class="section-header">
+      <div class="section-eyebrow">Step 3 of 3</div>
+      <div class="section-title"><h2>🔗 Integrations</h2></div>
+      <p class="section-desc">Provide your API credentials so Leadly can connect your TikTok, Meta, and WhatsApp accounts inside GHL.</p>
+    </div>
+    <div class="integration-card">
+      <div class="integration-header">
+        <div class="integration-logo int-logo-tiktok">🎵</div>
+        <div class="integration-info"><div class="integration-name">TikTok for Business</div><div class="integration-desc">Organic comment & DM automation via TikTok Business API</div></div>
+        ${intBadge(tt.bizId)}
+      </div>
+      <div class="integration-body"><div class="form-grid">
+        <div class="field-group"><label class="field-label">Business Account ID</label><input type="text" placeholder="e.g. 7123456789012345678" value="${esc(tt.bizId)}" oninput="setInt('tiktok','bizId',this.value)"/><div class="field-hint">TikTok Business Center → Settings → Business Info</div></div>
+        <div class="field-group"><label class="field-label">Pixel ID</label><input type="text" placeholder="e.g. C8ABCDE12345" value="${esc(tt.pixelId)}" oninput="setInt('tiktok','pixelId',this.value)"/><div class="field-hint">TikTok Ads Manager → Assets → Events → Web Events</div></div>
+        <div class="field-group form-full"><label class="field-label">Access Token</label><div class="input-wrap"><input type="password" id="ttToken" placeholder="Long-lived access token" value="${esc(tt.token)}" oninput="setInt('tiktok','token',this.value)"/><button class="eye-btn" onclick="toggleEye('ttToken')" type="button">👁</button></div><div class="field-hint">TikTok for Developers → Your App → Authentication</div></div>
+      </div></div>
+    </div>
+    <div class="integration-card">
+      <div class="integration-header">
+        <div class="integration-logo int-logo-meta">📘</div>
+        <div class="integration-info"><div class="integration-name">Meta — Facebook & Instagram</div><div class="integration-desc">Page comments, DMs, Instagram automation & ad pixel tracking</div></div>
+        ${intBadge(meta.pageId)}
+      </div>
+      <div class="integration-body"><div class="form-grid">
+        <div class="field-group"><label class="field-label">Facebook Page ID</label><input type="text" placeholder="e.g. 123456789012345" value="${esc(meta.pageId)}" oninput="setInt('meta','pageId',this.value)"/><div class="field-hint">Facebook Page → About → Page Transparency</div></div>
+        <div class="field-group"><label class="field-label">Facebook Page Name</label><input type="text" placeholder="e.g. My Business Page" value="${esc(meta.pageName)}" oninput="setInt('meta','pageName',this.value)"/></div>
+        <div class="field-group"><label class="field-label">Instagram Username</label><input type="text" placeholder="e.g. @mybusiness" value="${esc(meta.igUser)}" oninput="setInt('meta','igUser',this.value)"/></div>
+        <div class="field-group"><label class="field-label">Ad Account ID</label><input type="text" placeholder="e.g. act_123456789" value="${esc(meta.adAcct)}" oninput="setInt('meta','adAcct',this.value)"/><div class="field-hint">Meta Business Manager → Ad Accounts</div></div>
+        <div class="field-group"><label class="field-label">Meta Pixel ID</label><input type="text" placeholder="e.g. 1234567890123456" value="${esc(meta.pixelId)}" oninput="setInt('meta','pixelId',this.value)"/><div class="field-hint">Meta Events Manager → Data Sources → Pixel</div></div>
+        <div class="field-group form-full"><label class="field-label">Meta Access Token</label><div class="input-wrap"><input type="password" id="metaToken" placeholder="Page or system user token" value="${esc(meta.token)}" oninput="setInt('meta','token',this.value)"/><button class="eye-btn" onclick="toggleEye('metaToken')" type="button">👁</button></div><div class="field-hint">Meta Business Settings → System Users → Generate Token</div></div>
+      </div></div>
+    </div>
+    <div class="integration-card">
+      <div class="integration-header">
+        <div class="integration-logo int-logo-whatsapp">💬</div>
+        <div class="integration-info"><div class="integration-name">WhatsApp Business API</div><div class="integration-desc">WhatsApp Cloud API via Meta for inbound & outbound messaging</div></div>
+        ${intBadge(wa.phone)}
+      </div>
+      <div class="integration-body"><div class="form-grid">
+        <div class="field-group"><label class="field-label">WhatsApp Phone Number</label><input type="text" placeholder="e.g. +6512345678" value="${esc(wa.phone)}" oninput="setInt('whatsapp','phone',this.value)"/><div class="field-hint">Number registered in WhatsApp Business Platform</div></div>
+        <div class="field-group"><label class="field-label">WABA ID</label><input type="text" placeholder="e.g. 123456789012345" value="${esc(wa.wabaId)}" oninput="setInt('whatsapp','wabaId',this.value)"/><div class="field-hint">Meta Business Manager → WhatsApp Accounts</div></div>
+        <div class="field-group"><label class="field-label">Webhook Verify Token</label><input type="text" placeholder="A custom string you create" value="${esc(wa.webhookToken)}" oninput="setInt('whatsapp','webhookToken',this.value)"/><div class="field-hint">Used to verify webhook in Meta Developer console</div></div>
+        <div class="field-group form-full"><label class="field-label">WhatsApp API Access Token</label><div class="input-wrap"><input type="password" id="waToken" placeholder="Permanent token from Meta System User" value="${esc(wa.token)}" oninput="setInt('whatsapp','token',this.value)"/><button class="eye-btn" onclick="toggleEye('waToken')" type="button">👁</button></div><div class="field-hint">Meta Business Settings → System Users → Generate Token → WhatsApp</div></div>
+      </div></div>
+    </div>`;
+}
+
+function showReview() {
+  document.getElementById("layout").style.display = "none";
+  const rs = document.getElementById("reviewScreen");
+  rs.style.display = "block";
+  const c = S.cal; const ig = S.int;
+  const avail = DAYS.filter(d=>c.avail[d].on).map(d=>`${d}: ${c.avail[d].s} – ${c.avail[d].e}`).join("\n")||"—";
+  let autoRows = "";
+  AUTO_SECS.forEach(sec => { if (!sec.type) sec.channels.forEach(ch => { const v=S.messages[sec.id][ch]; if(v?.trim()) autoRows+=`<div class="review-row"><span class="review-key">${sec.label} / ${ch}</span><span class="review-val">${esc(v)}</span></div>`; }); });
+  const faqsFilled = S.faqs.filter(f=>f.q||f.a);
+  rs.innerHTML = `
+    <div class="review-header">
+      <div class="review-check">✓</div>
+      <h1 class="review-title">Onboarding Summary</h1>
+      <p class="review-sub">Review everything below before your GHL setup session.</p>
+    </div>
+    <div class="review-sections">
+      <div class="review-section">
+        <div class="review-sec-header" onclick="toggleReview(this)"><div class="review-sec-left"><span>📅</span><span class="review-sec-title">Calendar Setup</span></div><span class="review-sec-toggle">▾</span></div>
+        <div class="review-body">
+          <div class="review-row"><span class="review-key">Calendar Name</span><span class="review-val">${esc(c.name)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Type</span><span class="review-val">${c.type}</span></div>
+          <div class="review-row"><span class="review-key">Time Zone</span><span class="review-val">${c.timezone||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Calendar Title</span><span class="review-val">${esc(c.calTitle)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Slot Duration</span><span class="review-val">${c.slotDuration} min</span></div>
+          <div class="review-row"><span class="review-key">Slot Interval</span><span class="review-val">Every ${c.slotInterval} min</span></div>
+          <div class="review-row"><span class="review-key">Buffer Before</span><span class="review-val">${c.bufferBefore==="0"?"None":c.bufferBefore+" min"}</span></div>
+          <div class="review-row"><span class="review-key">Buffer After</span><span class="review-val">${c.bufferAfter==="0"?"None":c.bufferAfter+" min"}</span></div>
+          <div class="review-row"><span class="review-key">Min Notice</span><span class="review-val">${c.minNotice} hours</span></div>
+          <div class="review-row"><span class="review-key">Booking Window</span><span class="review-val">${c.bookingWindow} days</span></div>
+          <div class="review-row"><span class="review-key">Max Per Day</span><span class="review-val">${c.maxPerDay||"Unlimited"}</span></div>
+          <div class="review-row"><span class="review-key">Confirmation</span><span class="review-val">${c.confirmType==="auto"?"Auto-confirm":"Manual approval"}</span></div>
+          <div class="review-row"><span class="review-key">Meeting Type</span><span class="review-val">${c.meetingType}</span></div>
+          <div class="review-row"><span class="review-key">Location / Link</span><span class="review-val">${esc(c.meetingLocation)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Assigned To</span><span class="review-val">${esc(c.teamMember)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Notification Email</span><span class="review-val">${esc(c.notifEmail)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Availability</span><span class="review-val">${avail}</span></div>
+        </div>
+      </div>
+      <div class="review-section">
+        <div class="review-sec-header" onclick="toggleReview(this)"><div class="review-sec-left"><span>💬</span><span class="review-sec-title">Automation Messages</span></div><span class="review-sec-toggle">▾</span></div>
+        <div class="review-body">
+          ${autoRows||'<p style="color:var(--dim);font-size:13px;padding:8px 0;">No messages entered yet.</p>'}
+          ${faqsFilled.length?`<div class="review-group-label">Bot FAQs (${faqsFilled.length} filled)</div>${faqsFilled.map(f=>`<div class="review-row"><span class="review-key">Q: ${esc(f.q)}</span><span class="review-val">${esc(f.a)}</span></div>`).join("")}`:""}
+        </div>
+      </div>
+      <div class="review-section">
+        <div class="review-sec-header" onclick="toggleReview(this)"><div class="review-sec-left"><span>🔗</span><span class="review-sec-title">Integrations</span></div><span class="review-sec-toggle">▾</span></div>
+        <div class="review-body">
+          <div class="review-group-label">TikTok</div>
+          <div class="review-row"><span class="review-key">Business Account ID</span><span class="review-val">${esc(ig.tiktok.bizId)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Pixel ID</span><span class="review-val">${esc(ig.tiktok.pixelId)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Access Token</span><span class="review-val">${ig.tiktok.token?"••••••••••••••••":"—"}</span></div>
+          <div class="review-group-label">Meta</div>
+          <div class="review-row"><span class="review-key">Facebook Page ID</span><span class="review-val">${esc(ig.meta.pageId)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Page Name</span><span class="review-val">${esc(ig.meta.pageName)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Instagram</span><span class="review-val">${esc(ig.meta.igUser)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Ad Account ID</span><span class="review-val">${esc(ig.meta.adAcct)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Pixel ID</span><span class="review-val">${esc(ig.meta.pixelId)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Access Token</span><span class="review-val">${ig.meta.token?"••••••••••••••••":"—"}</span></div>
+          <div class="review-group-label">WhatsApp</div>
+          <div class="review-row"><span class="review-key">Phone Number</span><span class="review-val">${esc(ig.whatsapp.phone)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">WABA ID</span><span class="review-val">${esc(ig.whatsapp.wabaId)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Webhook Token</span><span class="review-val">${esc(ig.whatsapp.webhookToken)||"—"}</span></div>
+          <div class="review-row"><span class="review-key">Access Token</span><span class="review-val">${ig.whatsapp.token?"••••••••••••••••":"—"}</span></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;margin-top:28px;padding-bottom:40px;">
+        <button class="btn-ghost" onclick="backToForm()">← Back & Edit</button>
+        <button class="btn-primary" onclick="copyJSON(this)">Copy JSON</button>
+      </div>
+    </div>`;
+}
+
+function toggleReview(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector(".review-sec-toggle");
+  const hidden = body.style.display === "none";
+  body.style.display = hidden ? "block" : "none";
+  arrow.textContent = hidden ? "▾" : "▸";
+}
+function backToForm() {
+  document.getElementById("reviewScreen").style.display = "none";
+  document.getElementById("layout").style.display = "flex";
+}
+function copyJSON(btn) {
+  navigator.clipboard.writeText(JSON.stringify({calendar:S.cal,messages:S.messages,faqs:S.faqs,integrations:S.int},null,2)).then(()=>{btn.textContent="✓ Copied!";setTimeout(()=>btn.textContent="Copy JSON",2000);});
+}
+
+function setCal(field, value) { S.cal[field]=value; updateProgress(); renderSidebar(); }
+function toggleDay(day, enabled) {
+  S.cal.avail[day].on = enabled;
+  const row = event.target.closest(".avail-row");
+  const times = row.querySelector(".avail-times");
+  const closed = row.querySelector(".avail-closed");
+  if (enabled) { times.classList.remove("disabled"); if(closed) closed.remove(); }
+  else { times.classList.add("disabled"); if(!closed) times.insertAdjacentHTML("afterend",'<span class="avail-closed">Closed</span>'); }
+}
+function setAvail(day, field, value) { S.cal.avail[day][field] = value; }
+function goSection(id) { S.activeSection=id; render(); }
+function goAutoSec(id) { S.activeAutoSec=id; renderMain(); attachMsgListener(); }
+function switchCh(secId, ch) { S.activeChannel[secId]=ch; renderMain(); attachMsgListener(); }
+function attachMsgListener() {
+  const editor = document.getElementById("msgEditor");
+  if (!editor) return;
+  editor.addEventListener("input", () => {
+    const ch = activeCh(S.activeAutoSec);
+    S.messages[S.activeAutoSec][ch] = editor.value;
+    const cc = document.getElementById("charCount");
+    if (cc) { cc.textContent=editor.value.length+" chars"; cc.className="char-count"+(editor.value.length>1000?" warn":""); }
+    updateProgress(); renderSidebar();
   });
 }
-
-function renderMain() {
-  const main = document.getElementById("main");
-  const sec = SECTIONS.find(s => s.id === state.active);
-
-  let html = `
-    <div class="section-header">
-      <div class="section-title">
-        <span class="icon">${sec.icon}</span>
-        <h2>${sec.label}</h2>
-      </div>
-      <p class="section-desc">${sec.desc}</p>
-    </div>`;
-
-  if (sec.type === "channels") {
-    const activeCh = getActiveChannel(sec.id);
-    // Tabs
-    html += `<div class="channel-tabs">`;
-    sec.channels.forEach(ch => {
-      const isDone = state.messages[sec.id][ch]?.trim();
-      const isAct = activeCh === ch;
-      html += `<button class="ch-tab ${isAct ? 'active' : isDone ? 'done' : ''}" onclick="switchChannel('${sec.id}','${ch}')">${isDone && !isAct ? '✓ ' : ''}${ch}</button>`;
-    });
-    html += `</div>`;
-
-    const val = state.messages[sec.id][activeCh] || "";
-    html += `
-      <div class="editor-wrap">
-        <div class="editor-meta">
-          <label>${activeCh} — Message</label>
-          <span class="char-count ${val.length > 1000 ? 'warn' : ''}">${val.length} chars</span>
-        </div>
-        <textarea rows="10" id="msgEditor" placeholder="Write your automated ${activeCh.toLowerCase()} message here…\n\nTip: Use {name} for the lead's name, {link} for the booking link.">${escHtml(val)}</textarea>
-        <div class="var-tags">
-          <button class="var-tag" onclick="insertVar('{name}')">&#123;name&#125;</button>
-          <button class="var-tag" onclick="insertVar('{link}')">&#123;link&#125;</button>
-          <button class="var-tag" onclick="insertVar('{date}')">&#123;date&#125;</button>
-          <button class="var-tag" onclick="insertVar('{time}')">&#123;time&#125;</button>
-        </div>
-      </div>`;
-
-  } else {
-    html += `<div class="faq-list">`;
-    state.faqs.forEach((faq, i) => {
-      html += `
-        <div class="faq-card">
-          <div class="faq-card-header">
-            <div class="faq-num">Q${i+1}</div>
-            ${faq.q && faq.a ? '<div class="faq-complete">✓ Complete</div>' : ''}
-          </div>
-          <input type="text" placeholder="Enter the question the bot should recognise…" value="${escHtml(faq.q)}" oninput="updateFAQ(${i},'q',this.value)" />
-          <textarea rows="3" placeholder="Enter the bot's reply…" oninput="updateFAQ(${i},'a',this.value)">${escHtml(faq.a)}</textarea>
-        </div>`;
-    });
-    html += `</div>`;
-  }
-
-  main.innerHTML = html;
-
-  // Attach textarea live listener for channels
-  const editor = document.getElementById("msgEditor");
-  if (editor) {
-    editor.addEventListener("input", () => {
-      const sec = SECTIONS.find(s => s.id === state.active);
-      const ch = getActiveChannel(state.active);
-      state.messages[state.active][ch] = editor.value;
-      // Update char count
-      const cc = editor.closest(".editor-wrap").querySelector(".char-count");
-      cc.textContent = editor.value.length + " chars";
-      cc.className = "char-count" + (editor.value.length > 1000 ? " warn" : "");
-      updateProgress();
-      renderSidebar();
-    });
-  }
-}
-
-function render() {
-  renderSidebar();
-  renderMain();
-  updateProgress();
-}
-
-function switchChannel(sectionId, ch) {
-  state.activeChannel[sectionId] = ch;
-  render();
-}
-
 function insertVar(tag) {
   const editor = document.getElementById("msgEditor");
   if (!editor) return;
-  const start = editor.selectionStart, end = editor.selectionEnd;
-  const val = editor.value;
-  editor.value = val.slice(0, start) + tag + val.slice(end);
-  editor.selectionStart = editor.selectionEnd = start + tag.length;
+  const s=editor.selectionStart, e=editor.selectionEnd;
+  editor.value=editor.value.slice(0,s)+tag+editor.value.slice(e);
+  editor.selectionStart=editor.selectionEnd=s+tag.length;
   editor.focus();
-  const sec = SECTIONS.find(s => s.id === state.active);
-  const ch = getActiveChannel(state.active);
-  state.messages[state.active][ch] = editor.value;
+  S.messages[S.activeAutoSec][activeCh(S.activeAutoSec)]=editor.value;
   updateProgress();
-  renderSidebar();
 }
-
-function updateFAQ(index, field, value) {
-  state.faqs[index][field] = value;
-  updateProgress();
-  renderSidebar();
-  // Update complete badge without full re-render
-  const cards = document.querySelectorAll(".faq-card");
-  if (cards[index]) {
-    const header = cards[index].querySelector(".faq-card-header");
-    const existing = header.querySelector(".faq-complete");
-    if (state.faqs[index].q && state.faqs[index].a) {
-      if (!existing) header.insertAdjacentHTML("beforeend", '<div class="faq-complete">✓ Complete</div>');
-    } else {
-      if (existing) existing.remove();
-    }
-  }
+function updateFAQ(i, field, value) {
+  S.faqs[i][field]=value; updateProgress(); renderSidebar();
+  const cards=document.querySelectorAll(".faq-card");
+  if(cards[i]){const hdr=cards[i].querySelector(".faq-card-header");const ex=hdr.querySelector(".faq-complete");if(S.faqs[i].q&&S.faqs[i].a){if(!ex)hdr.insertAdjacentHTML("beforeend",'<div class="faq-complete">✓ Complete</div>');}else{if(ex)ex.remove();}}
 }
-
+function setInt(platform, field, value) { S.int[platform][field]=value; updateProgress(); renderSidebar(); }
+function toggleEye(inputId) { const inp=document.getElementById(inputId); if(inp) inp.type=inp.type==="password"?"text":"password"; }
 function handleSave() {
-  const btn = document.getElementById("btnSave");
-  btn.textContent = "✓ Saved";
-  btn.classList.add("saved");
-  setTimeout(() => { btn.textContent = "Save"; btn.classList.remove("saved"); }, 2000);
+  const btn=document.getElementById("btnSave");
+  btn.textContent="✓ Saved"; btn.style.color="var(--green)"; btn.style.borderColor="var(--green-border)";
+  setTimeout(()=>{btn.textContent="Save Draft";btn.style.color="";btn.style.borderColor="";},2000);
 }
 
-function escHtml(str) {
-  return (str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function renderMain() {
+  const m = document.getElementById("main");
+  if (S.activeSection==="calendar")     m.innerHTML=renderCalendar();
+  if (S.activeSection==="automations")  m.innerHTML=renderAutomations();
+  if (S.activeSection==="integrations") m.innerHTML=renderIntegrations();
+  if (S.activeSection==="automations")  attachMsgListener();
 }
-
-function exportPDF() {
-  const btn = document.getElementById("btnExport");
-  btn.disabled = true;
-  btn.textContent = "Exporting…";
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: "pt", format: "letter" });
-  const W = doc.internal.pageSize.getWidth();
-  const H = doc.internal.pageSize.getHeight();
-  const margin = 48;
-  const contentW = W - margin * 2;
-  let y = margin;
-
-  const addPage = () => { doc.addPage(); y = margin; };
-  const checkY = (needed) => { if (y + needed > H - margin) addPage(); };
-
-  // Header
-  doc.setFillColor(20, 20, 20);
-  doc.rect(0, 0, W, 64, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(18);
-  doc.setFont("helvetica", "bold");
-  doc.text("HomeUp — Automation Message Templates", margin, 38);
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(180, 180, 180);
-  doc.text(`Exported ${new Date().toLocaleDateString("en-SG", {day:"numeric",month:"long",year:"numeric"})}`, margin, 54);
-  y = 80;
-
-  SECTIONS.forEach(sec => {
-    checkY(60);
-    doc.setFillColor(255, 107, 53);
-    doc.roundedRect(margin, y, contentW, 30, 4, 4, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text(`${sec.label}`, margin + 12, y + 20);
-    y += 40;
-
-    if (sec.type === "channels") {
-      sec.channels.forEach(ch => {
-        checkY(40);
-        const msg = state.messages[sec.id]?.[ch] || "";
-        doc.setTextColor(80, 80, 80);
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "bold");
-        doc.text(ch, margin + 8, y);
-        y += 14;
-        const lines = doc.splitTextToSize(msg || "(No message entered)", contentW - 24);
-        const boxH = lines.length * 14 + 16;
-        checkY(boxH + 8);
-        doc.setFillColor(248, 248, 248);
-        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "F");
-        doc.setDrawColor(220, 220, 220);
-        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "S");
-        doc.setTextColor(msg ? 30 : 160, msg ? 30 : 160, msg ? 30 : 160);
-        doc.setFont("helvetica", "normal");
-        doc.text(lines, margin + 14, y + 14);
-        y += boxH + 16;
-      });
-    } else {
-      state.faqs.forEach((faq, i) => {
-        if (!faq.q && !faq.a) return;
-        const qLines = doc.splitTextToSize(faq.q || "(No question)", contentW - 32);
-        const aLines = doc.splitTextToSize(faq.a || "(No answer)", contentW - 32);
-        const boxH = (qLines.length + aLines.length) * 13 + 32;
-        checkY(boxH + 8);
-        doc.setFillColor(252, 252, 252);
-        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "F");
-        doc.setDrawColor(230, 230, 230);
-        doc.roundedRect(margin + 4, y, contentW - 8, boxH, 3, 3, "S");
-        doc.setTextColor(255, 107, 53);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.text(`Q${i+1}`, margin + 14, y + 14);
-        doc.setTextColor(30, 30, 30);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text(qLines, margin + 30, y + 14);
-        const aY = y + qLines.length * 13 + 18;
-        doc.setTextColor(255, 107, 53);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.text("A:", margin + 14, aY);
-        doc.setTextColor(60, 60, 60);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text(aLines, margin + 30, aY);
-        y += boxH + 12;
-      });
-    }
-    y += 12;
-  });
-
-  doc.save("HomeUp_Automation_Templates.pdf");
-  btn.disabled = false;
-  btn.textContent = "Export PDF";
-}
-
-// Boot
+function render() { renderSidebar(); renderMain(); updateProgress(); }
 render();
 </script>
 </body>
 </html>
+
