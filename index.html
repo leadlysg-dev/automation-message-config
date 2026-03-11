@@ -455,6 +455,7 @@ body {
 const S = {
   cal: {
     calName: '',
+    description: '',
     calTimezone: 'Asia/Singapore',
     calendarOwner: '',
     eventTitle: '',
@@ -465,10 +466,12 @@ const S = {
     bookingWindow: '30',
     minNotice: '60',
     maxPerDay: '',
+    maxPerSlotPerPerson: '1',
     bufferBefore: '0',
     bufferAfter: '0',
     leadSourceRouting: 'all_to_primary',
     confirmType: 'auto',
+    confirmationPageMessage: '',
     cancellationPolicy: '',
     reschedulePolicy: '',
     preAppointmentInstructions: '',
@@ -495,10 +498,14 @@ const S = {
     igComment:['','',''],
     fbComment:['','',''],
     ttComment:['','',''],
-    organicDM:['','',''],
-    whatsapp:['','',''],
-    bookedAppt:{ confirmation:'', reminder24:'', reminder1:'', followUp:'', noShow:'' },
-    followUp:['','','','',''],
+    igDM:['','',''],
+    ttDM:['','',''],
+    fbMessenger:['','',''],
+    organicWhatsapp:['','',''],
+    paidWhatsapp:['','',''],
+    leadFormWhatsapp:['','',''],
+    bookedAppt:{ immediate:'', dayBefore:'', reminder30:'' },
+    followUp:['','','','','',''],
     faqBot:Array.from({length:30},()=>({q:'',a:''}))
   }
 };
@@ -585,8 +592,9 @@ function updateProgress() {
   let total = 0;
 
   const calFields = [
-    'calName','calTimezone','calendarOwner','eventTitle','meetingType','slotDuration','slotInterval',
-    'bookingWindow','minNotice','bufferBefore','bufferAfter','mondayStart','mondayEnd','tuesdayStart','tuesdayEnd',
+    'calName','description','calTimezone','calendarOwner','eventTitle','meetingType','slotDuration','slotInterval',
+    'bookingWindow','minNotice','bufferBefore','bufferAfter','maxPerDay','maxPerSlotPerPerson',
+    'confirmationPageMessage','mondayStart','mondayEnd','tuesdayStart','tuesdayEnd',
     'wednesdayStart','wednesdayEnd','thursdayStart','thursdayEnd','fridayStart','fridayEnd'
   ];
 
@@ -595,7 +603,7 @@ function updateProgress() {
     if (String(S.cal[f] || '').trim()) filled++;
   });
 
-  ['igComment','fbComment','ttComment','organicDM','whatsapp','followUp'].forEach(k => {
+  ['igComment','fbComment','ttComment','igDM','ttDM','fbMessenger','organicWhatsapp','paidWhatsapp','leadFormWhatsapp','followUp'].forEach(k => {
     S.messages[k].forEach(v => {
       total++;
       if (v.trim()) filled++;
@@ -622,8 +630,12 @@ function updateProgress() {
     ...S.messages.igComment,
     ...S.messages.fbComment,
     ...S.messages.ttComment,
-    ...S.messages.organicDM,
-    ...S.messages.whatsapp,
+    ...S.messages.igDM,
+    ...S.messages.ttDM,
+    ...S.messages.fbMessenger,
+    ...S.messages.organicWhatsapp,
+    ...S.messages.paidWhatsapp,
+    ...S.messages.leadFormWhatsapp,
     ...S.messages.followUp,
     ...Object.values(S.messages.bookedAppt)
   ].filter(v => v.trim()).length;
@@ -632,8 +644,12 @@ function updateProgress() {
     S.messages.igComment.length +
     S.messages.fbComment.length +
     S.messages.ttComment.length +
-    S.messages.organicDM.length +
-    S.messages.whatsapp.length +
+    S.messages.igDM.length +
+    S.messages.ttDM.length +
+    S.messages.fbMessenger.length +
+    S.messages.organicWhatsapp.length +
+    S.messages.paidWhatsapp.length +
+    S.messages.leadFormWhatsapp.length +
     S.messages.followUp.length +
     Object.keys(S.messages.bookedAppt).length;
 
@@ -671,6 +687,12 @@ function renderCalendar() {
         </select>
       </div>
     </div>
+    <div class="field-row single">
+      <div class="field">
+        <label>Description</label>
+        <textarea data-cal="description" placeholder="Short description shown before booking.">${c.description}</textarea>
+      </div>
+    </div>
     <div class="field-row">
       <div class="field">
         <label>Calendar Owner</label>
@@ -702,39 +724,39 @@ function renderCalendar() {
     <div class="card-title">Scheduling Rules</div>
     <div class="field-row three">
       <div class="field">
-        <label>Slot Duration</label>
-        <select data-cal="slotDuration">
-          ${[15,20,30,45,60,90,120].map(v => `<option value="${v}" ${c.slotDuration==v?'selected':''}>${v} min</option>`).join('')}
-        </select>
-      </div>
-      <div class="field">
-        <label>Slot Interval</label>
+        <label>Meeting Interval</label>
         <select data-cal="slotInterval">
           ${[10,15,20,30,45,60].map(v => `<option value="${v}" ${c.slotInterval==v?'selected':''}>${v} min</option>`).join('')}
         </select>
       </div>
       <div class="field">
-        <label>Booking Window</label>
-        <select data-cal="bookingWindow">
-          ${[7,14,21,30,45,60,90].map(v => `<option value="${v}" ${c.bookingWindow==v?'selected':''}>${v} days</option>`).join('')}
+        <label>Meeting Duration</label>
+        <select data-cal="slotDuration">
+          ${[15,20,30,45,60,90,120].map(v => `<option value="${v}" ${c.slotDuration==v?'selected':''}>${v} min</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Min Scheduling Notice</label>
+        <select data-cal="minNotice">
+          ${[0,30,60,120,240,480,1440].map(v => `<option value="${v}" ${c.minNotice==v?'selected':''}>${v < 60 ? v + ' min' : (v/60) + 'h'}</option>`).join('')}
         </select>
       </div>
     </div>
     <div class="field-row three">
       <div class="field">
-        <label>Min Notice</label>
-        <select data-cal="minNotice">
-          ${[0,30,60,120,240,480,1440].map(v => `<option value="${v}" ${c.minNotice==v?'selected':''}>${v < 60 ? v + ' min' : (v/60) + 'h'}</option>`).join('')}
+        <label>Date Range</label>
+        <select data-cal="bookingWindow">
+          ${[7,14,21,30,45,60,90].map(v => `<option value="${v}" ${c.bookingWindow==v?'selected':''}>${v} days</option>`).join('')}
         </select>
       </div>
       <div class="field">
-        <label>Buffer Before</label>
+        <label>Pre Buffer Time</label>
         <select data-cal="bufferBefore">
           ${[0,5,10,15,20,30].map(v => `<option value="${v}" ${c.bufferBefore==v?'selected':''}>${v} min</option>`).join('')}
         </select>
       </div>
       <div class="field">
-        <label>Buffer After</label>
+        <label>Post Buffer Time</label>
         <select data-cal="bufferAfter">
           ${[0,5,10,15,20,30].map(v => `<option value="${v}" ${c.bufferAfter==v?'selected':''}>${v} min</option>`).join('')}
         </select>
@@ -742,16 +764,12 @@ function renderCalendar() {
     </div>
     <div class="field-row three">
       <div class="field">
-        <label>Max Appointments / Day</label>
+        <label>Max Bookings Per Day</label>
         <input type="number" min="1" data-cal="maxPerDay" value="${c.maxPerDay}" placeholder="Optional cap">
       </div>
       <div class="field">
-        <label>Lead Routing Rule</label>
-        <select data-cal="leadSourceRouting">
-          <option value="all_to_primary" ${c.leadSourceRouting==='all_to_primary'?'selected':''}>All leads to primary calendar</option>
-          <option value="round_robin" ${c.leadSourceRouting==='round_robin'?'selected':''}>Round robin across users</option>
-          <option value="source_based" ${c.leadSourceRouting==='source_based'?'selected':''}>Route by lead source</option>
-        </select>
+        <label>Max Booking Per Slot Per Person</label>
+        <input type="number" min="1" data-cal="maxPerSlotPerPerson" value="${c.maxPerSlotPerPerson}" placeholder="e.g. 1">
       </div>
       <div class="field">
         <label>Confirmation Mode</label>
@@ -764,7 +782,7 @@ function renderCalendar() {
   </div>
 
   <div class="card">
-    <div class="card-title">Weekly Availability</div>
+    <div class="card-title">Availability Full Options</div>
     <div class="helper">Turn days on or off, then define the start and end time for each day.</div>
     <div class="day-pills">
       ${dayList.map(d => `<div class="day-pill ${c.days[d.k]?'on':''}" data-day="${d.k}">${d.l}</div>`).join('')}
@@ -795,7 +813,7 @@ function renderCalendar() {
   </div>
 
   <div class="card">
-    <div class="card-title">Booking Form Fields</div>
+    <div class="card-title">Form Collection</div>
     <div class="mini-grid">
       <div class="mini-card">
         <div class="mini-card-title">Contact Details</div>
@@ -842,11 +860,11 @@ function renderCalendar() {
   </div>
 
   <div class="card">
-    <div class="card-title">Policies & Notes</div>
+    <div class="card-title">Confirmation & Policies</div>
     <div class="field-row single">
       <div class="field">
-        <label>Reschedule Policy</label>
-        <textarea data-cal="reschedulePolicy" placeholder="e.g. Rescheduling allowed up to 12 hours before appointment.">${c.reschedulePolicy}</textarea>
+        <label>Confirmation Page Message</label>
+        <textarea data-cal="confirmationPageMessage" placeholder="Message shown after the booking is successfully submitted.">${c.confirmationPageMessage}</textarea>
       </div>
     </div>
     <div class="field-row single">
@@ -857,14 +875,8 @@ function renderCalendar() {
     </div>
     <div class="field-row single">
       <div class="field">
-        <label>Pre-Appointment Instructions</label>
-        <textarea data-cal="preAppointmentInstructions" placeholder="What should the lead prepare or know before the call?">${c.preAppointmentInstructions}</textarea>
-      </div>
-    </div>
-    <div class="field-row single">
-      <div class="field">
-        <label>Internal Notes</label>
-        <textarea data-cal="internalNotes" placeholder="Anything the implementation team should take note of.">${c.internalNotes}</textarea>
+        <label>Rescheduling Policy</label>
+        <textarea data-cal="reschedulePolicy" placeholder="e.g. Rescheduling allowed up to 12 hours before appointment.">${c.reschedulePolicy}</textarea>
       </div>
     </div>
   </div>
@@ -878,20 +890,28 @@ function renderAutomations() {
   const tabs = [
     'IG Comment',
     'FB Comment',
-    'TT Comment',
-    'Organic DMs',
-    'WhatsApp Replies',
-    'Booked Appt Flow',
-    'Follow-Up Seq',
+    'TikTok Comment',
+    'IG DM',
+    'TikTok DM',
+    'FB Messenger',
+    'Organic WhatsApp',
+    'Paid WhatsApp',
+    'Lead Form WhatsApp',
+    'Booked Appointment Flow',
+    'Follow-Up Sequence',
     'FAQ Bot'
   ];
 
   const content = [
-    renderOrganic('igComment', 'Instagram Comment Reply', 'Reply used when someone comments on an Instagram post or ad and you want to push them into the booking journey.'),
-    renderOrganic('fbComment', 'Facebook Comment Reply', 'Reply used when someone comments on a Facebook post or ad before being routed into DMs / WhatsApp / booking.'),
-    renderOrganic('ttComment', 'TikTok Comment Reply', 'Reply used when someone comments on TikTok content and should be directed to the next conversion step.'),
-    renderOrganic('organicDM', 'Organic DM Reply', 'First replies used for inbound DMs from social platforms.'),
-    renderOrganic('whatsapp', 'WhatsApp Reply', 'Auto-replies used once the lead is inside WhatsApp.'),
+    renderOrganic('igComment', 'Instagram Comment Reply', 'Reply used when someone comments on an Instagram post or ad.'),
+    renderOrganic('fbComment', 'Facebook Comment Reply', 'Reply used when someone comments on a Facebook post or ad.'),
+    renderOrganic('ttComment', 'TikTok Comment Reply', 'Reply used when someone comments on TikTok content.'),
+    renderOrganic('igDM', 'Instagram DM Reply', 'First replies used for inbound Instagram DMs.'),
+    renderOrganic('ttDM', 'TikTok DM Reply', 'First replies used for inbound TikTok DMs.'),
+    renderOrganic('fbMessenger', 'Facebook Messenger Reply', 'Replies used inside Facebook Messenger.'),
+    renderOrganic('organicWhatsapp', 'Organic WhatsApp Reply', 'Auto-replies used for organic WhatsApp enquiries.'),
+    renderOrganic('paidWhatsapp', 'Paid WhatsApp Reply', 'Auto-replies used for paid campaign WhatsApp enquiries.'),
+    renderOrganic('leadFormWhatsapp', 'Lead Form WhatsApp Reply', 'Replies used when leads come from forms and are redirected into WhatsApp.'),
     renderBookedAppt(),
     renderFollowUp(),
     renderFAQ()
@@ -930,11 +950,9 @@ function renderOrganic(key, title, desc) {
 function renderBookedAppt() {
   const b = S.messages.bookedAppt;
   const fields = [
-    {k:'confirmation', l:'Booking Confirmation', p:'Sent immediately after a booking is confirmed…'},
-    {k:'reminder24', l:'24-Hour Reminder', p:'Sent 24 hours before the appointment…'},
-    {k:'reminder1', l:'1-Hour Reminder', p:'Sent 1 hour before the appointment…'},
-    {k:'followUp', l:'Post-Appointment Follow-Up', p:'Sent after the appointment ends…'},
-    {k:'noShow', l:'No-Show Message', p:'Sent when a lead misses the appointment…'}
+    {k:'immediate', l:'Immediate Confirmation', p:'Sent immediately after booking is confirmed…'},
+    {k:'dayBefore', l:'Day Before Reminder', p:'Sent one day before the appointment…'},
+    {k:'reminder30', l:'30-Minute Reminder', p:'Sent 30 minutes before the appointment…'}
   ];
 
   return `
@@ -953,6 +971,7 @@ function renderBookedAppt() {
 }
 
 function renderFollowUp() {
+  const days = [7,14,30,45,90,'Open Ended'];
   return `
   <div class="card">
     <div class="card-title">Follow-Up Sequence</div>
@@ -960,10 +979,10 @@ function renderFollowUp() {
     ${S.messages.followUp.map((v, i) => `
       <div class="msg-box">
         <div class="msg-box-header">
-          <span class="msg-box-label">Day ${[1,3,7,14,30][i]} Follow-Up</span>
+          <span class="msg-box-label">${typeof days[i] === 'number' ? 'Day ' + days[i] : days[i]} Follow-Up</span>
           <span class="char-count" id="cc-msg-fu-${i}">${v.length} chars</span>
         </div>
-        <textarea id="msg-fu-${i}" data-msg="followUp:${i}" placeholder="Day ${[1,3,7,14,30][i]} follow-up message…">${v}</textarea>
+        <textarea id="msg-fu-${i}" data-msg="followUp:${i}" placeholder="${typeof days[i] === 'number' ? 'Day ' + days[i] : days[i]} follow-up message…">${v}</textarea>
       </div>
     `).join('')}
   </div>`;
@@ -1010,19 +1029,21 @@ function buildReview() {
 
   const calRows = [
     ['Calendar Name', c.calName],
+    ['Description', c.description],
     ['Timezone', c.calTimezone],
     ['Calendar Owner', c.calendarOwner],
     ['Event Title', c.eventTitle],
     ['Meeting Type', c.meetingType],
     ['Meeting Location / Link', c.meetingLocation],
-    ['Slot Duration', c.slotDuration + ' min'],
-    ['Slot Interval', c.slotInterval + ' min'],
-    ['Booking Window', c.bookingWindow + ' days'],
-    ['Min Notice', c.minNotice + ' min'],
-    ['Buffer Before', c.bufferBefore + ' min'],
-    ['Buffer After', c.bufferAfter + ' min'],
-    ['Max Appointments / Day', c.maxPerDay],
-    ['Lead Routing Rule', c.leadSourceRouting],
+    ['Meeting Interval', c.slotInterval + ' min'],
+    ['Meeting Duration', c.slotDuration + ' min'],
+    ['Min Scheduling Notice', c.minNotice + ' min'],
+    ['Date Range', c.bookingWindow + ' days'],
+    ['Pre Buffer Time', c.bufferBefore + ' min'],
+    ['Post Buffer Time', c.bufferAfter + ' min'],
+    ['Max Bookings Per Day', c.maxPerDay],
+    ['Max Booking Per Slot Per Person', c.maxPerSlotPerPerson],
+    ['Confirmation Page Message', c.confirmationPageMessage],
     ['Confirmation Mode', c.confirmType],
     ['Active Days', activeDays],
     ['Monday', c.mondayStart + ' – ' + c.mondayEnd],
@@ -1040,24 +1061,24 @@ function buildReview() {
     ['Allow Reschedule', c.allowReschedule ? 'Yes' : 'No'],
     ['Allow Cancellation', c.allowCancel ? 'Yes' : 'No'],
     ['Require Payment', c.requirePayment ? 'Yes' : 'No'],
-    ['Reschedule Policy', c.reschedulePolicy],
     ['Cancellation Policy', c.cancellationPolicy],
-    ['Pre-Appointment Instructions', c.preAppointmentInstructions],
-    ['Internal Notes', c.internalNotes]
+    ['Rescheduling Policy', c.reschedulePolicy]
   ];
 
   const msgRows = [
     ...S.messages.igComment.map((v, i) => ['IG Comment V' + (i+1), v]),
     ...S.messages.fbComment.map((v, i) => ['FB Comment V' + (i+1), v]),
-    ...S.messages.ttComment.map((v, i) => ['TT Comment V' + (i+1), v]),
-    ...S.messages.organicDM.map((v, i) => ['Organic DM V' + (i+1), v]),
-    ...S.messages.whatsapp.map((v, i) => ['WhatsApp V' + (i+1), v]),
-    ['Booking Confirmation', S.messages.bookedAppt.confirmation],
-    ['24h Reminder', S.messages.bookedAppt.reminder24],
-    ['1h Reminder', S.messages.bookedAppt.reminder1],
-    ['Post-Appt Follow-Up', S.messages.bookedAppt.followUp],
-    ['No-Show', S.messages.bookedAppt.noShow],
-    ...S.messages.followUp.map((v, i) => ['Follow-Up Day ' + [1,3,7,14,30][i], v])
+    ...S.messages.ttComment.map((v, i) => ['TikTok Comment V' + (i+1), v]),
+    ...S.messages.igDM.map((v, i) => ['IG DM V' + (i+1), v]),
+    ...S.messages.ttDM.map((v, i) => ['TikTok DM V' + (i+1), v]),
+    ...S.messages.fbMessenger.map((v, i) => ['FB Messenger V' + (i+1), v]),
+    ...S.messages.organicWhatsapp.map((v, i) => ['Organic WhatsApp V' + (i+1), v]),
+    ...S.messages.paidWhatsapp.map((v, i) => ['Paid WhatsApp V' + (i+1), v]),
+    ...S.messages.leadFormWhatsapp.map((v, i) => ['Lead Form WhatsApp V' + (i+1), v]),
+    ['Immediate Confirmation', S.messages.bookedAppt.immediate],
+    ['Day Before Reminder', S.messages.bookedAppt.dayBefore],
+    ['30-Minute Reminder', S.messages.bookedAppt.reminder30],
+    ...S.messages.followUp.map((v, i) => ['Follow-Up ' + [7,14,30,45,90,'Open Ended'][i], v])
   ];
 
   const faqRows = S.messages.faqBot.filter(p => p.q || p.a).map((p, i) => ['Q' + (i+1) + ': ' + p.q, p.a]);
