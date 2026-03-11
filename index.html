@@ -15,6 +15,7 @@
   --bg: #0f0f0f;
   --surface: #161616;
   --surface2: #1a1a1a;
+  --surface3: #202020;
   --border: #252525;
   --border2: #2e2e2e;
   --text: #f0ede8;
@@ -36,7 +37,6 @@ body {
   flex-direction: column;
 }
 
-/* ── TOP BAR ── */
 #topbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -59,12 +59,10 @@ body {
 .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
 .progress-label { font-size: 12px; color: var(--muted); font-weight: 500; min-width: 80px; }
 
-/* ── LAYOUT ── */
 #shell { display: flex; flex: 1; overflow: hidden; }
 
-/* ── SIDEBAR ── */
 #sidebar {
-  width: 230px;
+  width: 250px;
   background: var(--surface);
   border-right: 1px solid var(--border);
   padding: 24px 0;
@@ -79,7 +77,6 @@ body {
   gap: 11px;
   padding: 10px 20px;
   cursor: pointer;
-  border-radius: 0;
   transition: background 0.15s;
   position: relative;
 }
@@ -108,7 +105,6 @@ body {
 }
 .nav-badge.pending { background: var(--surface2); color: var(--muted); border-color: var(--border2); }
 
-/* ── MAIN CONTENT ── */
 #main {
   flex: 1;
   overflow-y: auto;
@@ -123,7 +119,6 @@ body {
 .section-title { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); margin-bottom: 6px; }
 .section-sub { font-size: 14px; color: var(--muted); }
 
-/* ── CARDS ── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -140,7 +135,6 @@ body {
   margin-bottom: 16px;
 }
 
-/* ── FORM ELEMENTS ── */
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .field-row.three { grid-template-columns: 1fr 1fr 1fr; }
 .field-row.single { grid-template-columns: 1fr; }
@@ -157,13 +151,11 @@ body {
   transition: border-color 0.15s;
   outline: none;
 }
-.field input:focus, .field select:focus, .field textarea:focus {
-  border-color: var(--accent);
-}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
 .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 .field select option { background: var(--surface2); }
+.helper { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
 
-/* ── TOGGLE ROW ── */
 .toggle-row {
   display: flex;
   align-items: center;
@@ -201,7 +193,6 @@ body {
 .toggle input:checked + .toggle-slider { background: var(--accent); }
 .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
 
-/* ── DAY PILLS ── */
 .day-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .day-pill {
   padding: 6px 14px;
@@ -217,7 +208,6 @@ body {
 }
 .day-pill.on { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-/* ── TABS ── */
 .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
 .tab {
   padding: 10px 18px;
@@ -232,7 +222,6 @@ body {
 .tab:hover { color: var(--text); }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* ── MESSAGE BOX ── */
 .msg-box {
   background: var(--surface2);
   border: 1px solid var(--border2);
@@ -258,10 +247,9 @@ body {
   line-height: 1.6;
   resize: none;
   outline: none;
-  min-height: 70px;
+  min-height: 84px;
 }
 
-/* ── FAQ ── */
 .faq-item {
   background: var(--surface2);
   border: 1px solid var(--border2);
@@ -296,41 +284,27 @@ body {
   line-height: 1.5;
 }
 
-/* ── INTEGRATION CARDS ── */
-.int-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 22px 24px;
-  margin-bottom: 16px;
-}
-.int-card-header {
-  display: flex;
-  align-items: center;
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  margin-bottom: 18px;
 }
-.int-icon { font-size: 24px; }
-.int-title { font-size: 15px; font-weight: 600; color: var(--text); }
-.int-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.pw-wrap { position: relative; }
-.pw-wrap input { width: 100%; padding-right: 38px; }
-.pw-toggle {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
+.mini-card {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px;
+}
+.mini-card-title {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--muted);
-  cursor: pointer;
-  font-size: 14px;
-  padding: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
 }
-.pw-toggle:hover { color: var(--text); }
 
-/* ── REVIEW ── */
-#review-screen {
+.review-screen {
   display: none;
   position: fixed;
   inset: 0;
@@ -339,9 +313,6 @@ body {
   overflow-y: auto;
   padding: 40px;
 }
-#review-screen::-webkit-scrollbar { width: 6px; }
-#review-screen::-webkit-scrollbar-track { background: var(--bg); }
-#review-screen::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 .review-header {
   text-align: center;
   margin-bottom: 40px;
@@ -358,7 +329,7 @@ body {
 }
 .review-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); margin-bottom: 8px; }
 .review-sub { font-size: 14px; color: var(--muted); }
-.review-sections { max-width: 720px; margin: 0 auto; }
+.review-sections { max-width: 800px; margin: 0 auto; }
 .review-group {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -381,7 +352,7 @@ body {
 .review-group-body.open { display: block; }
 .review-row { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 .review-row:last-child { border-bottom: none; }
-.review-key { color: var(--muted); min-width: 180px; flex-shrink: 0; }
+.review-key { color: var(--muted); min-width: 210px; flex-shrink: 0; }
 .review-val { color: var(--text); word-break: break-word; }
 .review-actions {
   display: flex;
@@ -391,7 +362,6 @@ body {
   padding-bottom: 40px;
 }
 
-/* ── BUTTONS ── */
 .btn {
   padding: 10px 22px;
   border-radius: 7px;
@@ -424,6 +394,23 @@ body {
   padding-top: 20px;
   border-top: 1px solid var(--border);
 }
+
+@media (max-width: 1100px) {
+  #sidebar { width: 220px; }
+  .field-row.three, .mini-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 840px) {
+  #shell { flex-direction: column; }
+  #sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+  }
+  #main { padding: 24px 20px; }
+  .field-row, .field-row.three, .mini-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -452,13 +439,8 @@ body {
     </div>
     <div class="nav-item" onclick="nav(1)" id="nav-1">
       <span class="nav-icon">💬</span>
-      <span class="nav-label">Automations</span>
+      <span class="nav-label">Automation Messaging</span>
       <span class="nav-badge pending" id="badge-1">—</span>
-    </div>
-    <div class="nav-item" onclick="nav(2)" id="nav-2">
-      <span class="nav-icon">🔗</span>
-      <span class="nav-label">Integrations</span>
-      <span class="nav-badge pending" id="badge-2">—</span>
     </div>
     <div class="nav-footer">
       <button class="btn btn-ghost" style="flex:1;font-size:13px" onclick="showReview()">Review All</button>
@@ -467,30 +449,57 @@ body {
   <main id="main"></main>
 </div>
 
-<div id="review-screen"></div>
+<div id="review-screen" class="review-screen"></div>
 
 <script>
 const S = {
   cal: {
-    calName:'', calTimezone:'', slotDuration:'30', slotInterval:'30',
-    bufferBefore:'0', bufferAfter:'0', bookingWindow:'30', minNotice:'60',
-    confirmType:'auto', meetingType:'phone', meetingLocation:'',
-    allowReschedule:true, allowCancel:true, requirePayment:false,
-    days:{ mon:true, tue:true, wed:true, thu:true, fri:true, sat:false, sun:false },
-    startTime:'09:00', endTime:'17:00'
+    calName: '',
+    calTimezone: 'Asia/Singapore',
+    calendarOwner: '',
+    eventTitle: '',
+    meetingType: 'phone',
+    meetingLocation: '',
+    slotDuration: '30',
+    slotInterval: '30',
+    bookingWindow: '30',
+    minNotice: '60',
+    maxPerDay: '',
+    bufferBefore: '0',
+    bufferAfter: '0',
+    leadSourceRouting: 'all_to_primary',
+    confirmType: 'auto',
+    cancellationPolicy: '',
+    reschedulePolicy: '',
+    preAppointmentInstructions: '',
+    internalNotes: '',
+    allowReschedule: true,
+    allowCancel: true,
+    requireApproval: false,
+    requirePayment: false,
+    collectName: true,
+    collectEmail: true,
+    collectPhone: true,
+    collectReason: true,
+    collectNotes: false,
+    days: { mon:true, tue:true, wed:true, thu:true, fri:true, sat:false, sun:false },
+    mondayStart: '09:00', mondayEnd: '17:00',
+    tuesdayStart: '09:00', tuesdayEnd: '17:00',
+    wednesdayStart: '09:00', wednesdayEnd: '17:00',
+    thursdayStart: '09:00', thursdayEnd: '17:00',
+    fridayStart: '09:00', fridayEnd: '17:00',
+    saturdayStart: '09:00', saturdayEnd: '13:00',
+    sundayStart: '09:00', sundayEnd: '13:00'
   },
   messages: {
-    organicComment:['','',''],
+    igComment:['','',''],
+    fbComment:['','',''],
+    ttComment:['','',''],
     organicDM:['','',''],
     whatsapp:['','',''],
     bookedAppt:{ confirmation:'', reminder24:'', reminder1:'', followUp:'', noShow:'' },
     followUp:['','','','',''],
     faqBot:Array.from({length:30},()=>({q:'',a:''}))
-  },
-  int: {
-    tiktok:{ clientKey:'', clientSecret:'', accessToken:'' },
-    meta:{ appId:'', appSecret:'', pageToken:'', wabaId:'' },
-    whatsapp:{ phoneNumberId:'', apiToken:'', webhookSecret:'' }
   }
 };
 
@@ -499,59 +508,66 @@ let autoTab = 0;
 
 function nav(i) {
   currentSection = i;
-  document.querySelectorAll('.nav-item').forEach((el,idx) => el.classList.toggle('active', idx===i));
+  document.querySelectorAll('.nav-item').forEach((el, idx) => el.classList.toggle('active', idx === i));
   render();
 }
 
 function render() {
   const m = document.getElementById('main');
-  if (currentSection===0) m.innerHTML = renderCalendar();
-  else if (currentSection===1) m.innerHTML = renderAutomations();
-  else m.innerHTML = renderIntegrations();
+  if (currentSection === 0) m.innerHTML = renderCalendar();
+  else m.innerHTML = renderAutomations();
   updateProgress();
   bindEvents();
 }
 
 function bindEvents() {
-  // Calendar fields
   document.querySelectorAll('[data-cal]').forEach(el => {
-    el.addEventListener('change', e => { S.cal[e.target.dataset.cal] = e.target.type==='checkbox'?e.target.checked:e.target.value; updateProgress(); });
-    el.addEventListener('input', e => { S.cal[e.target.dataset.cal] = e.target.value; updateProgress(); });
+    el.addEventListener('change', e => {
+      S.cal[e.target.dataset.cal] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      updateProgress();
+    });
+    el.addEventListener('input', e => {
+      S.cal[e.target.dataset.cal] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      updateProgress();
+    });
   });
-  // Day pills
+
   document.querySelectorAll('.day-pill').forEach(pill => {
     pill.addEventListener('click', () => {
       const d = pill.dataset.day;
       S.cal.days[d] = !S.cal.days[d];
       pill.classList.toggle('on', S.cal.days[d]);
+      updateProgress();
     });
   });
-  // Toggle switches
+
   document.querySelectorAll('[data-cal-toggle]').forEach(el => {
-    el.addEventListener('change', e => { S.cal[e.target.dataset.calToggle] = e.target.checked; });
+    el.addEventListener('change', e => {
+      S.cal[e.target.dataset.calToggle] = e.target.checked;
+      updateProgress();
+    });
   });
-  // Message textareas
+
   document.querySelectorAll('[data-msg]').forEach(el => {
     el.addEventListener('input', e => {
       const [section, idx] = e.target.dataset.msg.split(':');
-      if (idx !== undefined) S.messages[section][parseInt(idx)] = e.target.value;
+      if (idx !== undefined) S.messages[section][parseInt(idx, 10)] = e.target.value;
       else S.messages.bookedAppt[section] = e.target.value;
       updateCharCount(e.target);
       updateProgress();
     });
   });
-  // FAQ fields
+
   document.querySelectorAll('[data-faq-q]').forEach(el => {
-    el.addEventListener('input', e => { S.messages.faqBot[parseInt(e.target.dataset.faqQ)].q = e.target.value; updateProgress(); });
-  });
-  document.querySelectorAll('[data-faq-a]').forEach(el => {
-    el.addEventListener('input', e => { S.messages.faqBot[parseInt(e.target.dataset.faqA)].a = e.target.value; updateProgress(); });
-  });
-  // Integration fields
-  document.querySelectorAll('[data-int]').forEach(el => {
     el.addEventListener('input', e => {
-      const [platform, field] = e.target.dataset.int.split(':');
-      S.int[platform][field] = e.target.value;
+      S.messages.faqBot[parseInt(e.target.dataset.faqQ, 10)].q = e.target.value;
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('[data-faq-a]').forEach(el => {
+    el.addEventListener('input', e => {
+      S.messages.faqBot[parseInt(e.target.dataset.faqA, 10)].a = e.target.value;
       updateProgress();
     });
   });
@@ -560,303 +576,415 @@ function bindEvents() {
 function updateCharCount(el) {
   const id = el.id;
   if (!id) return;
-  const cc = document.getElementById('cc-'+id);
+  const cc = document.getElementById('cc-' + id);
   if (cc) cc.textContent = el.value.length + ' chars';
 }
 
 function updateProgress() {
-  let filled = 0, total = 0;
-  // Cal
-  const calFields = ['calName','calTimezone','slotDuration','slotInterval','startTime','endTime'];
-  calFields.forEach(f => { total++; if(S.cal[f]) filled++; });
-  // Messages - count non-empty arrays
-  ['organicComment','organicDM','whatsapp','followUp'].forEach(k => {
-    S.messages[k].forEach(v => { total++; if(v.trim()) filled++; });
+  let filled = 0;
+  let total = 0;
+
+  const calFields = [
+    'calName','calTimezone','calendarOwner','eventTitle','meetingType','slotDuration','slotInterval',
+    'bookingWindow','minNotice','bufferBefore','bufferAfter','mondayStart','mondayEnd','tuesdayStart','tuesdayEnd',
+    'wednesdayStart','wednesdayEnd','thursdayStart','thursdayEnd','fridayStart','fridayEnd'
+  ];
+
+  calFields.forEach(f => {
+    total++;
+    if (String(S.cal[f] || '').trim()) filled++;
   });
-  Object.values(S.messages.bookedAppt).forEach(v => { total++; if(v.trim()) filled++; });
-  // Integrations
-  Object.values(S.int).forEach(obj => Object.values(obj).forEach(v => { total++; if(v.trim()) filled++; }));
 
-  const pct = Math.round((filled/total)*100);
-  document.getElementById('prog-fill').style.width = pct+'%';
-  document.getElementById('prog-label').textContent = pct+'% complete';
+  ['igComment','fbComment','ttComment','organicDM','whatsapp','followUp'].forEach(k => {
+    S.messages[k].forEach(v => {
+      total++;
+      if (v.trim()) filled++;
+    });
+  });
 
-  // Badges
-  const calDone = calFields.filter(f=>S.cal[f]).length;
+  Object.values(S.messages.bookedAppt).forEach(v => {
+    total++;
+    if (v.trim()) filled++;
+  });
+
+  const pct = total ? Math.round((filled / total) * 100) : 0;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = pct + '% complete';
+
+  const calDone = calFields.filter(f => String(S.cal[f] || '').trim()).length;
   const b0 = document.getElementById('badge-0');
-  if (b0) { b0.textContent = calDone===calFields.length ? 'Done' : calDone+'/'+calFields.length; b0.className = 'nav-badge'+(calDone===calFields.length?'':' pending'); }
+  if (b0) {
+    b0.textContent = calDone === calFields.length ? 'Done' : calDone + '/' + calFields.length;
+    b0.className = 'nav-badge' + (calDone === calFields.length ? '' : ' pending');
+  }
 
-  const msgFilled = [...S.messages.organicComment,...S.messages.organicDM,...S.messages.whatsapp,...S.messages.followUp,
-    ...Object.values(S.messages.bookedAppt)].filter(v=>v.trim()).length;
-  const msgTotal = S.messages.organicComment.length+S.messages.organicDM.length+S.messages.whatsapp.length+
-    S.messages.followUp.length+Object.keys(S.messages.bookedAppt).length;
+  const msgFilled = [
+    ...S.messages.igComment,
+    ...S.messages.fbComment,
+    ...S.messages.ttComment,
+    ...S.messages.organicDM,
+    ...S.messages.whatsapp,
+    ...S.messages.followUp,
+    ...Object.values(S.messages.bookedAppt)
+  ].filter(v => v.trim()).length;
+
+  const msgTotal =
+    S.messages.igComment.length +
+    S.messages.fbComment.length +
+    S.messages.ttComment.length +
+    S.messages.organicDM.length +
+    S.messages.whatsapp.length +
+    S.messages.followUp.length +
+    Object.keys(S.messages.bookedAppt).length;
+
   const b1 = document.getElementById('badge-1');
-  if (b1) { b1.textContent = msgFilled===msgTotal?'Done':msgFilled+'/'+msgTotal; b1.className='nav-badge'+(msgFilled===msgTotal?'':' pending'); }
-
-  const intFilled = Object.values(S.int).flatMap(o=>Object.values(o)).filter(v=>v.trim()).length;
-  const intTotal = Object.values(S.int).flatMap(o=>Object.values(o)).length;
-  const b2 = document.getElementById('badge-2');
-  if (b2) { b2.textContent = intFilled===intTotal?'Done':intFilled+'/'+intTotal; b2.className='nav-badge'+(intFilled===intTotal?'':' pending'); }
+  if (b1) {
+    b1.textContent = msgFilled === msgTotal ? 'Done' : msgFilled + '/' + msgTotal;
+    b1.className = 'nav-badge' + (msgFilled === msgTotal ? '' : ' pending');
+  }
 }
 
 function renderCalendar() {
   const c = S.cal;
-  const dayList = [{k:'mon',l:'Mon'},{k:'tue',l:'Tue'},{k:'wed',l:'Wed'},{k:'thu',l:'Thu'},{k:'fri',l:'Fri'},{k:'sat',l:'Sat'},{k:'sun',l:'Sun'}];
+  const dayList = [
+    {k:'mon',l:'Mon'}, {k:'tue',l:'Tue'}, {k:'wed',l:'Wed'}, {k:'thu',l:'Thu'},
+    {k:'fri',l:'Fri'}, {k:'sat',l:'Sat'}, {k:'sun',l:'Sun'}
+  ];
+
   return `
   <div class="section-header">
     <div class="section-title">Calendar Setup</div>
-    <div class="section-sub">Configure your booking calendar settings and availability.</div>
+    <div class="section-sub">Set up how leads book, what details are collected, and how appointment slots should run.</div>
   </div>
+
   <div class="card">
-    <div class="card-title">Basic Info</div>
+    <div class="card-title">Calendar Basics</div>
     <div class="field-row">
-      <div class="field"><label>Calendar Name</label><input type="text" data-cal="calName" value="${c.calName}" placeholder="e.g. Discovery Call"></div>
-      <div class="field"><label>Timezone</label>
+      <div class="field">
+        <label>Calendar Name</label>
+        <input type="text" data-cal="calName" value="${c.calName}" placeholder="e.g. Initial Consultation">
+      </div>
+      <div class="field">
+        <label>Timezone</label>
         <select data-cal="calTimezone">
-          <option value="">Select timezone…</option>
-          ${['UTC','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Toronto','Europe/London','Europe/Paris','Asia/Singapore','Asia/Tokyo','Australia/Sydney'].map(tz=>`<option value="${tz}" ${c.calTimezone===tz?'selected':''}>${tz}</option>`).join('')}
+          ${['UTC','Asia/Singapore','Asia/Kuala_Lumpur','Asia/Jakarta','Australia/Sydney','Europe/London','America/Los_Angeles','America/New_York'].map(tz => `<option value="${tz}" ${c.calTimezone===tz?'selected':''}>${tz}</option>`).join('')}
         </select>
       </div>
     </div>
     <div class="field-row">
-      <div class="field"><label>Meeting Type</label>
+      <div class="field">
+        <label>Calendar Owner</label>
+        <input type="text" data-cal="calendarOwner" value="${c.calendarOwner}" placeholder="Main assigned team member">
+      </div>
+      <div class="field">
+        <label>Booking Event Title</label>
+        <input type="text" data-cal="eventTitle" value="${c.eventTitle}" placeholder="e.g. Discovery Call with Leadly">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Meeting Type</label>
         <select data-cal="meetingType">
           <option value="phone" ${c.meetingType==='phone'?'selected':''}>Phone Call</option>
           <option value="video" ${c.meetingType==='video'?'selected':''}>Video Call</option>
           <option value="in_person" ${c.meetingType==='in_person'?'selected':''}>In Person</option>
+          <option value="whatsapp_call" ${c.meetingType==='whatsapp_call'?'selected':''}>WhatsApp Call</option>
         </select>
       </div>
-      <div class="field"><label>Meeting Location / Link</label><input type="text" data-cal="meetingLocation" value="${c.meetingLocation}" placeholder="Zoom link or address"></div>
+      <div class="field">
+        <label>Meeting Location / Link</label>
+        <input type="text" data-cal="meetingLocation" value="${c.meetingLocation}" placeholder="Zoom link, clinic address, phone number, etc.">
+      </div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-title">Scheduling</div>
+    <div class="card-title">Scheduling Rules</div>
     <div class="field-row three">
-      <div class="field"><label>Slot Duration (min)</label>
+      <div class="field">
+        <label>Slot Duration</label>
         <select data-cal="slotDuration">
-          ${[15,20,30,45,60,90,120].map(v=>`<option value="${v}" ${c.slotDuration==v?'selected':''}>${v} min</option>`).join('')}
+          ${[15,20,30,45,60,90,120].map(v => `<option value="${v}" ${c.slotDuration==v?'selected':''}>${v} min</option>`).join('')}
         </select>
       </div>
-      <div class="field"><label>Slot Interval (min)</label>
+      <div class="field">
+        <label>Slot Interval</label>
         <select data-cal="slotInterval">
-          ${[10,15,20,30,45,60].map(v=>`<option value="${v}" ${c.slotInterval==v?'selected':''}>${v} min</option>`).join('')}
+          ${[10,15,20,30,45,60].map(v => `<option value="${v}" ${c.slotInterval==v?'selected':''}>${v} min</option>`).join('')}
         </select>
       </div>
-      <div class="field"><label>Booking Window (days)</label>
+      <div class="field">
+        <label>Booking Window</label>
         <select data-cal="bookingWindow">
-          ${[7,14,21,30,45,60,90].map(v=>`<option value="${v}" ${c.bookingWindow==v?'selected':''}>${v} days</option>`).join('')}
+          ${[7,14,21,30,45,60,90].map(v => `<option value="${v}" ${c.bookingWindow==v?'selected':''}>${v} days</option>`).join('')}
         </select>
       </div>
     </div>
     <div class="field-row three">
-      <div class="field"><label>Buffer Before (min)</label>
-        <select data-cal="bufferBefore">
-          ${[0,5,10,15,20,30].map(v=>`<option value="${v}" ${c.bufferBefore==v?'selected':''}>${v} min</option>`).join('')}
-        </select>
-      </div>
-      <div class="field"><label>Buffer After (min)</label>
-        <select data-cal="bufferAfter">
-          ${[0,5,10,15,20,30].map(v=>`<option value="${v}" ${c.bufferAfter==v?'selected':''}>${v} min</option>`).join('')}
-        </select>
-      </div>
-      <div class="field"><label>Min Notice (min)</label>
+      <div class="field">
+        <label>Min Notice</label>
         <select data-cal="minNotice">
-          ${[0,30,60,120,240,480,1440].map(v=>`<option value="${v}" ${c.minNotice==v?'selected':''}>${v<60?v+' min':v/60+'h'}</option>`).join('')}
+          ${[0,30,60,120,240,480,1440].map(v => `<option value="${v}" ${c.minNotice==v?'selected':''}>${v < 60 ? v + ' min' : (v/60) + 'h'}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Buffer Before</label>
+        <select data-cal="bufferBefore">
+          ${[0,5,10,15,20,30].map(v => `<option value="${v}" ${c.bufferBefore==v?'selected':''}>${v} min</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Buffer After</label>
+        <select data-cal="bufferAfter">
+          ${[0,5,10,15,20,30].map(v => `<option value="${v}" ${c.bufferAfter==v?'selected':''}>${v} min</option>`).join('')}
         </select>
       </div>
     </div>
-    <div class="field-row">
-      <div class="field"><label>Start Time</label><input type="time" data-cal="startTime" value="${c.startTime}"></div>
-      <div class="field"><label>End Time</label><input type="time" data-cal="endTime" value="${c.endTime}"></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">Availability Days</div>
-    <div class="day-pills">
-      ${dayList.map(d=>`<div class="day-pill ${c.days[d.k]?'on':''}" data-day="${d.k}">${d.l}</div>`).join('')}
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">Confirmation & Options</div>
-    <div class="field-row">
-      <div class="field"><label>Confirmation Type</label>
+    <div class="field-row three">
+      <div class="field">
+        <label>Max Appointments / Day</label>
+        <input type="number" min="1" data-cal="maxPerDay" value="${c.maxPerDay}" placeholder="Optional cap">
+      </div>
+      <div class="field">
+        <label>Lead Routing Rule</label>
+        <select data-cal="leadSourceRouting">
+          <option value="all_to_primary" ${c.leadSourceRouting==='all_to_primary'?'selected':''}>All leads to primary calendar</option>
+          <option value="round_robin" ${c.leadSourceRouting==='round_robin'?'selected':''}>Round robin across users</option>
+          <option value="source_based" ${c.leadSourceRouting==='source_based'?'selected':''}>Route by lead source</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Confirmation Mode</label>
         <select data-cal="confirmType">
-          <option value="auto" ${c.confirmType==='auto'?'selected':''}>Auto Confirm</option>
-          <option value="manual" ${c.confirmType==='manual'?'selected':''}>Manual Confirm</option>
+          <option value="auto" ${c.confirmType==='auto'?'selected':''}>Auto confirm</option>
+          <option value="manual" ${c.confirmType==='manual'?'selected':''}>Manual approval required</option>
         </select>
       </div>
     </div>
-    <div class="toggle-row">
-      <div><div class="toggle-label">Allow Reschedule</div><div class="toggle-sub">Clients can reschedule their booking</div></div>
-      <label class="toggle"><input type="checkbox" data-cal-toggle="allowReschedule" ${c.allowReschedule?'checked':''}><span class="toggle-slider"></span></label>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Weekly Availability</div>
+    <div class="helper">Turn days on or off, then define the start and end time for each day.</div>
+    <div class="day-pills">
+      ${dayList.map(d => `<div class="day-pill ${c.days[d.k]?'on':''}" data-day="${d.k}">${d.l}</div>`).join('')}
     </div>
-    <div class="toggle-row">
-      <div><div class="toggle-label">Allow Cancellation</div><div class="toggle-sub">Clients can cancel their booking</div></div>
-      <label class="toggle"><input type="checkbox" data-cal-toggle="allowCancel" ${c.allowCancel?'checked':''}><span class="toggle-slider"></span></label>
-    </div>
-    <div class="toggle-row">
-      <div><div class="toggle-label">Require Payment</div><div class="toggle-sub">Collect payment before confirming</div></div>
-      <label class="toggle"><input type="checkbox" data-cal-toggle="requirePayment" ${c.requirePayment?'checked':''}><span class="toggle-slider"></span></label>
+
+    <div style="margin-top:18px">
+      ${[
+        ['mon','Monday','mondayStart','mondayEnd'],
+        ['tue','Tuesday','tuesdayStart','tuesdayEnd'],
+        ['wed','Wednesday','wednesdayStart','wednesdayEnd'],
+        ['thu','Thursday','thursdayStart','thursdayEnd'],
+        ['fri','Friday','fridayStart','fridayEnd'],
+        ['sat','Saturday','saturdayStart','saturdayEnd'],
+        ['sun','Sunday','sundayStart','sundayEnd']
+      ].map(([key, label, startKey, endKey]) => `
+        <div class="field-row" style="align-items:end; opacity:${c.days[key] ? 1 : 0.45}">
+          <div class="field">
+            <label>${label} Start</label>
+            <input type="time" data-cal="${startKey}" value="${c[startKey]}">
+          </div>
+          <div class="field">
+            <label>${label} End</label>
+            <input type="time" data-cal="${endKey}" value="${c[endKey]}">
+          </div>
+        </div>
+      `).join('')}
     </div>
   </div>
+
+  <div class="card">
+    <div class="card-title">Booking Form Fields</div>
+    <div class="mini-grid">
+      <div class="mini-card">
+        <div class="mini-card-title">Contact Details</div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Collect Full Name</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="collectName" ${c.collectName?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Collect Email</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="collectEmail" ${c.collectEmail?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Collect Phone</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="collectPhone" ${c.collectPhone?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-title">Lead Qualification</div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Collect Reason for Enquiry</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="collectReason" ${c.collectReason?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Collect Extra Notes</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="collectNotes" ${c.collectNotes?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-title">Booking Controls</div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Allow Reschedule</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="allowReschedule" ${c.allowReschedule?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Allow Cancellation</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="allowCancel" ${c.allowCancel?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Require Payment</div></div>
+          <label class="toggle"><input type="checkbox" data-cal-toggle="requirePayment" ${c.requirePayment?'checked':''}><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Policies & Notes</div>
+    <div class="field-row single">
+      <div class="field">
+        <label>Reschedule Policy</label>
+        <textarea data-cal="reschedulePolicy" placeholder="e.g. Rescheduling allowed up to 12 hours before appointment.">${c.reschedulePolicy}</textarea>
+      </div>
+    </div>
+    <div class="field-row single">
+      <div class="field">
+        <label>Cancellation Policy</label>
+        <textarea data-cal="cancellationPolicy" placeholder="e.g. Cancellations allowed up to 12 hours before appointment.">${c.cancellationPolicy}</textarea>
+      </div>
+    </div>
+    <div class="field-row single">
+      <div class="field">
+        <label>Pre-Appointment Instructions</label>
+        <textarea data-cal="preAppointmentInstructions" placeholder="What should the lead prepare or know before the call?">${c.preAppointmentInstructions}</textarea>
+      </div>
+    </div>
+    <div class="field-row single">
+      <div class="field">
+        <label>Internal Notes</label>
+        <textarea data-cal="internalNotes" placeholder="Anything the implementation team should take note of.">${c.internalNotes}</textarea>
+      </div>
+    </div>
+  </div>
+
   <div class="section-footer">
-    <button class="btn btn-primary" onclick="nav(1)">Next: Automations →</button>
+    <button class="btn btn-primary" onclick="nav(1)">Next: Automation Messaging →</button>
   </div>`;
 }
 
 function renderAutomations() {
-  const tabs = ['Organic Comments','Organic DMs','WhatsApp Replies','Booked Appt Flow','Follow-Up Seq','FAQ Bot'];
-  const content = [renderOrganic('organicComment','Organic Comment Reply','Reply sent when someone comments on your posts'),renderOrganic('organicDM','Organic DM Reply','First reply sent to cold DMs'),renderOrganic('whatsapp','WhatsApp Reply','Auto-reply messages for WhatsApp'),renderBookedAppt(),renderFollowUp(),renderFAQ()];
+  const tabs = [
+    'IG Comment',
+    'FB Comment',
+    'TT Comment',
+    'Organic DMs',
+    'WhatsApp Replies',
+    'Booked Appt Flow',
+    'Follow-Up Seq',
+    'FAQ Bot'
+  ];
+
+  const content = [
+    renderOrganic('igComment', 'Instagram Comment Reply', 'Reply used when someone comments on an Instagram post or ad and you want to push them into the booking journey.'),
+    renderOrganic('fbComment', 'Facebook Comment Reply', 'Reply used when someone comments on a Facebook post or ad before being routed into DMs / WhatsApp / booking.'),
+    renderOrganic('ttComment', 'TikTok Comment Reply', 'Reply used when someone comments on TikTok content and should be directed to the next conversion step.'),
+    renderOrganic('organicDM', 'Organic DM Reply', 'First replies used for inbound DMs from social platforms.'),
+    renderOrganic('whatsapp', 'WhatsApp Reply', 'Auto-replies used once the lead is inside WhatsApp.'),
+    renderBookedAppt(),
+    renderFollowUp(),
+    renderFAQ()
+  ];
+
   return `
   <div class="section-header">
-    <div class="section-title">Automation Messages</div>
-    <div class="section-sub">Configure all automated replies and message sequences.</div>
+    <div class="section-title">Automation Messaging</div>
+    <div class="section-sub">Split your messages by channel so each touchpoint can be tailored properly.</div>
   </div>
-  <div class="tabs">${tabs.map((t,i)=>`<div class="tab ${autoTab===i?'active':''}" onclick="autoTab=${i};render()">${t}</div>`).join('')}</div>
+  <div class="tabs">${tabs.map((t, i) => `<div class="tab ${autoTab===i?'active':''}" onclick="autoTab=${i};render()">${t}</div>`).join('')}</div>
   ${content[autoTab]}
   <div class="section-footer">
-    <button class="btn btn-secondary" onclick="nav(0)">← Calendar</button>
-    <button class="btn btn-primary" onclick="nav(2)">Next: Integrations →</button>
+    <button class="btn btn-secondary" onclick="nav(0)">← Calendar Setup</button>
+    <button class="btn btn-primary" onclick="showReview()">Review & Finish →</button>
   </div>`;
 }
 
 function renderOrganic(key, title, desc) {
-  return `<div class="card"><div class="card-title">${title}</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px">${desc}</p>
-  ${S.messages[key].map((v,i)=>`
-  <div class="msg-box">
-    <div class="msg-box-header"><span class="msg-box-label">Variant ${i+1}</span><span class="char-count" id="cc-msg-${key}-${i}">${v.length} chars</span></div>
-    <textarea id="msg-${key}-${i}" data-msg="${key}:${i}" placeholder="Enter message variant ${i+1}…">${v}</textarea>
-  </div>`).join('')}
+  return `
+  <div class="card">
+    <div class="card-title">${title}</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">${desc}</p>
+    ${S.messages[key].map((v, i) => `
+      <div class="msg-box">
+        <div class="msg-box-header">
+          <span class="msg-box-label">Variant ${i+1}</span>
+          <span class="char-count" id="cc-msg-${key}-${i}">${v.length} chars</span>
+        </div>
+        <textarea id="msg-${key}-${i}" data-msg="${key}:${i}" placeholder="Enter ${title.toLowerCase()} variant ${i+1}…">${v}</textarea>
+      </div>
+    `).join('')}
   </div>`;
 }
 
 function renderBookedAppt() {
   const b = S.messages.bookedAppt;
   const fields = [
-    {k:'confirmation',l:'Booking Confirmation',p:'Sent immediately after booking is confirmed…'},
-    {k:'reminder24',l:'24-Hour Reminder',p:'Sent 24 hours before the appointment…'},
-    {k:'reminder1',l:'1-Hour Reminder',p:'Sent 1 hour before the appointment…'},
-    {k:'followUp',l:'Post-Appointment Follow-Up',p:'Sent after the appointment ends…'},
-    {k:'noShow',l:'No-Show Message',p:'Sent if the client misses the appointment…'}
+    {k:'confirmation', l:'Booking Confirmation', p:'Sent immediately after a booking is confirmed…'},
+    {k:'reminder24', l:'24-Hour Reminder', p:'Sent 24 hours before the appointment…'},
+    {k:'reminder1', l:'1-Hour Reminder', p:'Sent 1 hour before the appointment…'},
+    {k:'followUp', l:'Post-Appointment Follow-Up', p:'Sent after the appointment ends…'},
+    {k:'noShow', l:'No-Show Message', p:'Sent when a lead misses the appointment…'}
   ];
-  return `<div class="card"><div class="card-title">Booked Appointment Flow</div>
-  ${fields.map(f=>`
-  <div class="msg-box">
-    <div class="msg-box-header"><span class="msg-box-label">${f.l}</span><span class="char-count" id="cc-msg-ba-${f.k}">${(b[f.k]||'').length} chars</span></div>
-    <textarea id="msg-ba-${f.k}" data-msg="${f.k}" placeholder="${f.p}">${b[f.k]||''}</textarea>
-  </div>`).join('')}
+
+  return `
+  <div class="card">
+    <div class="card-title">Booked Appointment Flow</div>
+    ${fields.map(f => `
+      <div class="msg-box">
+        <div class="msg-box-header">
+          <span class="msg-box-label">${f.l}</span>
+          <span class="char-count" id="cc-msg-ba-${f.k}">${(b[f.k] || '').length} chars</span>
+        </div>
+        <textarea id="msg-ba-${f.k}" data-msg="${f.k}" placeholder="${f.p}">${b[f.k] || ''}</textarea>
+      </div>
+    `).join('')}
   </div>`;
 }
 
 function renderFollowUp() {
-  return `<div class="card"><div class="card-title">Follow-Up Sequence</div>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Messages sent in sequence for leads who haven't converted.</p>
-  ${S.messages.followUp.map((v,i)=>`
-  <div class="msg-box">
-    <div class="msg-box-header"><span class="msg-box-label">Day ${[1,3,7,14,30][i]} Follow-Up</span><span class="char-count" id="cc-msg-fu-${i}">${v.length} chars</span></div>
-    <textarea id="msg-fu-${i}" data-msg="followUp:${i}" placeholder="Day ${[1,3,7,14,30][i]} follow-up message…">${v}</textarea>
-  </div>`).join('')}
+  return `
+  <div class="card">
+    <div class="card-title">Follow-Up Sequence</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Messages sent over time to leads who did not book or stopped replying.</p>
+    ${S.messages.followUp.map((v, i) => `
+      <div class="msg-box">
+        <div class="msg-box-header">
+          <span class="msg-box-label">Day ${[1,3,7,14,30][i]} Follow-Up</span>
+          <span class="char-count" id="cc-msg-fu-${i}">${v.length} chars</span>
+        </div>
+        <textarea id="msg-fu-${i}" data-msg="followUp:${i}" placeholder="Day ${[1,3,7,14,30][i]} follow-up message…">${v}</textarea>
+      </div>
+    `).join('')}
   </div>`;
 }
 
 function renderFAQ() {
-  return `<div class="card"><div class="card-title">FAQ Bot (30 Q&A Pairs)</div>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Questions your bot will automatically answer.</p>
-  ${S.messages.faqBot.map((pair,i)=>`
-  <div class="faq-item">
-    <div class="faq-num">Q${i+1}</div>
-    <input type="text" data-faq-q="${i}" value="${pair.q}" placeholder="Question…">
-    <textarea data-faq-a="${i}" placeholder="Answer…">${pair.a}</textarea>
-  </div>`).join('')}
-  </div>`;
-}
-
-function renderIntegrations() {
   return `
-  <div class="section-header">
-    <div class="section-title">Integrations</div>
-    <div class="section-sub">Enter your API credentials for each platform.</div>
-  </div>
-  <div class="int-card">
-    <div class="int-card-header">
-      <span class="int-icon">🎵</span>
-      <div><div class="int-title">TikTok</div><div class="int-desc">TikTok for Business API credentials</div></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Client Key</label><input type="text" data-int="tiktok:clientKey" value="${S.int.tiktok.clientKey}" placeholder="TikTok client key"></div>
-      <div class="field"><label>Client Secret</label>
-        <div class="pw-wrap">
-          <input type="password" id="tt-secret" data-int="tiktok:clientSecret" value="${S.int.tiktok.clientSecret}" placeholder="TikTok client secret">
-          <button class="pw-toggle" onclick="togglePw('tt-secret')">👁</button>
-        </div>
+  <div class="card">
+    <div class="card-title">FAQ Bot (30 Q&A Pairs)</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Questions and answers your bot can use before redirecting people back to booking.</p>
+    ${S.messages.faqBot.map((pair, i) => `
+      <div class="faq-item">
+        <div class="faq-num">Q${i+1}</div>
+        <input type="text" data-faq-q="${i}" value="${pair.q}" placeholder="Question…">
+        <textarea data-faq-a="${i}" placeholder="Answer…">${pair.a}</textarea>
       </div>
-    </div>
-    <div class="field-row single">
-      <div class="field"><label>Access Token</label>
-        <div class="pw-wrap">
-          <input type="password" id="tt-token" data-int="tiktok:accessToken" value="${S.int.tiktok.accessToken}" placeholder="TikTok access token">
-          <button class="pw-toggle" onclick="togglePw('tt-token')">👁</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="int-card">
-    <div class="int-card-header">
-      <span class="int-icon">📘</span>
-      <div><div class="int-title">Meta (Facebook / Instagram)</div><div class="int-desc">Meta Business API credentials</div></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>App ID</label><input type="text" data-int="meta:appId" value="${S.int.meta.appId}" placeholder="Meta App ID"></div>
-      <div class="field"><label>App Secret</label>
-        <div class="pw-wrap">
-          <input type="password" id="meta-secret" data-int="meta:appSecret" value="${S.int.meta.appSecret}" placeholder="Meta App Secret">
-          <button class="pw-toggle" onclick="togglePw('meta-secret')">👁</button>
-        </div>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Page Access Token</label>
-        <div class="pw-wrap">
-          <input type="password" id="meta-token" data-int="meta:pageToken" value="${S.int.meta.pageToken}" placeholder="Page access token">
-          <button class="pw-toggle" onclick="togglePw('meta-token')">👁</button>
-        </div>
-      </div>
-      <div class="field"><label>WABA ID</label><input type="text" data-int="meta:wabaId" value="${S.int.meta.wabaId}" placeholder="WhatsApp Business Account ID"></div>
-    </div>
-  </div>
-  <div class="int-card">
-    <div class="int-card-header">
-      <span class="int-icon">💚</span>
-      <div><div class="int-title">WhatsApp API</div><div class="int-desc">WhatsApp Cloud API credentials</div></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Phone Number ID</label><input type="text" data-int="whatsapp:phoneNumberId" value="${S.int.whatsapp.phoneNumberId}" placeholder="Phone Number ID"></div>
-      <div class="field"><label>API Token</label>
-        <div class="pw-wrap">
-          <input type="password" id="wa-token" data-int="whatsapp:apiToken" value="${S.int.whatsapp.apiToken}" placeholder="WhatsApp API token">
-          <button class="pw-toggle" onclick="togglePw('wa-token')">👁</button>
-        </div>
-      </div>
-    </div>
-    <div class="field-row single">
-      <div class="field"><label>Webhook Secret</label>
-        <div class="pw-wrap">
-          <input type="password" id="wa-webhook" data-int="whatsapp:webhookSecret" value="${S.int.whatsapp.webhookSecret}" placeholder="Webhook verification secret">
-          <button class="pw-toggle" onclick="togglePw('wa-webhook')">👁</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="section-footer">
-    <button class="btn btn-secondary" onclick="nav(1)">← Automations</button>
-    <button class="btn btn-primary" onclick="showReview()">Review & Finish →</button>
+    `).join('')}
   </div>`;
 }
 
-function togglePw(id) {
-  const el = document.getElementById(id);
-  el.type = el.type === 'password' ? 'text' : 'password';
-}function showReview() {
+function showReview() {
   const r = document.getElementById('review-screen');
   r.style.display = 'block';
   r.innerHTML = buildReview();
@@ -864,18 +992,18 @@ function togglePw(id) {
 
 function buildReview() {
   const c = S.cal;
-  const dayNames = {mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'};
-  const activeDays = Object.entries(c.days).filter(([,v])=>v).map(([k])=>dayNames[k]).join(', ') || 'None';
+  const dayNames = { mon:'Monday', tue:'Tuesday', wed:'Wednesday', thu:'Thursday', fri:'Friday', sat:'Saturday', sun:'Sunday' };
+  const activeDays = Object.entries(c.days).filter(([, v]) => v).map(([k]) => dayNames[k]).join(', ') || 'None';
 
   function group(title, rows) {
-    const id = 'rg-'+Math.random().toString(36).slice(2);
+    const id = 'rg-' + Math.random().toString(36).slice(2);
     return `<div class="review-group">
       <div class="review-group-header" onclick="toggleGroup('${id}')">
         <span class="review-group-title">${title}</span>
         <span class="review-group-toggle" id="${id}-tog">Show ▾</span>
       </div>
       <div class="review-group-body" id="${id}">
-        ${rows.map(([k,v])=>`<div class="review-row"><span class="review-key">${k}</span><span class="review-val">${v||'<em style="color:var(--dim)">Not filled</em>'}</span></div>`).join('')}
+        ${rows.map(([k, v]) => `<div class="review-row"><span class="review-key">${k}</span><span class="review-val">${v || '<em style="color:var(--dim)">Not filled</em>'}</span></div>`).join('')}
       </div>
     </div>`;
   }
@@ -883,71 +1011,78 @@ function buildReview() {
   const calRows = [
     ['Calendar Name', c.calName],
     ['Timezone', c.calTimezone],
+    ['Calendar Owner', c.calendarOwner],
+    ['Event Title', c.eventTitle],
     ['Meeting Type', c.meetingType],
-    ['Meeting Location', c.meetingLocation],
-    ['Slot Duration', c.slotDuration+' min'],
-    ['Slot Interval', c.slotInterval+' min'],
-    ['Buffer Before', c.bufferBefore+' min'],
-    ['Buffer After', c.bufferAfter+' min'],
-    ['Booking Window', c.bookingWindow+' days'],
-    ['Min Notice', c.minNotice+' min'],
-    ['Hours', c.startTime+' – '+c.endTime],
+    ['Meeting Location / Link', c.meetingLocation],
+    ['Slot Duration', c.slotDuration + ' min'],
+    ['Slot Interval', c.slotInterval + ' min'],
+    ['Booking Window', c.bookingWindow + ' days'],
+    ['Min Notice', c.minNotice + ' min'],
+    ['Buffer Before', c.bufferBefore + ' min'],
+    ['Buffer After', c.bufferAfter + ' min'],
+    ['Max Appointments / Day', c.maxPerDay],
+    ['Lead Routing Rule', c.leadSourceRouting],
+    ['Confirmation Mode', c.confirmType],
     ['Active Days', activeDays],
-    ['Confirmation', c.confirmType],
-    ['Allow Reschedule', c.allowReschedule?'Yes':'No'],
-    ['Allow Cancel', c.allowCancel?'Yes':'No'],
-    ['Require Payment', c.requirePayment?'Yes':'No'],
+    ['Monday', c.mondayStart + ' – ' + c.mondayEnd],
+    ['Tuesday', c.tuesdayStart + ' – ' + c.tuesdayEnd],
+    ['Wednesday', c.wednesdayStart + ' – ' + c.wednesdayEnd],
+    ['Thursday', c.thursdayStart + ' – ' + c.thursdayEnd],
+    ['Friday', c.fridayStart + ' – ' + c.fridayEnd],
+    ['Saturday', c.saturdayStart + ' – ' + c.saturdayEnd],
+    ['Sunday', c.sundayStart + ' – ' + c.sundayEnd],
+    ['Collect Name', c.collectName ? 'Yes' : 'No'],
+    ['Collect Email', c.collectEmail ? 'Yes' : 'No'],
+    ['Collect Phone', c.collectPhone ? 'Yes' : 'No'],
+    ['Collect Reason', c.collectReason ? 'Yes' : 'No'],
+    ['Collect Notes', c.collectNotes ? 'Yes' : 'No'],
+    ['Allow Reschedule', c.allowReschedule ? 'Yes' : 'No'],
+    ['Allow Cancellation', c.allowCancel ? 'Yes' : 'No'],
+    ['Require Payment', c.requirePayment ? 'Yes' : 'No'],
+    ['Reschedule Policy', c.reschedulePolicy],
+    ['Cancellation Policy', c.cancellationPolicy],
+    ['Pre-Appointment Instructions', c.preAppointmentInstructions],
+    ['Internal Notes', c.internalNotes]
   ];
 
   const msgRows = [
-    ...S.messages.organicComment.map((v,i)=>['Organic Comment V'+(i+1), v]),
-    ...S.messages.organicDM.map((v,i)=>['Organic DM V'+(i+1), v]),
-    ...S.messages.whatsapp.map((v,i)=>['WhatsApp V'+(i+1), v]),
+    ...S.messages.igComment.map((v, i) => ['IG Comment V' + (i+1), v]),
+    ...S.messages.fbComment.map((v, i) => ['FB Comment V' + (i+1), v]),
+    ...S.messages.ttComment.map((v, i) => ['TT Comment V' + (i+1), v]),
+    ...S.messages.organicDM.map((v, i) => ['Organic DM V' + (i+1), v]),
+    ...S.messages.whatsapp.map((v, i) => ['WhatsApp V' + (i+1), v]),
     ['Booking Confirmation', S.messages.bookedAppt.confirmation],
     ['24h Reminder', S.messages.bookedAppt.reminder24],
     ['1h Reminder', S.messages.bookedAppt.reminder1],
     ['Post-Appt Follow-Up', S.messages.bookedAppt.followUp],
     ['No-Show', S.messages.bookedAppt.noShow],
-    ...S.messages.followUp.map((v,i)=>['Follow-Up Day '+[1,3,7,14,30][i], v]),
+    ...S.messages.followUp.map((v, i) => ['Follow-Up Day ' + [1,3,7,14,30][i], v])
   ];
 
-  const faqRows = S.messages.faqBot.filter(p=>p.q||p.a).map((p,i)=>['Q'+(i+1)+': '+p.q, p.a]);
-
-  const intRows = [
-    ['TikTok Client Key', S.int.tiktok.clientKey],
-    ['TikTok Client Secret', S.int.tiktok.clientSecret ? '••••••••' : ''],
-    ['TikTok Access Token', S.int.tiktok.accessToken ? '••••••••' : ''],
-    ['Meta App ID', S.int.meta.appId],
-    ['Meta App Secret', S.int.meta.appSecret ? '••••••••' : ''],
-    ['Meta Page Token', S.int.meta.pageToken ? '••••••••' : ''],
-    ['Meta WABA ID', S.int.meta.wabaId],
-    ['WA Phone Number ID', S.int.whatsapp.phoneNumberId],
-    ['WA API Token', S.int.whatsapp.apiToken ? '••••••••' : ''],
-    ['WA Webhook Secret', S.int.whatsapp.webhookSecret ? '••••••••' : ''],
-  ];
+  const faqRows = S.messages.faqBot.filter(p => p.q || p.a).map((p, i) => ['Q' + (i+1) + ': ' + p.q, p.a]);
 
   return `
     <div class="review-header">
       <div class="review-check">✓</div>
       <h1 class="review-title">Onboarding Summary</h1>
-      <p class="review-sub">Review everything below before your setup session.</p>
+      <p class="review-sub">Review all calendar and messaging details before setup starts.</p>
     </div>
     <div class="review-sections">
       ${group('📅 Calendar Setup', calRows)}
-      ${group('💬 Automation Messages', msgRows)}
+      ${group('💬 Automation Messaging', msgRows)}
       ${faqRows.length ? group('🤖 FAQ Bot', faqRows) : ''}
-      ${group('🔗 Integrations', intRows)}
     </div>
     <div class="review-actions">
       <button class="btn btn-ghost" onclick="closeReview()">← Back to Edit</button>
-      <button class="btn btn-secondary" onclick="copyJSON()">Copy JSON</button>
+      <button class="btn btn-secondary" onclick="copyJSON(event)">Copy JSON</button>
       <button class="btn btn-primary" onclick="submitAll()">Submit Onboarding ✓</button>
     </div>`;
 }
 
 function toggleGroup(id) {
   const body = document.getElementById(id);
-  const tog = document.getElementById(id+'-tog');
+  const tog = document.getElementById(id + '-tog');
   const open = body.classList.toggle('open');
   tog.textContent = open ? 'Hide ▴' : 'Show ▾';
 }
@@ -956,12 +1091,13 @@ function closeReview() {
   document.getElementById('review-screen').style.display = 'none';
 }
 
-function copyJSON() {
+function copyJSON(e) {
   const data = JSON.stringify(S, null, 2);
-  navigator.clipboard.writeText(data).then(()=>{
-    const btn = event.target;
+  navigator.clipboard.writeText(data).then(() => {
+    const btn = e.target;
+    const original = btn.textContent;
     btn.textContent = 'Copied!';
-    setTimeout(()=>btn.textContent='Copy JSON', 2000);
+    setTimeout(() => btn.textContent = original, 1800);
   });
 }
 
@@ -969,10 +1105,8 @@ function submitAll() {
   alert('Onboarding complete! Your data has been collected.');
 }
 
-// Init
 render();
 updateProgress();
 </script>
 </body>
 </html>
-
