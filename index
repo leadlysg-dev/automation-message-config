@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leadly CRM – Automation Message Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #181818;
+    --card: #1f1f1f;
+    --border: #2a2a2a;
+    --orange: #FF6B2B;
+    --orange-glow: rgba(255,107,43,0.15);
+    --orange-soft: #ff8c5a;
+    --text: #f0ede8;
+    --muted: #888;
+    --green: #3ecf8e;
+    --tag-bg: #2a1a0f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+    background: rgba(15,15,15,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-dot {
+    width: 28px; height: 28px;
+    background: var(--orange);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 13px;
+    color: white;
+  }
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: -0.5px;
+  }
+  .logo-sub { color: var(--muted); font-size: 12px; margin-top: 1px; }
+  .header-right { display: flex; gap: 10px; align-items: center; }
+  .save-btn {
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .save-btn:hover { background: var(--orange-soft); transform: translateY(-1px); }
+  .export-btn {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .export-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 65px);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 65px;
+    height: calc(100vh - 65px);
+    overflow-y: auto;
+  }
+  .sidebar-section-label {
+    padding: 0 20px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--card); color: var(--text); }
+  .nav-item.active { 
+    border-left-color: var(--orange); 
+    background: var(--orange-glow); 
+    color: var(--text);
+  }
+  .nav-icon {
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    display: grid; place-items: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+  .sidebar-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+  /* Main content */
+  .main { padding: 32px 40px; overflow-y: auto; }
+  
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header { margin-bottom: 28px; }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .section-desc { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+  .orange-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--tag-bg);
+    border: 1px solid rgba(255,107,43,0.3);
+    color: var(--orange-soft);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .orange-badge::before { content: '●'; font-size: 8px; }
+
+  /* Message Cards */
+  .message-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .message-card:hover { border-color: #3a3a3a; }
+  .message-card.orange-outline { border-left: 3px solid var(--orange); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .card-subtitle { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  
+  .channel-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .channel-tag {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-wa { background: rgba(37,211,102,0.15); color: #25D366; }
+  .tag-ig { background: rgba(225,48,108,0.15); color: #E1306C; }
+  .tag-fb { background: rgba(24,119,242,0.15); color: #1877F2; }
+  .tag-tiktok { background: rgba(255,255,255,0.08); color: #ddd; }
+
+  /* Inputs */
+  .input-group { margin-bottom: 14px; }
+  .input-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .input-label .required { color: var(--orange); }
+  textarea, input[type="text"], select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  textarea { min-height: 80px; line-height: 1.5; }
+  textarea:focus, input[type="text"]:focus, select:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-glow);
+  }
+  select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+  .char-count { text-align: right; font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Variables helper */
+  .variable-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .var-chip {
+    background: #1a2030;
+    border: 1px solid #2a3545;
+    color: #7eb8f7;
+    padding: 3px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .var-chip:hover { background: #253045; border-color: #7eb8f7; }
+  .var-hint { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+
+  /* Button groups */
+  .wa-buttons-container { }
+  .wa-button-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .wa-button-row input { margin-bottom: 0; }
+  .remove-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    display: grid; place-items: center;
+  }
+  .remove-btn:hover { border-color: #e55; color: #e55; }
+  .add-btn {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    padding: 7px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s;
+    margin-top: 4px;
+  }
+  .add-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* Grid for timing cards */
+  .timing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 900px) { .timing-grid { grid-template-columns: 1fr; } }
+
+  .timing-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    border-top: 3px solid var(--orange);
+  }
+  .timing-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: var(--orange-soft);
+    margin-bottom: 4px;
+  }
+  .timing-desc { color: var(--muted); font-size: 11px; margin-bottom: 14px; }
+
+  /* Reminder card */
+  .reminder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .reminder-grid { grid-template-columns: 1fr; } }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--green);
+    color: #0a2518;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 999;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Progress indicator */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--orange-soft));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .section-divider {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    margin: 24px 0 16px;
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-dot">LC</div>
+    <div>
+      <div class="logo-text">Leadly CRM</div>
+      <div class="logo-sub">Automation Message Builder</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="export-btn" onclick="exportConfig()">⬇ Export JSON</button>
+    <button class="save-btn" onclick="saveAll()">Save All Changes</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-section-label">Organic Replies</div>
+    <div class="nav-item active" onclick="showSection('comments')">
+      <span class="nav-dot"></span> Comment Auto-Replies
+    </div>
+    <div class="nav-item" onclick="showSection('dms')">
+      <span class="nav-dot"></span> DM Auto-Replies
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section-label">WhatsApp Bot</div>
+    <div class="nav-item" onclick="showSection('wa-initial')">
+      <span class="nav-dot"></span> Initial WA Message
+    </div>
+    <div class="nav-item" onclick="showSection('wa-faqs')">
+      <span class="nav-dot"></span> FAQ Responses
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section-label">Booking Flow</div>
+    <div class="nav-item" onclick="showSection('booking-push')">
+      <span class="nav-dot"></span> Booking Link Message
+    </div>
+    <div class="nav-item" onclick="showSection('reminders')">
+      <span class="nav-dot"></span> Appointment Reminders
+    </div>
+    <div class="nav-item" onclick="showSection('instructions')">
+      <span class="nav-dot"></span> Appt. Instructions
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section-label">Re-Engagement</div>
+    <div class="nav-item" onclick="showSection('followups')">
+      <span class="nav-dot"></span> Follow-Up Sequence
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+    
+    <!-- COMMENT REPLIES -->
+    <section id="comments" class="section active">
+      <div class="section-header">
+        <div class="orange-badge">Automated · No links allowed</div>
+        <div class="section-title">Comment Auto-Replies</div>
+        <div class="section-desc">These messages are sent automatically when someone comments on your posts. Keep them brief and inviting — no links permitted by platform rules.</div>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="card-header">
+          <div>
+            <div class="card-title">TikTok Comment Reply</div>
+            <div class="channel-tags"><span class="channel-tag tag-tiktok">TikTok</span></div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Reply Message <span class="required">*</span></label>
+          <textarea id="tiktok-comment" placeholder="E.g. Hey! Thanks for reaching out 🙌 Drop us a DM and we'll help you find your perfect home 🏠" oninput="updateCount(this, 'tiktok-comment-count')">Hey! Thanks for reaching out 🙌 Drop us a DM and we'll walk you through everything — no pressure at all 🏠</textarea>
+          <div class="char-count"><span id="tiktok-comment-count">92</span> chars</div>
+        </div>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Instagram Comment Reply</div>
+            <div class="channel-tags"><span class="channel-tag tag-ig">Instagram</span></div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Reply Message <span class="required">*</span></label>
+          <textarea id="ig-comment" placeholder="E.g. So glad you're interested! Send us a DM and let's chat ✨" oninput="updateCount(this, 'ig-comment-count')">So glad you're interested! Send us a DM and let's get you started on your home journey ✨</textarea>
+          <div class="char-count"><span id="ig-comment-count">89</span> chars</div>
+        </div>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Facebook Comment Reply</div>
+            <div class="channel-tags"><span class="channel-tag tag-fb">Facebook</span></div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Reply Message <span class="required">*</span></label>
+          <textarea id="fb-comment" placeholder="E.g. Thanks for commenting! Message us directly and we'll answer all your questions 🏡" oninput="updateCount(this, 'fb-comment-count')">Thanks for commenting! Send us a message and our team will be happy to help you find your perfect home 🏡</textarea>
+          <div class="char-count"><span id="fb-comment-count">104</span> chars</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DM REPLIES -->
+    <section id="dms" class="section">
+      <div class="section-header">
+        <div class="orange-badge">Automated · Triggers booking push</div>
+        <div class="section-title">DM Auto-Replies</div>
+        <div class="section-desc">Sent when someone DMs your social accounts. These are designed to qualify the lead and route them toward WhatsApp or the booking link.</div>
+      </div>
+
+      <div class="var-hint">💡 Click a variable to copy it, then paste into your message:</div>
+      <div class="variable-chips">
+        <span class="var-chip" onclick="copyVar(this)">{{first_name}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{booking_link}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{agent_name}}</span>
+      </div>
+      <br>
+
+      <div class="message-card orange-outline">
+        <div class="card-title" style="margin-bottom:14px">Instagram DM Auto-Reply</div>
+        <div class="input-group">
+          <label class="input-label">Message <span class="required">*</span></label>
+          <textarea id="ig-dm" oninput="updateCount(this, 'ig-dm-count')">Hey {{first_name}}! 👋 Thanks for reaching out to HomeUp.
+
+We'd love to help you find your dream home. To get started, you can book a quick call with one of our agents here: {{booking_link}}
+
+Or just reply with any questions — we're happy to chat! 🏠</textarea>
+          <div class="char-count"><span id="ig-dm-count">240</span> chars</div>
+        </div>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="card-title" style="margin-bottom:14px">Facebook Messenger Auto-Reply</div>
+        <div class="input-group">
+          <label class="input-label">Message <span class="required">*</span></label>
+          <textarea id="fb-dm" oninput="updateCount(this, 'fb-dm-count')">Hi {{first_name}}! Thanks for messaging HomeUp 🏡
+
+We're here to help you every step of the way. Book a free consultation with our team here: {{booking_link}}
+
+Have questions first? Just ask — we respond fast! 💬</textarea>
+          <div class="char-count"><span id="fb-dm-count">220</span> chars</div>
+        </div>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="card-title" style="margin-bottom:14px">TikTok DM Auto-Reply</div>
+        <div class="input-group">
+          <label class="input-label">Message <span class="required">*</span></label>
+          <textarea id="tiktok-dm" oninput="updateCount(this, 'tiktok-dm-count')">Hey {{first_name}}! Thanks for the DM 🙌 
+
+We help people find and secure their dream homes. Book a quick call here: {{booking_link}} — takes 2 mins and it's totally free 🏠✨</textarea>
+          <div class="char-count"><span id="tiktok-dm-count">185</span> chars</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WA INITIAL -->
+    <section id="wa-initial" class="section">
+      <div class="section-header">
+        <div class="orange-badge">Automated · WhatsApp · Buttons Allowed</div>
+        <div class="section-title">Initial WhatsApp Message</div>
+        <div class="section-desc">The first message sent when a lead lands in WhatsApp — whether from organic DMs or paid ads. Sets the tone and routes them to booking.</div>
+      </div>
+
+      <div class="var-hint">💡 Available variables:</div>
+      <div class="variable-chips" style="margin-bottom:16px">
+        <span class="var-chip" onclick="copyVar(this)">{{first_name}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{source}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{booking_link}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{agent_name}}</span>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="input-group">
+          <label class="input-label">WhatsApp Message Body <span class="required">*</span></label>
+          <textarea id="wa-initial-msg" style="min-height:120px" oninput="updateCount(this, 'wa-initial-count')">Hi {{first_name}}! 👋 Welcome to HomeUp.
+
+We're here to help you find your perfect home — whether you're buying, renting, or just exploring your options.
+
+Our team is ready to guide you. Would you like to book a free consultation or do you have some questions first?</textarea>
+          <div class="char-count"><span id="wa-initial-count">270</span> chars</div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Quick Reply Buttons (max 3)</label>
+          <div class="wa-buttons-container" id="wa-initial-buttons">
+            <div class="wa-button-row">
+              <input type="text" placeholder="Button label, e.g. Book a Call 📅" value="Book a Call 📅">
+              <button class="remove-btn" onclick="removeButton(this)">×</button>
+            </div>
+            <div class="wa-button-row">
+              <input type="text" placeholder="Button label, e.g. I Have Questions 💬" value="I Have Questions 💬">
+              <button class="remove-btn" onclick="removeButton(this)">×</button>
+            </div>
+          </div>
+          <button class="add-btn" onclick="addButton('wa-initial-buttons')">+ Add Button</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- WA FAQS -->
+    <section id="wa-faqs" class="section">
+      <div class="section-header">
+        <div class="orange-badge">AI Chatbot · WhatsApp</div>
+        <div class="section-title">FAQ Responses</div>
+        <div class="section-desc">Configure answers for common questions your leads ask. The bot handles these automatically and re-routes back to the booking calendar.</div>
+      </div>
+
+      <div id="faq-list">
+        <div class="message-card orange-outline" data-faq>
+          <div class="card-header">
+            <div style="flex:1">
+              <div class="input-group">
+                <label class="input-label">Question / Trigger Phrase <span class="required">*</span></label>
+                <input type="text" placeholder="E.g. How much does it cost?" value="How much does it cost?">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Bot Response <span class="required">*</span></label>
+                <textarea>Our services are completely free for buyers and renters! Agents are compensated by the seller/landlord. 
+
+Want to learn more? Book a free call with our team 👇</textarea>
+              </div>
+            </div>
+            <button class="remove-btn" style="margin-top:0; flex-shrink:0" onclick="removeFAQ(this)">×</button>
+          </div>
+        </div>
+
+        <div class="message-card orange-outline" data-faq>
+          <div class="card-header">
+            <div style="flex:1">
+              <div class="input-group">
+                <label class="input-label">Question / Trigger Phrase <span class="required">*</span></label>
+                <input type="text" placeholder="E.g. What areas do you cover?" value="What areas do you cover?">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Bot Response <span class="required">*</span></label>
+                <textarea>We currently operate across [insert areas here]. Our agents are local experts who know every neighbourhood inside out 🏘️
+
+Curious if we cover your area? Book a quick call to find out!</textarea>
+              </div>
+            </div>
+            <button class="remove-btn" style="margin-top:0; flex-shrink:0" onclick="removeFAQ(this)">×</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="add-btn" style="width:100%; padding:12px" onclick="addFAQ()">+ Add New FAQ</button>
+    </section>
+
+    <!-- BOOKING PUSH -->
+    <section id="booking-push" class="section">
+      <div class="section-header">
+        <div class="orange-badge">Automated · Sent to all leads</div>
+        <div class="section-title">Booking Link Message</div>
+        <div class="section-desc">Sent after initial contact to push leads toward booking an appointment. This is the key conversion message.</div>
+      </div>
+
+      <div class="var-hint">💡 Available variables:</div>
+      <div class="variable-chips" style="margin-bottom:16px">
+        <span class="var-chip" onclick="copyVar(this)">{{first_name}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{booking_link}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{agent_name}}</span>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="input-group">
+          <label class="input-label">Message <span class="required">*</span></label>
+          <textarea id="booking-msg" style="min-height:130px" oninput="updateCount(this, 'booking-msg-count')">Hi {{first_name}}! 
+
+I'd love to set up a quick call so we can understand what you're looking for and match you with the right properties.
+
+It only takes 15 minutes and there's zero obligation 😊
+
+👉 Book your free consultation here: {{booking_link}}
+
+— {{agent_name}}, HomeUp Team</textarea>
+          <div class="char-count"><span id="booking-msg-count">310</span> chars</div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Quick Reply Buttons</label>
+          <div class="wa-buttons-container" id="booking-buttons">
+            <div class="wa-button-row">
+              <input type="text" value="Book Now 📅">
+              <button class="remove-btn" onclick="removeButton(this)">×</button>
+            </div>
+            <div class="wa-button-row">
+              <input type="text" value="Tell me more ℹ️">
+              <button class="remove-btn" onclick="removeButton(this)">×</button>
+            </div>
+          </div>
+          <button class="add-btn" onclick="addButton('booking-buttons')">+ Add Button</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REMINDERS -->
+    <section id="reminders" class="section">
+      <div class="section-header">
+        <div class="orange-badge">Automated · Post-booking</div>
+        <div class="section-title">Appointment Reminders</div>
+        <div class="section-desc">Sent automatically after a lead books an appointment to reduce no-shows.</div>
+      </div>
+
+      <div class="var-hint">💡 Available variables:</div>
+      <div class="variable-chips" style="margin-bottom:20px">
+        <span class="var-chip" onclick="copyVar(this)">{{first_name}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{appt_date}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{appt_time}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{agent_name}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{meeting_link}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{reschedule_link}}</span>
+      </div>
+
+      <div class="reminder-grid">
+        <div class="message-card orange-outline">
+          <div class="timing-label">📅 Booking Confirmation</div>
+          <div class="timing-desc">Sent immediately after booking</div>
+          <div class="input-group">
+            <label class="input-label">Message</label>
+            <textarea id="reminder-confirm" style="min-height:110px">You're booked, {{first_name}}! 🎉
+
+Your consultation with {{agent_name}} is confirmed for:
+📆 {{appt_date}} at {{appt_time}}
+
+We'll send you a reminder closer to the time. See you soon! 🏠</textarea>
+          </div>
+        </div>
+
+        <div class="message-card orange-outline">
+          <div class="timing-label">⏰ 24-Hour Reminder</div>
+          <div class="timing-desc">Sent 24 hours before appointment</div>
+          <div class="input-group">
+            <label class="input-label">Message</label>
+            <textarea id="reminder-24h" style="min-height:110px">Hi {{first_name}}! Just a reminder that your HomeUp consultation is tomorrow 📆
+
+🕐 {{appt_time}} with {{agent_name}}
+
+Need to reschedule? No worries: {{reschedule_link}}</textarea>
+          </div>
+        </div>
+
+        <div class="message-card orange-outline">
+          <div class="timing-label">🔔 1-Hour Reminder</div>
+          <div class="timing-desc">Sent 1 hour before appointment</div>
+          <div class="input-group">
+            <label class="input-label">Message</label>
+            <textarea id="reminder-1h" style="min-height:110px">Hey {{first_name}}! Your call with {{agent_name}} is in 1 hour ⏱
+
+Join here: {{meeting_link}}
+
+See you soon! 👋</textarea>
+          </div>
+        </div>
+
+        <div class="message-card orange-outline">
+          <div class="timing-label">💌 Post-Appointment Follow-Up</div>
+          <div class="timing-desc">Sent 2 hours after appointment</div>
+          <div class="input-group">
+            <label class="input-label">Message</label>
+            <textarea id="reminder-post" style="min-height:110px">Hi {{first_name}}! It was great chatting with you today 😊
+
+We'll be sending over some options based on what we discussed. In the meantime, feel free to reply here with any questions!
+
+— {{agent_name}}, HomeUp</textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSTRUCTIONS -->
+    <section id="instructions" class="section">
+      <div class="section-header">
+        <div class="orange-badge">Automated · Post-booking</div>
+        <div class="section-title">Appointment Instructions</div>
+        <div class="section-desc">Prep notes and instructions sent to leads after they book — what to expect, what to bring, and how to join.</div>
+      </div>
+
+      <div class="message-card orange-outline">
+        <div class="input-group">
+          <label class="input-label">Instructions Message</label>
+          <textarea id="appt-instructions" style="min-height:180px">Hi {{first_name}}! Here's what to expect from your HomeUp consultation 📋
+
+✅ What we'll cover:
+— Your budget & timeline
+— Property preferences & must-haves
+— Current market overview
+— Next steps
+
+📎 Good to have ready:
+— An idea of the areas you're interested in
+— Any questions you'd like answered
+
+Your call is with {{agent_name}} on {{appt_date}} at {{appt_time}}.
+📞 Join here: {{meeting_link}}
+
+We're excited to help you find the one! 🏡</textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOLLOW-UPS -->
+    <section id="followups" class="section">
+      <div class="section-header">
+        <div class="orange-badge">Automated · No-Reply Re-engagement</div>
+        <div class="section-title">Follow-Up Sequence</div>
+        <div class="section-desc">Sent to leads who haven't replied. Timed at 7, 30, and 90 days after initial contact.</div>
+      </div>
+
+      <div class="var-hint">💡 Available variables:</div>
+      <div class="variable-chips" style="margin-bottom:20px">
+        <span class="var-chip" onclick="copyVar(this)">{{first_name}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{booking_link}}</span>
+        <span class="var-chip" onclick="copyVar(this)">{{agent_name}}</span>
+      </div>
+
+      <div class="timing-grid">
+        <div class="timing-card">
+          <div class="timing-label">Day 7</div>
+          <div class="timing-desc">First re-engagement. Keep it warm and low-pressure.</div>
+          <div class="input-group">
+            <label class="input-label">Message</label>
+            <textarea style="min-height:140px">Hey {{first_name}}! 👋
+
+Just checking in — we noticed you hadn't had a chance to book yet.
+
+No rush at all, but when you're ready, we'd love to help you explore your options 🏠
+
+Book here whenever suits: {{booking_link}}
+
+— {{agent_name}}</textarea>
+          </div>
+        </div>
+
+        <div class="timing-card">
+          <div class="timing-label">Day 30</div>
+          <div class="timing-desc">Add value. Reference market or new listings.</div>
+          <div class="input-group">
+            <label class="input-label">Message</label>
+            <textarea style="min-height:140px">Hi {{first_name}}! It's {{agent_name}} from HomeUp 👋
+
+The market has been really active lately and some great properties have come up. Thought you might be interested!
+
+If you'd like a personalised shortlist, just book a quick call here: {{booking_link}}
+
+Talk soon 🏡</textarea>
+          </div>
+        </div>
+
+        <div class="timing-card">
+          <div class="timing-label">Day 90</div>
+          <div class="timing-desc">Final touchpoint. Keep it respectful and open-ended.</div>
+          <div class="input-group">
+            <label class="input-label">Message</label>
+            <textarea style="min-height:140px">Hey {{first_name}}, hope you're doing well!
+
+It's been a while since we last connected. Whether your timeline has changed or you're still exploring — we're always here when you're ready.
+
+Whenever you'd like to chat, just book here: {{booking_link}}
+
+Take care! 🏠
+— {{agent_name}}, HomeUp</textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast">✓ Changes saved successfully</div>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateCount(el, countId) {
+    const el2 = document.getElementById(countId);
+    if (el2) el2.textContent = el.value.length;
+  }
+
+  // Init char counts
+  document.querySelectorAll('textarea[id]').forEach(ta => {
+    const countEl = document.getElementById(ta.id + '-count');
+    if (countEl) countEl.textContent = ta.value.length;
+  });
+
+  function copyVar(el) {
+    navigator.clipboard.writeText(el.textContent).then(() => {
+      const orig = el.style.background;
+      el.style.background = '#1a3a2a';
+      el.style.color = '#3ecf8e';
+      setTimeout(() => { el.style.background = ''; el.style.color = ''; }, 800);
+    });
+  }
+
+  function addButton(containerId) {
+    const container = document.getElementById(containerId);
+    const rows = container.querySelectorAll('.wa-button-row');
+    if (rows.length >= 3) { alert('WhatsApp allows a maximum of 3 buttons per message.'); return; }
+    const row = document.createElement('div');
+    row.className = 'wa-button-row';
+    row.innerHTML = `<input type="text" placeholder="Button label"><button class="remove-btn" onclick="removeButton(this)">×</button>`;
+    container.appendChild(row);
+  }
+
+  function removeButton(btn) {
+    btn.parentElement.remove();
+  }
+
+  function removeFAQ(btn) {
+    btn.closest('[data-faq]').remove();
+  }
+
+  function addFAQ() {
+    const list = document.getElementById('faq-list');
+    const card = document.createElement('div');
+    card.className = 'message-card orange-outline';
+    card.setAttribute('data-faq', '');
+    card.innerHTML = `
+      <div class="card-header">
+        <div style="flex:1">
+          <div class="input-group">
+            <label class="input-label">Question / Trigger Phrase <span class="required">*</span></label>
+            <input type="text" placeholder="E.g. Do you have properties in Damansara?">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Bot Response <span class="required">*</span></label>
+            <textarea placeholder="Enter the bot's reply here..."></textarea>
+          </div>
+        </div>
+        <button class="remove-btn" style="margin-top:0; flex-shrink:0" onclick="removeFAQ(this)">×</button>
+      </div>`;
+    list.appendChild(card);
+    card.querySelector('input').focus();
+  }
+
+  function saveAll() {
+    // Collect all data
+    const data = {};
+    document.querySelectorAll('textarea, input[type="text"]').forEach((el, i) => {
+      if (el.id) data[el.id] = el.value;
+    });
+    localStorage.setItem('homeup-automation', JSON.stringify(data));
+    showToast('✓ Changes saved successfully');
+  }
+
+  function exportConfig() {
+    const config = collectConfig();
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'homeup-automations.json';
+    a.click();
+    showToast('⬇ Config exported!');
+  }
+
+  function collectConfig() {
+    return {
+      exported: new Date().toISOString(),
+      comment_replies: {
+        tiktok: document.getElementById('tiktok-comment')?.value,
+        instagram: document.getElementById('ig-comment')?.value,
+        facebook: document.getElementById('fb-comment')?.value,
+      },
+      dm_replies: {
+        instagram: document.getElementById('ig-dm')?.value,
+        facebook: document.getElementById('fb-dm')?.value,
+        tiktok: document.getElementById('tiktok-dm')?.value,
+      },
+      whatsapp: {
+        initial_message: document.getElementById('wa-initial-msg')?.value,
+        booking_message: document.getElementById('booking-msg')?.value,
+      },
+      faqs: Array.from(document.querySelectorAll('[data-faq]')).map(card => ({
+        trigger: card.querySelector('input[type="text"]')?.value,
+        response: card.querySelector('textarea')?.value,
+      })),
+      reminders: {
+        confirmation: document.getElementById('reminder-confirm')?.value,
+        hours_24: document.getElementById('reminder-24h')?.value,
+        hours_1: document.getElementById('reminder-1h')?.value,
+        post_appointment: document.getElementById('reminder-post')?.value,
+        instructions: document.getElementById('appt-instructions')?.value,
+      },
+      followups: {
+        day_7: document.querySelector('#followups .timing-card:nth-child(1) textarea')?.value,
+        day_30: document.querySelector('#followups .timing-card:nth-child(2) textarea')?.value,
+        day_90: document.querySelector('#followups .timing-card:nth-child(3) textarea')?.value,
+      }
+    };
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Load saved data if exists
+  try {
+    const saved = localStorage.getItem('homeup-automation');
+    if (saved) {
+      const data = JSON.parse(saved);
+      Object.entries(data).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+    }
+  } catch(e) {}
+</script>
+</body>
+</html>
