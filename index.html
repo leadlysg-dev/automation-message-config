@@ -486,13 +486,15 @@ const S = {
     collectReason: true,
     collectNotes: false,
     days: { mon:true, tue:true, wed:true, thu:true, fri:true, sat:false, sun:false },
-    mondayStart: '09:00', mondayEnd: '17:00',
-    tuesdayStart: '09:00', tuesdayEnd: '17:00',
-    wednesdayStart: '09:00', wednesdayEnd: '17:00',
-    thursdayStart: '09:00', thursdayEnd: '17:00',
-    fridayStart: '09:00', fridayEnd: '17:00',
-    saturdayStart: '09:00', saturdayEnd: '13:00',
-    sundayStart: '09:00', sundayEnd: '13:00'
+    availability: {
+      mon:[{start:'09:00', end:'17:00'}],
+      tue:[{start:'09:00', end:'17:00'}],
+      wed:[{start:'09:00', end:'17:00'}],
+      thu:[{start:'09:00', end:'17:00'}],
+      fri:[{start:'09:00', end:'17:00'}],
+      sat:[{start:'09:00', end:'13:00'}],
+      sun:[{start:'09:00', end:'13:00'}]
+    }
   },
   messages: {
     igComment:['','',''],
@@ -543,14 +545,24 @@ function bindEvents() {
     pill.addEventListener('click', () => {
       const d = pill.dataset.day;
       S.cal.days[d] = !S.cal.days[d];
-      pill.classList.toggle('on', S.cal.days[d]);
       updateProgress();
+      render();
     });
   });
 
   document.querySelectorAll('[data-cal-toggle]').forEach(el => {
     el.addEventListener('change', e => {
       S.cal[e.target.dataset.calToggle] = e.target.checked;
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('[data-slot-day]').forEach(el => {
+    el.addEventListener('input', e => {
+      const day = e.target.dataset.slotDay;
+      const idx = parseInt(e.target.dataset.slotIndex, 10);
+      const field = e.target.dataset.slotField;
+      S.cal.availability[day][idx][field] = e.target.value;
       updateProgress();
     });
   });
@@ -593,14 +605,20 @@ function updateProgress() {
 
   const calFields = [
     'calName','description','calTimezone','calendarOwner','eventTitle','meetingType','slotDuration','slotInterval',
-    'bookingWindow','minNotice','bufferBefore','bufferAfter','maxPerDay','maxPerSlotPerPerson',
-    'confirmationPageMessage','mondayStart','mondayEnd','tuesdayStart','tuesdayEnd',
-    'wednesdayStart','wednesdayEnd','thursdayStart','thursdayEnd','fridayStart','fridayEnd'
+    'bookingWindow','minNotice','bufferBefore','bufferAfter','maxPerDay','maxPerSlotPerPerson','confirmationPageMessage'
   ];
 
   calFields.forEach(f => {
     total++;
     if (String(S.cal[f] || '').trim()) filled++;
+  });
+
+  Object.values(S.cal.availability).forEach(slots => {
+    slots.forEach(slot => {
+      total += 2;
+      if (slot.start) filled++;
+      if (slot.end) filled++;
+    });
   });
 
   ['igComment','fbComment','ttComment','igDM','ttDM','fbMessenger','organicWhatsapp','paidWhatsapp','leadFormWhatsapp','followUp'].forEach(k => {
@@ -619,11 +637,14 @@ function updateProgress() {
   document.getElementById('prog-fill').style.width = pct + '%';
   document.getElementById('prog-label').textContent = pct + '% complete';
 
-  const calDone = calFields.filter(f => String(S.cal[f] || '').trim()).length;
+  const availabilityDone = Object.values(S.cal.availability).flat().reduce((acc, slot) => acc + (slot.start ? 1 : 0) + (slot.end ? 1 : 0), 0);
+  const availabilityTotal = Object.values(S.cal.availability).flat().length * 2;
+  const calDone = calFields.filter(f => String(S.cal[f] || '').trim()).length + availabilityDone;
+  const calTotal = calFields.length + availabilityTotal;
   const b0 = document.getElementById('badge-0');
   if (b0) {
-    b0.textContent = calDone === calFields.length ? 'Done' : calDone + '/' + calFields.length;
-    b0.className = 'nav-badge' + (calDone === calFields.length ? '' : ' pending');
+    b0.textContent = calDone === calTotal ? 'Done' : calDone + '/' + calTotal;
+    b0.className = 'nav-badge' + (calDone === calTotal ? '' : ' pending');
   }
 
   const msgFilled = [
@@ -783,42 +804,38 @@ function renderCalendar() {
 
   <div class="card">
     <div class="card-title">Availability Full Options</div>
-    <div class="helper">Turn days on or off, then define the start and end time for each day.</div>
+    <div class="helper">Set availability like Calendly — choose active days, then add one or more time ranges for each day.</div>
     <div class="day-pills">
       ${dayList.map(d => `<div class="day-pill ${c.days[d.k]?'on':''}" data-day="${d.k}">${d.l}</div>`).join('')}
     </div>
 
-    <div style="margin-top:18px">
+    <div style="margin-top:18px;display:flex;flex-direction:column;gap:12px;">
       ${[
-        ['mon','Monday','mondayStart1','mondayEnd1','mondayStart2','mondayEnd2'],
-        ['tue','Tuesday','tuesdayStart1','tuesdayEnd1','tuesdayStart2','tuesdayEnd2'],
-        ['wed','Wednesday','wednesdayStart1','wednesdayEnd1','wednesdayStart2','wednesdayEnd2'],
-        ['thu','Thursday','thursdayStart1','thursdayEnd1','thursdayStart2','thursdayEnd2'],
-        ['fri','Friday','fridayStart1','fridayEnd1','fridayStart2','fridayEnd2'],
-        ['sat','Saturday','saturdayStart1','saturdayEnd1','saturdayStart2','saturdayEnd2'],
-        ['sun','Sunday','sundayStart1','sundayEnd1','sundayStart2','sundayEnd2']
-      ].map(([key, label, startKey, endKey]) => `
-        <div class="field-row" style="align-items:end; opacity:${c.days[key] ? 1 : 0.45}">
-          <div class="field">
-            <label>${label} Slot 1 Start</label>
-            <input type="time" data-cal="${startKey}" value="${c[startKey]||''}">
+        ['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','Thursday'],['fri','Friday'],['sat','Saturday'],['sun','Sunday']
+      ].map(([key,label]) => {
+        const slots = getDaySlots(key);
+        return `
+          <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:16px;opacity:${c.days[key] ? 1 : 0.5};">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--text);">${label}</div>
+                <div style="font-size:12px;color:var(--muted);">${c.days[key] ? 'Available for booking' : 'Day turned off'}</div>
+              </div>
+              <button class="btn btn-secondary" type="button" style="padding:8px 12px;font-size:12px;${c.days[key] ? '' : 'opacity:0.45;cursor:not-allowed;'}" onclick="addSlot('${key}')" ${c.days[key] ? '' : 'disabled'}>+ Add Time</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              ${slots.map((slot, idx) => `
+                <div style="display:grid;grid-template-columns:1fr auto 1fr auto;gap:10px;align-items:center;">
+                  <input type="time" data-slot-day="${key}" data-slot-index="${idx}" data-slot-field="start" value="${slot.start}">
+                  <div style="font-size:13px;color:var(--muted);text-align:center;">to</div>
+                  <input type="time" data-slot-day="${key}" data-slot-index="${idx}" data-slot-field="end" value="${slot.end}">
+                  <button class="btn btn-ghost" type="button" style="padding:8px 10px;font-size:12px;${slots.length === 1 ? 'opacity:0.45;cursor:not-allowed;' : ''}" onclick="removeSlot('${key}', ${idx})" ${slots.length === 1 ? 'disabled' : ''}>Remove</button>
+                </div>
+              `).join('')}
+            </div>
           </div>
-          <div class="field">
-            <label>${label} Slot 1 End</label>
-            <input type="time" data-cal="${endKey}" value="${c[endKey]||''}">
-          </div>
-          <div class="field">
-            <label>${label} Slot 2 Start</label>
-            <input type="time" data-cal="${arguments[4]}" value="${c[arguments[4]]||''}">
-          </div>
-          <div class="field">
-            <label>${label} Slot 2 End</label>
-            <input type="time" data-cal="${arguments[5]}" value="${c[arguments[5]]||''}">
-          </div>
-            <input type="time" data-cal="${endKey}" value="${c[endKey]}">
-          </div>
-        </div>
-      `).join('')}
+        `;
+      }).join('')}
     </div>
   </div>
 
@@ -1013,6 +1030,30 @@ function renderFAQ() {
   </div>`;
 }
 
+function getDaySlots(day) {
+  if (!S.cal.availability[day] || !S.cal.availability[day].length) {
+    S.cal.availability[day] = [{ start: '', end: '' }];
+  }
+  return S.cal.availability[day];
+}
+
+function addSlot(day) {
+  S.cal.availability[day].push({ start: '', end: '' });
+  render();
+}
+
+function removeSlot(day, index) {
+  if (S.cal.availability[day].length <= 1) return;
+  S.cal.availability[day].splice(index, 1);
+  render();
+}
+
+function formatDaySlots(day) {
+  if (!S.cal.days[day]) return 'Off';
+  const slots = S.cal.availability[day] || [];
+  return slots.map(slot => `${slot.start || '—'} – ${slot.end || '—'}`).join(', ');
+}
+
 function showReview() {
   const r = document.getElementById('review-screen');
   r.style.display = 'block';
@@ -1056,13 +1097,13 @@ function buildReview() {
     ['Confirmation Page Message', c.confirmationPageMessage],
     ['Confirmation Mode', c.confirmType],
     ['Active Days', activeDays],
-    ['Monday', c.mondayStart + ' – ' + c.mondayEnd],
-    ['Tuesday', c.tuesdayStart + ' – ' + c.tuesdayEnd],
-    ['Wednesday', c.wednesdayStart + ' – ' + c.wednesdayEnd],
-    ['Thursday', c.thursdayStart + ' – ' + c.thursdayEnd],
-    ['Friday', c.fridayStart + ' – ' + c.fridayEnd],
-    ['Saturday', c.saturdayStart + ' – ' + c.saturdayEnd],
-    ['Sunday', c.sundayStart + ' – ' + c.sundayEnd],
+    ['Monday Availability', formatDaySlots('mon')],
+    ['Tuesday Availability', formatDaySlots('tue')],
+    ['Wednesday Availability', formatDaySlots('wed')],
+    ['Thursday Availability', formatDaySlots('thu')],
+    ['Friday Availability', formatDaySlots('fri')],
+    ['Saturday Availability', formatDaySlots('sat')],
+    ['Sunday Availability', formatDaySlots('sun')],
     ['Collect Name', c.collectName ? 'Yes' : 'No'],
     ['Collect Email', c.collectEmail ? 'Yes' : 'No'],
     ['Collect Phone', c.collectPhone ? 'Yes' : 'No'],
