@@ -790,21 +790,31 @@ function renderCalendar() {
 
     <div style="margin-top:18px">
       ${[
-        ['mon','Monday','mondayStart','mondayEnd'],
-        ['tue','Tuesday','tuesdayStart','tuesdayEnd'],
-        ['wed','Wednesday','wednesdayStart','wednesdayEnd'],
-        ['thu','Thursday','thursdayStart','thursdayEnd'],
-        ['fri','Friday','fridayStart','fridayEnd'],
-        ['sat','Saturday','saturdayStart','saturdayEnd'],
-        ['sun','Sunday','sundayStart','sundayEnd']
+        ['mon','Monday','mondayStart1','mondayEnd1','mondayStart2','mondayEnd2'],
+        ['tue','Tuesday','tuesdayStart1','tuesdayEnd1','tuesdayStart2','tuesdayEnd2'],
+        ['wed','Wednesday','wednesdayStart1','wednesdayEnd1','wednesdayStart2','wednesdayEnd2'],
+        ['thu','Thursday','thursdayStart1','thursdayEnd1','thursdayStart2','thursdayEnd2'],
+        ['fri','Friday','fridayStart1','fridayEnd1','fridayStart2','fridayEnd2'],
+        ['sat','Saturday','saturdayStart1','saturdayEnd1','saturdayStart2','saturdayEnd2'],
+        ['sun','Sunday','sundayStart1','sundayEnd1','sundayStart2','sundayEnd2']
       ].map(([key, label, startKey, endKey]) => `
         <div class="field-row" style="align-items:end; opacity:${c.days[key] ? 1 : 0.45}">
           <div class="field">
-            <label>${label} Start</label>
-            <input type="time" data-cal="${startKey}" value="${c[startKey]}">
+            <label>${label} Slot 1 Start</label>
+            <input type="time" data-cal="${startKey}" value="${c[startKey]||''}">
           </div>
           <div class="field">
-            <label>${label} End</label>
+            <label>${label} Slot 1 End</label>
+            <input type="time" data-cal="${endKey}" value="${c[endKey]||''}">
+          </div>
+          <div class="field">
+            <label>${label} Slot 2 Start</label>
+            <input type="time" data-cal="${arguments[4]}" value="${c[arguments[4]]||''}">
+          </div>
+          <div class="field">
+            <label>${label} Slot 2 End</label>
+            <input type="time" data-cal="${arguments[5]}" value="${c[arguments[5]]||''}">
+          </div>
             <input type="time" data-cal="${endKey}" value="${c[endKey]}">
           </div>
         </div>
