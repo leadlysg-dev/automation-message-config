@@ -3,27 +3,27 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>GHL Client Onboarding</title>
+<title>Client Onboarding</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --accent: #FF6B35;
-  --accent-light: #FFF3EE;
-  --accent-mid: #FFD9C9;
-  --bg: #F4F5F7;
-  --surface: #FFFFFF;
-  --surface2: #F9FAFB;
-  --border: #E5E7EB;
-  --border2: #D1D5DB;
-  --text: #111827;
-  --muted: #6B7280;
-  --dim: #9CA3AF;
-  --green: #059669;
-  --green-bg: #D1FAE5;
-  --green-border: #A7F3D0;
-  --red: #DC2626;
+  --accent-light: #2a1a12;
+  --accent-mid: #3d2010;
+  --bg: #0f0f0f;
+  --surface: #161616;
+  --surface2: #1a1a1a;
+  --border: #252525;
+  --border2: #2e2e2e;
+  --text: #f0ede8;
+  --muted: #777;
+  --dim: #555;
+  --green: #52b788;
+  --green-bg: #1a3328;
+  --green-border: #2d6a4f;
+  --red: #e63946;
 }
 
 body {
@@ -47,7 +47,7 @@ body {
   justify-content: space-between;
   flex-shrink: 0;
   z-index: 100;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 .topbar-left { display: flex; align-items: center; gap: 10px; }
 .brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
@@ -59,782 +59,919 @@ body {
 .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
 .progress-label { font-size: 12px; color: var(--muted); font-weight: 500; min-width: 80px; }
 
-button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.btn-primary {
-  background: var(--accent); color: white; border: none;
-  border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600;
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn-primary:hover { opacity: 0.88; }
-.btn-primary:active { transform: scale(0.98); }
-.btn-ghost {
-  background: transparent; color: var(--muted); border: 1.5px solid var(--border);
-  border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 500;
-  transition: all 0.15s;
-}
-.btn-ghost:hover { background: var(--bg); color: var(--text); border-color: var(--border2); }
-
 /* ── LAYOUT ── */
-#layout { display: flex; flex: 1; overflow: hidden; }
+#shell { display: flex; flex: 1; overflow: hidden; }
 
 /* ── SIDEBAR ── */
 #sidebar {
-  width: 256px;
+  width: 230px;
   background: var(--surface);
   border-right: 1px solid var(--border);
-  padding: 20px 0;
-  flex-shrink: 0;
-  overflow-y: auto;
+  padding: 24px 0;
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
 }
-.sidebar-label {
-  padding: 0 18px 10px;
-  font-size: 10px;
-  color: var(--dim);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-.sidebar-item {
-  width: 100%;
+.nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 18px;
-  background: transparent;
-  border: none;
-  border-left: 3px solid transparent;
-  color: var(--muted);
-  text-align: left;
-  font-size: 13px;
-  transition: all 0.15s;
+  gap: 11px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background 0.15s;
   position: relative;
 }
-.sidebar-item:hover { color: var(--text); background: var(--bg); }
-.sidebar-item.active {
-  background: var(--accent-light);
-  border-left-color: var(--accent);
-  color: var(--accent);
+.nav-item:hover { background: var(--surface2); }
+.nav-item.active { background: var(--accent-light); }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-label { font-size: 13.5px; font-weight: 500; color: var(--text); }
+.nav-item.active .nav-label { color: var(--accent); }
+.nav-badge {
+  margin-left: auto;
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+  font-size: 10px;
   font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 20px;
 }
-.sidebar-item.done { color: var(--text); }
-.sidebar-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
-.sidebar-text { flex: 1; min-width: 0; }
-.sidebar-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-sub { font-size: 11px; color: var(--dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-item.active .sidebar-sub { color: rgba(255,107,53,0.6); }
-.sidebar-badge {
-  width: 18px; height: 18px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 9px; font-weight: 700; flex-shrink: 0;
-  background: var(--border); color: var(--dim);
-}
-.sidebar-badge.done { background: var(--green-bg); color: var(--green); }
-.sidebar-badge.active { background: var(--accent); color: white; }
-.sidebar-divider { height: 1px; background: var(--border); margin: 8px 18px; }
+.nav-badge.pending { background: var(--surface2); color: var(--muted); border-color: var(--border2); }
 
 /* ── MAIN CONTENT ── */
 #main {
   flex: 1;
   overflow-y: auto;
   padding: 36px 44px;
+  background: var(--bg);
 }
+#main::-webkit-scrollbar { width: 6px; }
+#main::-webkit-scrollbar-track { background: var(--bg); }
+#main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
-/* ── SECTION HEADER ── */
-.section-header {
-  margin-bottom: 28px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--border);
-}
-.section-eyebrow {
-  font-size: 11px; color: var(--accent); font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
-}
-.section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-.section-title h2 { font-size: 23px; font-weight: 700; font-family: 'DM Serif Display', serif; }
-.section-desc { color: var(--muted); font-size: 13.5px; line-height: 1.6; }
+.section-header { margin-bottom: 28px; }
+.section-title { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); margin-bottom: 6px; }
+.section-sub { font-size: 14px; color: var(--muted); }
 
-/* ── SUB SECTION TITLE ── */
-.sub-title {
-  font-size: 11px; font-weight: 700; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.1em;
-  margin: 24px 0 14px;
-  display: flex; align-items: center; gap: 10px;
-}
-.sub-title:first-of-type { margin-top: 0; }
-.sub-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
-
-/* ── FORM GRID ── */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 4px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 4px; }
-.form-full { grid-column: 1 / -1; }
-.field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
-.field-label { font-size: 13px; font-weight: 600; color: var(--text); }
-.field-req { color: var(--accent); }
-.field-hint { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
-
-input[type="text"], input[type="email"], input[type="url"],
-input[type="number"], input[type="time"], input[type="password"],
-select, textarea {
-  width: 100%;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 13.5px;
-  padding: 9px 13px;
-  outline: none;
-  font-family: 'DM Sans', sans-serif;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
-}
-textarea { resize: vertical; line-height: 1.65; }
-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236B7280' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 34px;
-}
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-/* ── CARD ── */
+/* ── CARDS ── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px 22px;
+  border-radius: 10px;
+  padding: 22px 24px;
   margin-bottom: 16px;
 }
 .card-title {
-  font-size: 13.5px; font-weight: 700; color: var(--text);
-  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
 }
 
-/* ── RADIO & CHECKBOX CHIPS ── */
-.radio-group, .checkbox-group { display: flex; gap: 8px; flex-wrap: wrap; }
-.radio-chip input[type="radio"], .checkbox-chip input[type="checkbox"] { display: none; }
-.radio-chip label, .checkbox-chip label {
-  display: block; padding: 7px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px; font-size: 13px; font-weight: 500;
-  color: var(--muted); cursor: pointer;
-  transition: all 0.15s; user-select: none;
+/* ── FORM ELEMENTS ── */
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.field-row.single { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.field input, .field select, .field textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.15s;
+  outline: none;
 }
-.radio-chip input:checked + label,
-.checkbox-chip input:checked + label {
-  border-color: var(--accent); background: var(--accent-light);
-  color: var(--accent); font-weight: 600;
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--accent);
 }
-.radio-chip label:hover, .checkbox-chip label:hover {
-  border-color: var(--border2); color: var(--text); background: var(--bg);
-}
+.field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+.field select option { background: var(--surface2); }
 
-/* ── TOGGLE SWITCH ── */
-.toggle { position: relative; width: 34px; height: 19px; flex-shrink: 0; }
+/* ── TOGGLE ROW ── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-label { font-size: 14px; color: var(--text); }
+.toggle-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
 .toggle input { opacity: 0; width: 0; height: 0; }
 .toggle-slider {
-  position: absolute; inset: 0;
-  background: var(--border2); border-radius: 20px;
-  cursor: pointer; transition: background 0.2s;
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--border2);
+  border-radius: 22px;
+  transition: background 0.2s;
 }
 .toggle-slider::before {
-  content: ""; position: absolute;
-  width: 13px; height: 13px; left: 3px; top: 3px;
-  background: white; border-radius: 50%;
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  left: 3px; top: 3px;
+  background: white;
+  border-radius: 50%;
   transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .toggle input:checked + .toggle-slider { background: var(--accent); }
-.toggle input:checked + .toggle-slider::before { transform: translateX(15px); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
 
-/* ── AVAILABILITY GRID ── */
-.avail-grid { display: flex; flex-direction: column; gap: 10px; }
-.avail-row {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  align-items: center;
-  gap: 14px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-}
-.avail-row:last-child { border-bottom: none; }
-.avail-day { display: flex; align-items: center; gap: 10px; }
-.day-label { font-size: 13px; font-weight: 500; color: var(--text); min-width: 70px; }
-.avail-times { display: flex; align-items: center; gap: 10px; }
-.avail-times input[type="time"] { width: 118px; font-size: 13px; padding: 7px 10px; }
-.avail-sep { color: var(--muted); font-size: 13px; }
-.avail-times.disabled input { opacity: 0.35; pointer-events: none; }
-.avail-closed { font-size: 12px; color: var(--dim); font-style: italic; }
-
-/* ── CHANNEL TABS ── */
-.channel-tabs { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; }
-.ch-tab {
-  padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 500;
-  background: var(--bg); color: var(--muted); border: 1.5px solid var(--border);
+/* ── DAY PILLS ── */
+.day-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.day-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--muted);
   transition: all 0.15s;
+  user-select: none;
 }
-.ch-tab:hover { color: var(--text); border-color: var(--border2); background: var(--surface); }
-.ch-tab.active { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
-.ch-tab.done { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
+.day-pill.on { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-/* ── MESSAGE EDITOR ── */
-.editor-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
-.editor-meta label { font-size: 13px; font-weight: 600; color: var(--text); }
-.char-count { font-size: 12px; color: var(--dim); }
-.char-count.warn { color: var(--red); }
-.var-tags { margin-top: 9px; display: flex; gap: 7px; flex-wrap: wrap; }
-.var-tag {
-  background: var(--bg); border: 1.5px solid var(--border);
-  border-radius: 6px; color: var(--accent); font-size: 12px;
-  font-weight: 600; padding: 4px 10px; transition: all 0.15s;
+/* ── TABS ── */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+.tab {
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s;
 }
-.var-tag:hover { background: var(--accent-light); border-color: var(--accent-mid); }
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── MESSAGE BOX ── */
+.msg-box {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.msg-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.msg-box-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.char-count { font-size: 11px; color: var(--dim); }
+.msg-box textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  min-height: 70px;
+}
 
 /* ── FAQ ── */
-.faq-list { display: flex; flex-direction: column; gap: 12px; }
-.faq-card {
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 10px; padding: 14px 16px; transition: border-color 0.2s;
+.faq-item {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 10px;
 }
-.faq-card:focus-within { border-color: var(--accent); }
-.faq-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.faq-num {
-  background: var(--accent); color: white; font-size: 10px; font-weight: 700;
-  border-radius: 4px; padding: 2px 8px; min-width: 28px; text-align: center;
+.faq-num { font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+.faq-item input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 4px 0 8px;
+  outline: none;
+  margin-bottom: 8px;
 }
-.faq-complete { font-size: 11px; color: var(--green); font-weight: 600; }
-.faq-card input { margin-bottom: 8px; }
-
-/* ── AUTO SECTION TABS ── */
-.auto-section-tabs {
-  display: flex; gap: 6px; flex-wrap: wrap;
-  margin-bottom: 20px; padding-bottom: 18px;
-  border-bottom: 1px solid var(--border);
+.faq-item input:focus { border-bottom-color: var(--accent); }
+.faq-item textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  resize: none;
+  outline: none;
+  min-height: 50px;
+  line-height: 1.5;
 }
-.auto-sec-tab {
-  padding: 6px 13px; border-radius: 7px; font-size: 12.5px; font-weight: 500;
-  background: var(--bg); color: var(--muted); border: 1.5px solid var(--border);
-  transition: all 0.15s;
-}
-.auto-sec-tab:hover { color: var(--text); border-color: var(--border2); }
-.auto-sec-tab.active { background: var(--surface); border-color: var(--accent); color: var(--accent); font-weight: 600; }
-.auto-sec-tab.done { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
 
 /* ── INTEGRATION CARDS ── */
-.integration-card {
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 14px; margin-bottom: 20px; overflow: hidden;
+.int-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
 }
-.integration-header {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px 22px; border-bottom: 1px solid var(--border);
-  background: var(--surface2);
+.int-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
 }
-.integration-logo {
-  width: 42px; height: 42px; border-radius: 11px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
+.int-icon { font-size: 24px; }
+.int-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.int-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.pw-wrap { position: relative; }
+.pw-wrap input { width: 100%; padding-right: 38px; }
+.pw-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px;
 }
-.int-logo-tiktok { background: #010101; }
-.int-logo-meta { background: linear-gradient(135deg, #1877F2, #0052CC); }
-.int-logo-whatsapp { background: #25D366; }
-.integration-info { flex: 1; }
-.integration-name { font-size: 14.5px; font-weight: 700; color: var(--text); }
-.integration-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.integration-badge {
-  font-size: 11px; font-weight: 600; padding: 4px 11px;
-  border-radius: 20px; background: var(--border); color: var(--muted);
-}
-.integration-badge.filled { background: var(--green-bg); color: var(--green); }
-.integration-body { padding: 22px; }
+.pw-toggle:hover { color: var(--text); }
 
-/* ── SENSITIVE INPUT ── */
-.input-wrap { position: relative; }
-.input-wrap input { padding-right: 42px; font-family: monospace; letter-spacing: 0.05em; }
-.input-wrap input[type="text"] { font-family: 'DM Sans', sans-serif; letter-spacing: normal; }
-.eye-btn {
-  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
-  background: none; border: none; color: var(--muted); font-size: 15px; padding: 2px;
+/* ── REVIEW ── */
+#review-screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 200;
+  overflow-y: auto;
+  padding: 40px;
 }
-.eye-btn:hover { color: var(--text); }
-
-/* ── REVIEW SCREEN ── */
-#reviewScreen {
-  display: none; flex: 1; overflow-y: auto;
-  padding: 48px 48px 80px; background: var(--bg);
+#review-screen::-webkit-scrollbar { width: 6px; }
+#review-screen::-webkit-scrollbar-track { background: var(--bg); }
+#review-screen::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.review-header {
+  text-align: center;
+  margin-bottom: 40px;
 }
-.review-header { text-align: center; margin-bottom: 36px; }
 .review-check {
-  width: 60px; height: 60px; background: var(--green-bg);
-  border-radius: 50%; display: flex; align-items: center;
-  justify-content: center; font-size: 26px; margin: 0 auto 14px;
+  width: 52px; height: 52px;
+  background: var(--green-bg);
   border: 2px solid var(--green-border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  color: var(--green);
+  margin: 0 auto 16px;
 }
-.review-title { font-size: 26px; font-weight: 700; font-family: 'DM Serif Display', serif; margin-bottom: 6px; }
-.review-sub { color: var(--muted); font-size: 14px; }
-.review-sections { max-width: 700px; margin: 0 auto; }
-.review-section {
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 12px; margin-bottom: 14px; overflow: hidden;
+.review-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); margin-bottom: 8px; }
+.review-sub { font-size: 14px; color: var(--muted); }
+.review-sections { max-width: 720px; margin: 0 auto; }
+.review-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
 }
-.review-sec-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 20px; cursor: pointer; user-select: none; transition: background 0.15s;
+.review-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
 }
-.review-sec-header:hover { background: var(--bg); }
-.review-sec-left { display: flex; align-items: center; gap: 10px; }
-.review-sec-title { font-size: 14px; font-weight: 700; }
-.review-sec-toggle { font-size: 12px; color: var(--dim); }
-.review-body { padding: 0 20px 16px; }
-.review-row {
-  display: flex; gap: 14px; padding: 9px 0;
-  border-bottom: 1px solid var(--border); font-size: 13px;
-}
+.review-group-header:hover { background: var(--surface2); }
+.review-group-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.review-group-toggle { color: var(--muted); font-size: 12px; }
+.review-group-body { padding: 0 20px 16px; border-top: 1px solid var(--border); display: none; }
+.review-group-body.open { display: block; }
+.review-row { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 .review-row:last-child { border-bottom: none; }
-.review-key { color: var(--muted); width: 170px; flex-shrink: 0; font-weight: 500; }
-.review-val { color: var(--text); flex: 1; white-space: pre-wrap; word-break: break-word; }
-.review-group-label {
-  font-size: 10px; font-weight: 700; color: var(--dim);
-  text-transform: uppercase; letter-spacing: 0.1em;
-  padding: 14px 0 4px; border-bottom: 1px solid var(--border); margin-bottom: 4px;
+.review-key { color: var(--muted); min-width: 180px; flex-shrink: 0; }
+.review-val { color: var(--text); word-break: break-word; }
+.review-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+  padding-bottom: 40px;
 }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #BBBFC7; }
+/* ── BUTTONS ── */
+.btn {
+  padding: 10px 22px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s, transform 0.1s;
+  font-family: inherit;
+}
+.btn:hover { opacity: 0.88; }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--accent); color: white; }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+
+.nav-footer {
+  margin-top: auto;
+  padding: 16px 20px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+
+.section-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div id="topbar">
   <div class="topbar-left">
     <div class="brand-dot"></div>
     <span class="brand">Leadly</span>
-    <span class="brand-sep">/ GHL Client Onboarding</span>
+    <span class="brand-sep">/ Client Onboarding</span>
   </div>
   <div class="topbar-right">
     <div class="progress-wrap">
-      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <span class="progress-label" id="progressLabel">0% complete</span>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <span class="progress-label" id="prog-label">0% complete</span>
     </div>
-    <button class="btn-ghost" id="btnSave" onclick="handleSave()">Save Draft</button>
-    <button class="btn-primary" onclick="showReview()">Review & Finish →</button>
+    <button class="btn btn-primary" onclick="showReview()">Review & Finish</button>
   </div>
 </div>
 
-<!-- LAYOUT -->
-<div id="layout">
-  <div id="sidebar">
-    <div class="sidebar-label">Onboarding Steps</div>
-    <div id="sidebarItems"></div>
-  </div>
-  <div id="main"></div>
-  <div id="reviewScreen"></div>
+<div id="shell">
+  <nav id="sidebar">
+    <div class="nav-item active" onclick="nav(0)" id="nav-0">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">Calendar Setup</span>
+      <span class="nav-badge pending" id="badge-0">—</span>
+    </div>
+    <div class="nav-item" onclick="nav(1)" id="nav-1">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">Automations</span>
+      <span class="nav-badge pending" id="badge-1">—</span>
+    </div>
+    <div class="nav-item" onclick="nav(2)" id="nav-2">
+      <span class="nav-icon">🔗</span>
+      <span class="nav-label">Integrations</span>
+      <span class="nav-badge pending" id="badge-2">—</span>
+    </div>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" style="flex:1;font-size:13px" onclick="showReview()">Review All</button>
+    </div>
+  </nav>
+  <main id="main"></main>
 </div>
+
+<div id="review-screen"></div>
 
 <script>
-const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-
-const NAV = [
-  { id: "calendar",     label: "Calendar Setup",      icon: "📅", sub: "Availability & booking rules" },
-  { id: "automations",  label: "Automation Messages", icon: "💬", sub: "Auto-replies & chatbot FAQs" },
-  { id: "integrations", label: "Integrations",        icon: "🔗", sub: "TikTok, Meta & WhatsApp APIs" },
-];
-
-const AUTO_SECS = [
-  { id: "organic_comments", label: "Organic Comments",    icon: "💬", channels: ["TikTok Comment","Instagram Comment","Facebook Comment"], desc: "Auto-reply when someone comments on a post" },
-  { id: "organic_dms",      label: "Organic DMs",         icon: "📩", channels: ["TikTok DM","Instagram DM","Facebook Messenger"],       desc: "Auto-reply when someone DMs directly" },
-  { id: "wa_replies",       label: "WhatsApp Replies",    icon: "📱", channels: ["Organic WhatsApp","Paid WA (IG)","Paid WA (FB)"],       desc: "First reply when a lead enters WhatsApp" },
-  { id: "booked_flow",      label: "Booked Appointment",  icon: "🗓", channels: ["Immediate Confirmation","1 Day Before","30 Min Before"], desc: "Reminders & instructions after booking" },
-  { id: "followups",        label: "Follow-Up Sequences", icon: "🔁", channels: ["7-Day Follow-Up","30-Day Follow-Up","90-Day Follow-Up"], desc: "Sent when lead doesn't reply or book" },
-  { id: "bot_faqs",         label: "Bot FAQs",            icon: "🤖", type: "faqs", desc: "Q&A pairs for the WhatsApp chatbot", count: 30 },
-];
-
 const S = {
-  activeSection: "calendar",
-  activeAutoSec: "organic_comments",
-  activeChannel: {},
   cal: {
-    name: "", type: "booking", timezone: "", calTitle: "",
-    slotDuration: "30", slotInterval: "30",
-    bufferBefore: "0", bufferAfter: "0",
-    minNotice: "24", bookingWindow: "60", maxPerDay: "",
-    confirmType: "auto",
-    meetingType: "phone", meetingLocation: "",
-    teamMember: "", notifEmail: "",
-    avail: {
-      Monday:    { on: true,  s: "09:00", e: "17:00" },
-      Tuesday:   { on: true,  s: "09:00", e: "17:00" },
-      Wednesday: { on: true,  s: "09:00", e: "17:00" },
-      Thursday:  { on: true,  s: "09:00", e: "17:00" },
-      Friday:    { on: true,  s: "09:00", e: "17:00" },
-      Saturday:  { on: false, s: "10:00", e: "14:00" },
-      Sunday:    { on: false, s: "10:00", e: "14:00" },
-    },
+    calName:'', calTimezone:'', slotDuration:'30', slotInterval:'30',
+    bufferBefore:'0', bufferAfter:'0', bookingWindow:'30', minNotice:'60',
+    confirmType:'auto', meetingType:'phone', meetingLocation:'',
+    allowReschedule:true, allowCancel:true, requirePayment:false,
+    days:{ mon:true, tue:true, wed:true, thu:true, fri:true, sat:false, sun:false },
+    startTime:'09:00', endTime:'17:00'
   },
-  messages: {},
-  faqs: Array.from({length: 30}, () => ({q:"", a:""})),
+  messages: {
+    organicComment:['','',''],
+    organicDM:['','',''],
+    whatsapp:['','',''],
+    bookedAppt:{ confirmation:'', reminder24:'', reminder1:'', followUp:'', noShow:'' },
+    followUp:['','','','',''],
+    faqBot:Array.from({length:30},()=>({q:'',a:''}))
+  },
   int: {
-    tiktok:   { bizId: "", token: "", pixelId: "" },
-    meta:     { pageId: "", pageName: "", igUser: "", adAcct: "", pixelId: "", token: "" },
-    whatsapp: { phone: "", wabaId: "", token: "", webhookToken: "" },
-  },
+    tiktok:{ clientKey:'', clientSecret:'', accessToken:'' },
+    meta:{ appId:'', appSecret:'', pageToken:'', wabaId:'' },
+    whatsapp:{ phoneNumberId:'', apiToken:'', webhookSecret:'' }
+  }
 };
 
-AUTO_SECS.forEach(s => {
-  if (!s.type) { S.messages[s.id] = {}; s.channels.forEach(ch => S.messages[s.id][ch] = ""); }
-});
+let currentSection = 0;
+let autoTab = 0;
 
-function esc(str) {
-  return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function nav(i) {
+  currentSection = i;
+  document.querySelectorAll('.nav-item').forEach((el,idx) => el.classList.toggle('active', idx===i));
+  render();
 }
-function activeCh(secId) {
-  const s = AUTO_SECS.find(x => x.id === secId);
-  return S.activeChannel[secId] || s.channels[0];
+
+function render() {
+  const m = document.getElementById('main');
+  if (currentSection===0) m.innerHTML = renderCalendar();
+  else if (currentSection===1) m.innerHTML = renderAutomations();
+  else m.innerHTML = renderIntegrations();
+  updateProgress();
+  bindEvents();
 }
-function calcProgress() {
-  let filled = 0, total = 0;
-  ["name","timezone","meetingType","notifEmail","teamMember"].forEach(f => { total++; if (S.cal[f]?.trim()) filled++; });
-  AUTO_SECS.forEach(sec => {
-    if (!sec.type) { sec.channels.forEach(ch => { total++; if (S.messages[sec.id][ch]?.trim()) filled++; }); }
-    else { S.faqs.forEach(f => { total++; if (f.q?.trim() && f.a?.trim()) filled++; }); }
+
+function bindEvents() {
+  // Calendar fields
+  document.querySelectorAll('[data-cal]').forEach(el => {
+    el.addEventListener('change', e => { S.cal[e.target.dataset.cal] = e.target.type==='checkbox'?e.target.checked:e.target.value; updateProgress(); });
+    el.addEventListener('input', e => { S.cal[e.target.dataset.cal] = e.target.value; updateProgress(); });
   });
-  const ig = S.int;
-  ["bizId","token"].forEach(f => { total++; if (ig.tiktok[f]?.trim()) filled++; });
-  ["pageId","token","pixelId"].forEach(f => { total++; if (ig.meta[f]?.trim()) filled++; });
-  ["phone","wabaId","token"].forEach(f => { total++; if (ig.whatsapp[f]?.trim()) filled++; });
-  return { pct: total ? Math.round(filled/total*100) : 0 };
-}
-function updateProgress() {
-  const {pct} = calcProgress();
-  document.getElementById("progressFill").style.width = pct + "%";
-  document.getElementById("progressLabel").textContent = pct + "% complete";
+  // Day pills
+  document.querySelectorAll('.day-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const d = pill.dataset.day;
+      S.cal.days[d] = !S.cal.days[d];
+      pill.classList.toggle('on', S.cal.days[d]);
+    });
+  });
+  // Toggle switches
+  document.querySelectorAll('[data-cal-toggle]').forEach(el => {
+    el.addEventListener('change', e => { S.cal[e.target.dataset.calToggle] = e.target.checked; });
+  });
+  // Message textareas
+  document.querySelectorAll('[data-msg]').forEach(el => {
+    el.addEventListener('input', e => {
+      const [section, idx] = e.target.dataset.msg.split(':');
+      if (idx !== undefined) S.messages[section][parseInt(idx)] = e.target.value;
+      else S.messages.bookedAppt[section] = e.target.value;
+      updateCharCount(e.target);
+      updateProgress();
+    });
+  });
+  // FAQ fields
+  document.querySelectorAll('[data-faq-q]').forEach(el => {
+    el.addEventListener('input', e => { S.messages.faqBot[parseInt(e.target.dataset.faqQ)].q = e.target.value; updateProgress(); });
+  });
+  document.querySelectorAll('[data-faq-a]').forEach(el => {
+    el.addEventListener('input', e => { S.messages.faqBot[parseInt(e.target.dataset.faqA)].a = e.target.value; updateProgress(); });
+  });
+  // Integration fields
+  document.querySelectorAll('[data-int]').forEach(el => {
+    el.addEventListener('input', e => {
+      const [platform, field] = e.target.dataset.int.split(':');
+      S.int[platform][field] = e.target.value;
+      updateProgress();
+    });
+  });
 }
 
-function renderSidebar() {
-  document.getElementById("sidebarItems").innerHTML = NAV.map((nav, i) => {
-    const isActive = S.activeSection === nav.id;
-    let done = false;
-    if (nav.id === "calendar") done = !!(S.cal.name && S.cal.timezone && S.cal.notifEmail);
-    if (nav.id === "automations") done = Object.values(S.messages).some(m => Object.values(m).some(v => v.trim()));
-    if (nav.id === "integrations") done = !!(S.int.tiktok.bizId || S.int.meta.pageId || S.int.whatsapp.phone);
-    return `<button class="sidebar-item ${isActive?"active":done?"done":""}" onclick="goSection('${nav.id}')">
-      <span class="sidebar-icon">${nav.icon}</span>
-      <div class="sidebar-text"><div class="sidebar-name">${nav.label}</div><div class="sidebar-sub">${nav.sub}</div></div>
-      <div class="sidebar-badge ${isActive?"active":done?"done":""}">${done?"✓":i+1}</div>
-    </button>`;
-  }).join('<div class="sidebar-divider"></div>');
+function updateCharCount(el) {
+  const id = el.id;
+  if (!id) return;
+  const cc = document.getElementById('cc-'+id);
+  if (cc) cc.textContent = el.value.length + ' chars';
+}
+
+function updateProgress() {
+  let filled = 0, total = 0;
+  // Cal
+  const calFields = ['calName','calTimezone','slotDuration','slotInterval','startTime','endTime'];
+  calFields.forEach(f => { total++; if(S.cal[f]) filled++; });
+  // Messages - count non-empty arrays
+  ['organicComment','organicDM','whatsapp','followUp'].forEach(k => {
+    S.messages[k].forEach(v => { total++; if(v.trim()) filled++; });
+  });
+  Object.values(S.messages.bookedAppt).forEach(v => { total++; if(v.trim()) filled++; });
+  // Integrations
+  Object.values(S.int).forEach(obj => Object.values(obj).forEach(v => { total++; if(v.trim()) filled++; }));
+
+  const pct = Math.round((filled/total)*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-label').textContent = pct+'% complete';
+
+  // Badges
+  const calDone = calFields.filter(f=>S.cal[f]).length;
+  const b0 = document.getElementById('badge-0');
+  if (b0) { b0.textContent = calDone===calFields.length ? 'Done' : calDone+'/'+calFields.length; b0.className = 'nav-badge'+(calDone===calFields.length?'':' pending'); }
+
+  const msgFilled = [...S.messages.organicComment,...S.messages.organicDM,...S.messages.whatsapp,...S.messages.followUp,
+    ...Object.values(S.messages.bookedAppt)].filter(v=>v.trim()).length;
+  const msgTotal = S.messages.organicComment.length+S.messages.organicDM.length+S.messages.whatsapp.length+
+    S.messages.followUp.length+Object.keys(S.messages.bookedAppt).length;
+  const b1 = document.getElementById('badge-1');
+  if (b1) { b1.textContent = msgFilled===msgTotal?'Done':msgFilled+'/'+msgTotal; b1.className='nav-badge'+(msgFilled===msgTotal?'':' pending'); }
+
+  const intFilled = Object.values(S.int).flatMap(o=>Object.values(o)).filter(v=>v.trim()).length;
+  const intTotal = Object.values(S.int).flatMap(o=>Object.values(o)).length;
+  const b2 = document.getElementById('badge-2');
+  if (b2) { b2.textContent = intFilled===intTotal?'Done':intFilled+'/'+intTotal; b2.className='nav-badge'+(intFilled===intTotal?'':' pending'); }
 }
 
 function renderCalendar() {
   const c = S.cal;
-  const availHTML = DAYS.map(day => {
-    const d = c.avail[day];
-    return `<div class="avail-row">
-      <div class="avail-day">
-        <label class="toggle"><input type="checkbox" ${d.on?"checked":""} onchange="toggleDay('${day}',this.checked)"/><span class="toggle-slider"></span></label>
-        <span class="day-label">${day}</span>
-      </div>
-      <div class="avail-times ${d.on?"":"disabled"}">
-        <input type="time" value="${d.s}" onchange="setAvail('${day}','s',this.value)"/>
-        <span class="avail-sep">to</span>
-        <input type="time" value="${d.e}" onchange="setAvail('${day}','e',this.value)"/>
-        ${!d.on?'<span class="avail-closed">Closed</span>':""}
-      </div>
-    </div>`;
-  }).join("");
-  const tzOpts = [["","— Select timezone —"],["Asia/Singapore","Asia/Singapore (SGT, UTC+8)"],["Asia/Kuala_Lumpur","Asia/Kuala Lumpur (MYT, UTC+8)"],["Asia/Jakarta","Asia/Jakarta (WIB, UTC+7)"],["Asia/Bangkok","Asia/Bangkok (ICT, UTC+7)"],["Asia/Manila","Asia/Manila (PHT, UTC+8)"],["Asia/Hong_Kong","Asia/Hong Kong (HKT, UTC+8)"],["Asia/Dubai","Asia/Dubai (GST, UTC+4)"],["Asia/Tokyo","Asia/Tokyo (JST, UTC+9)"],["Australia/Sydney","Australia/Sydney (AEST)"],["Australia/Melbourne","Australia/Melbourne"],["Europe/London","Europe/London (GMT/BST)"],["Europe/Paris","Europe/Paris (CET)"],["America/New_York","America/New York (EST)"],["America/Chicago","America/Chicago (CST)"],["America/Los_Angeles","America/Los Angeles (PST)"],["UTC","UTC"]].map(([v,l])=>`<option value="${v}" ${c.timezone===v?"selected":""}>${l}</option>`).join("");
+  const dayList = [{k:'mon',l:'Mon'},{k:'tue',l:'Tue'},{k:'wed',l:'Wed'},{k:'thu',l:'Thu'},{k:'fri',l:'Fri'},{k:'sat',l:'Sat'},{k:'sun',l:'Sun'}];
   return `
-    <div class="section-header">
-      <div class="section-eyebrow">Step 1 of 3</div>
-      <div class="section-title"><h2>📅 Calendar Setup</h2></div>
-      <p class="section-desc">Configure your GHL booking calendar — availability, appointment settings, and meeting preferences.</p>
+  <div class="section-header">
+    <div class="section-title">Calendar Setup</div>
+    <div class="section-sub">Configure your booking calendar settings and availability.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Basic Info</div>
+    <div class="field-row">
+      <div class="field"><label>Calendar Name</label><input type="text" data-cal="calName" value="${c.calName}" placeholder="e.g. Discovery Call"></div>
+      <div class="field"><label>Timezone</label>
+        <select data-cal="calTimezone">
+          <option value="">Select timezone…</option>
+          ${['UTC','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Toronto','Europe/London','Europe/Paris','Asia/Singapore','Asia/Tokyo','Australia/Sydney'].map(tz=>`<option value="${tz}" ${c.calTimezone===tz?'selected':''}>${tz}</option>`).join('')}
+        </select>
+      </div>
     </div>
-    <div class="sub-title">General</div>
-    <div class="form-grid">
-      <div class="field-group"><label class="field-label">Calendar Name <span class="field-req">*</span></label><input type="text" placeholder="e.g. Discovery Call" value="${esc(c.name)}" oninput="setCal('name',this.value)"/></div>
-      <div class="field-group"><label class="field-label">Calendar Type</label><select onchange="setCal('type',this.value)"><option value="booking" ${c.type==="booking"?"selected":""}>Service / Booking Calendar</option><option value="round_robin" ${c.type==="round_robin"?"selected":""}>Round Robin</option><option value="class" ${c.type==="class"?"selected":""}>Class / Event</option><option value="personal" ${c.type==="personal"?"selected":""}>Personal Calendar</option></select></div>
-      <div class="field-group"><label class="field-label">Time Zone <span class="field-req">*</span></label><select onchange="setCal('timezone',this.value)">${tzOpts}</select></div>
-      <div class="field-group"><label class="field-label">Calendar Title <span style="color:var(--dim);font-weight:400;">(shown to clients)</span></label><input type="text" placeholder="e.g. Book a Free Strategy Call" value="${esc(c.calTitle)}" oninput="setCal('calTitle',this.value)"/></div>
+    <div class="field-row">
+      <div class="field"><label>Meeting Type</label>
+        <select data-cal="meetingType">
+          <option value="phone" ${c.meetingType==='phone'?'selected':''}>Phone Call</option>
+          <option value="video" ${c.meetingType==='video'?'selected':''}>Video Call</option>
+          <option value="in_person" ${c.meetingType==='in_person'?'selected':''}>In Person</option>
+        </select>
+      </div>
+      <div class="field"><label>Meeting Location / Link</label><input type="text" data-cal="meetingLocation" value="${c.meetingLocation}" placeholder="Zoom link or address"></div>
     </div>
-    <div class="sub-title">Appointment Settings</div>
-    <div class="form-grid">
-      <div class="field-group"><label class="field-label">Slot Duration</label><div class="radio-group">${["15","30","45","60","90"].map(v=>`<div class="radio-chip"><input type="radio" name="slotDur" id="sd${v}" value="${v}" ${c.slotDuration===v?"checked":""} onchange="setCal('slotDuration','${v}')"/><label for="sd${v}">${v} min</label></div>`).join("")}</div></div>
-      <div class="field-group"><label class="field-label">Slot Interval</label><div class="radio-group">${[["15","15 min"],["30","30 min"],["60","60 min"]].map(([v,l])=>`<div class="radio-chip"><input type="radio" name="slotInt" id="si${v}" value="${v}" ${c.slotInterval===v?"checked":""} onchange="setCal('slotInterval','${v}')"/><label for="si${v}">${l}</label></div>`).join("")}</div><div class="field-hint">How frequently booking slots appear</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Scheduling</div>
+    <div class="field-row three">
+      <div class="field"><label>Slot Duration (min)</label>
+        <select data-cal="slotDuration">
+          ${[15,20,30,45,60,90,120].map(v=>`<option value="${v}" ${c.slotDuration==v?'selected':''}>${v} min</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Slot Interval (min)</label>
+        <select data-cal="slotInterval">
+          ${[10,15,20,30,45,60].map(v=>`<option value="${v}" ${c.slotInterval==v?'selected':''}>${v} min</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Booking Window (days)</label>
+        <select data-cal="bookingWindow">
+          ${[7,14,21,30,45,60,90].map(v=>`<option value="${v}" ${c.bookingWindow==v?'selected':''}>${v} days</option>`).join('')}
+        </select>
+      </div>
     </div>
-    <div class="form-grid">
-      <div class="field-group"><label class="field-label">Buffer Before</label><select onchange="setCal('bufferBefore',this.value)">${[["0","No buffer"],["5","5 min"],["10","10 min"],["15","15 min"],["30","30 min"]].map(([v,l])=>`<option value="${v}" ${c.bufferBefore===v?"selected":""}>${l}</option>`).join("")}</select></div>
-      <div class="field-group"><label class="field-label">Buffer After</label><select onchange="setCal('bufferAfter',this.value)">${[["0","No buffer"],["5","5 min"],["10","10 min"],["15","15 min"],["30","30 min"]].map(([v,l])=>`<option value="${v}" ${c.bufferAfter===v?"selected":""}>${l}</option>`).join("")}</select></div>
-      <div class="field-group"><label class="field-label">Minimum Scheduling Notice</label><select onchange="setCal('minNotice',this.value)">${[["1","1 hour"],["2","2 hours"],["4","4 hours"],["12","12 hours"],["24","24 hours"],["48","48 hours"],["72","72 hours"]].map(([v,l])=>`<option value="${v}" ${c.minNotice===v?"selected":""}>${l}</option>`).join("")}</select></div>
-      <div class="field-group"><label class="field-label">Booking Window</label><select onchange="setCal('bookingWindow',this.value)">${[["7","7 days"],["14","14 days"],["30","30 days"],["60","60 days"],["90","90 days"],["365","1 year"]].map(([v,l])=>`<option value="${v}" ${c.bookingWindow===v?"selected":""}>${l}</option>`).join("")}</select></div>
-      <div class="field-group"><label class="field-label">Max Bookings Per Day</label><input type="number" placeholder="Blank = unlimited" value="${esc(c.maxPerDay)}" min="1" oninput="setCal('maxPerDay',this.value)"/></div>
-      <div class="field-group"><label class="field-label">Confirmation Type</label><div class="radio-group"><div class="radio-chip"><input type="radio" name="confType" id="ctauto" value="auto" ${c.confirmType==="auto"?"checked":""} onchange="setCal('confirmType','auto')"/><label for="ctauto">Auto-confirm</label></div><div class="radio-chip"><input type="radio" name="confType" id="ctmanual" value="manual" ${c.confirmType==="manual"?"checked":""} onchange="setCal('confirmType','manual')"/><label for="ctmanual">Manual approval</label></div></div></div>
+    <div class="field-row three">
+      <div class="field"><label>Buffer Before (min)</label>
+        <select data-cal="bufferBefore">
+          ${[0,5,10,15,20,30].map(v=>`<option value="${v}" ${c.bufferBefore==v?'selected':''}>${v} min</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Buffer After (min)</label>
+        <select data-cal="bufferAfter">
+          ${[0,5,10,15,20,30].map(v=>`<option value="${v}" ${c.bufferAfter==v?'selected':''}>${v} min</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Min Notice (min)</label>
+        <select data-cal="minNotice">
+          ${[0,30,60,120,240,480,1440].map(v=>`<option value="${v}" ${c.minNotice==v?'selected':''}>${v<60?v+' min':v/60+'h'}</option>`).join('')}
+        </select>
+      </div>
     </div>
-    <div class="sub-title">Meeting Details</div>
-    <div class="form-grid">
-      <div class="field-group"><label class="field-label">Meeting Type <span class="field-req">*</span></label><div class="radio-group">${[["phone","📞 Phone"],["zoom","🎥 Zoom"],["inperson","📍 In-Person"],["custom","🔗 Custom"]].map(([v,l])=>`<div class="radio-chip"><input type="radio" name="meetType" id="mt${v}" value="${v}" ${c.meetingType===v?"checked":""} onchange="setCal('meetingType','${v}')"/><label for="mt${v}">${l}</label></div>`).join("")}</div></div>
-      <div class="field-group form-full"><label class="field-label">Meeting Location / Link</label><input type="text" placeholder="e.g. https://zoom.us/j/... or 123 Main St" value="${esc(c.meetingLocation)}" oninput="setCal('meetingLocation',this.value)"/></div>
+    <div class="field-row">
+      <div class="field"><label>Start Time</label><input type="time" data-cal="startTime" value="${c.startTime}"></div>
+      <div class="field"><label>End Time</label><input type="time" data-cal="endTime" value="${c.endTime}"></div>
     </div>
-    <div class="sub-title">Availability</div>
-    <div class="card"><div class="avail-grid">${availHTML}</div></div>
-    <div class="sub-title">Team & Notifications</div>
-    <div class="form-grid">
-      <div class="field-group"><label class="field-label">Assigned Team Member <span class="field-req">*</span></label><input type="text" placeholder="e.g. Sarah Tan or Round Robin" value="${esc(c.teamMember)}" oninput="setCal('teamMember',this.value)"/></div>
-      <div class="field-group"><label class="field-label">Notification Email <span class="field-req">*</span></label><input type="email" placeholder="e.g. team@yourbusiness.com" value="${esc(c.notifEmail)}" oninput="setCal('notifEmail',this.value)"/><div class="field-hint">New booking alerts sent here</div></div>
-    </div>`;
-}
-
-function autoSecStats(sec) {
-  let filled = 0, total = 0;
-  if (!sec.type) { sec.channels.forEach(ch => { total++; if (S.messages[sec.id][ch]?.trim()) filled++; }); }
-  else { S.faqs.forEach(f => { total++; if (f.q?.trim() && f.a?.trim()) filled++; }); }
-  return { done: filled === total && total > 0 };
+  </div>
+  <div class="card">
+    <div class="card-title">Availability Days</div>
+    <div class="day-pills">
+      ${dayList.map(d=>`<div class="day-pill ${c.days[d.k]?'on':''}" data-day="${d.k}">${d.l}</div>`).join('')}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Confirmation & Options</div>
+    <div class="field-row">
+      <div class="field"><label>Confirmation Type</label>
+        <select data-cal="confirmType">
+          <option value="auto" ${c.confirmType==='auto'?'selected':''}>Auto Confirm</option>
+          <option value="manual" ${c.confirmType==='manual'?'selected':''}>Manual Confirm</option>
+        </select>
+      </div>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">Allow Reschedule</div><div class="toggle-sub">Clients can reschedule their booking</div></div>
+      <label class="toggle"><input type="checkbox" data-cal-toggle="allowReschedule" ${c.allowReschedule?'checked':''}><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">Allow Cancellation</div><div class="toggle-sub">Clients can cancel their booking</div></div>
+      <label class="toggle"><input type="checkbox" data-cal-toggle="allowCancel" ${c.allowCancel?'checked':''}><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">Require Payment</div><div class="toggle-sub">Collect payment before confirming</div></div>
+      <label class="toggle"><input type="checkbox" data-cal-toggle="requirePayment" ${c.requirePayment?'checked':''}><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+  <div class="section-footer">
+    <button class="btn btn-primary" onclick="nav(1)">Next: Automations →</button>
+  </div>`;
 }
 
 function renderAutomations() {
-  const cur = AUTO_SECS.find(s => s.id === S.activeAutoSec);
-  const secTabs = AUTO_SECS.map(s => {
-    const {done} = autoSecStats(s);
-    const isAct = s.id === S.activeAutoSec;
-    return `<button class="auto-sec-tab ${isAct?"active":done?"done":""}" onclick="goAutoSec('${s.id}')">${!isAct&&done?"✓ ":""}${s.icon} ${s.label}</button>`;
-  }).join("");
-  let content = "";
-  if (!cur.type) {
-    const ach = activeCh(cur.id);
-    const chTabs = cur.channels.map(ch => { const done=S.messages[cur.id][ch]?.trim(); const isAct=ach===ch; return `<button class="ch-tab ${isAct?"active":done?"done":""}" onclick="switchCh('${cur.id}','${ch}')">${done&&!isAct?"✓ ":""}${ch}</button>`; }).join("");
-    const val = S.messages[cur.id][ach] || "";
-    content = `<div class="channel-tabs">${chTabs}</div>
-      <div class="editor-meta"><label>${ach} — Message</label><span class="char-count ${val.length>1000?"warn":""}" id="charCount">${val.length} chars</span></div>
-      <textarea rows="10" id="msgEditor" placeholder="Write your automated message here…">${esc(val)}</textarea>
-      <div class="var-tags">
-        <button class="var-tag" onclick="insertVar('{name}')">&#123;name&#125;</button>
-        <button class="var-tag" onclick="insertVar('{link}')">&#123;link&#125;</button>
-        <button class="var-tag" onclick="insertVar('{date}')">&#123;date&#125;</button>
-        <button class="var-tag" onclick="insertVar('{time}')">&#123;time&#125;</button>
-        <button class="var-tag" onclick="insertVar('{phone}')">&#123;phone&#125;</button>
-      </div>`;
-  } else {
-    content = `<div class="faq-list">${S.faqs.map((faq,i)=>`<div class="faq-card"><div class="faq-card-header"><div class="faq-num">Q${i+1}</div>${faq.q&&faq.a?'<div class="faq-complete">✓ Complete</div>':""}</div><input type="text" placeholder="Question the bot should recognise…" value="${esc(faq.q)}" oninput="updateFAQ(${i},'q',this.value)"/><textarea rows="3" placeholder="Bot's reply…" oninput="updateFAQ(${i},'a',this.value)">${esc(faq.a)}</textarea></div>`).join("")}</div>`;
-  }
+  const tabs = ['Organic Comments','Organic DMs','WhatsApp Replies','Booked Appt Flow','Follow-Up Seq','FAQ Bot'];
+  const content = [renderOrganic('organicComment','Organic Comment Reply','Reply sent when someone comments on your posts'),renderOrganic('organicDM','Organic DM Reply','First reply sent to cold DMs'),renderOrganic('whatsapp','WhatsApp Reply','Auto-reply messages for WhatsApp'),renderBookedAppt(),renderFollowUp(),renderFAQ()];
   return `
-    <div class="section-header">
-      <div class="section-eyebrow">Step 2 of 3</div>
-      <div class="section-title"><h2>💬 Automation Messages</h2></div>
-      <p class="section-desc">Set up automated replies for every channel — organic, paid, WhatsApp, booked flows, follow-ups, and chatbot FAQs.</p>
-    </div>
-    <div class="auto-section-tabs">${secTabs}</div>
-    <div class="card">
-      <div class="card-title">${cur.icon} ${cur.label}</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">${cur.desc}</p>
-      ${content}
-    </div>`;
+  <div class="section-header">
+    <div class="section-title">Automation Messages</div>
+    <div class="section-sub">Configure all automated replies and message sequences.</div>
+  </div>
+  <div class="tabs">${tabs.map((t,i)=>`<div class="tab ${autoTab===i?'active':''}" onclick="autoTab=${i};render()">${t}</div>`).join('')}</div>
+  ${content[autoTab]}
+  <div class="section-footer">
+    <button class="btn btn-secondary" onclick="nav(0)">← Calendar</button>
+    <button class="btn btn-primary" onclick="nav(2)">Next: Integrations →</button>
+  </div>`;
 }
 
-function intBadge(filled) { return `<div class="integration-badge ${filled?"filled":""}">${filled?"✓ Filled":"Pending"}</div>`; }
+function renderOrganic(key, title, desc) {
+  return `<div class="card"><div class="card-title">${title}</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px">${desc}</p>
+  ${S.messages[key].map((v,i)=>`
+  <div class="msg-box">
+    <div class="msg-box-header"><span class="msg-box-label">Variant ${i+1}</span><span class="char-count" id="cc-msg-${key}-${i}">${v.length} chars</span></div>
+    <textarea id="msg-${key}-${i}" data-msg="${key}:${i}" placeholder="Enter message variant ${i+1}…">${v}</textarea>
+  </div>`).join('')}
+  </div>`;
+}
+
+function renderBookedAppt() {
+  const b = S.messages.bookedAppt;
+  const fields = [
+    {k:'confirmation',l:'Booking Confirmation',p:'Sent immediately after booking is confirmed…'},
+    {k:'reminder24',l:'24-Hour Reminder',p:'Sent 24 hours before the appointment…'},
+    {k:'reminder1',l:'1-Hour Reminder',p:'Sent 1 hour before the appointment…'},
+    {k:'followUp',l:'Post-Appointment Follow-Up',p:'Sent after the appointment ends…'},
+    {k:'noShow',l:'No-Show Message',p:'Sent if the client misses the appointment…'}
+  ];
+  return `<div class="card"><div class="card-title">Booked Appointment Flow</div>
+  ${fields.map(f=>`
+  <div class="msg-box">
+    <div class="msg-box-header"><span class="msg-box-label">${f.l}</span><span class="char-count" id="cc-msg-ba-${f.k}">${(b[f.k]||'').length} chars</span></div>
+    <textarea id="msg-ba-${f.k}" data-msg="${f.k}" placeholder="${f.p}">${b[f.k]||''}</textarea>
+  </div>`).join('')}
+  </div>`;
+}
+
+function renderFollowUp() {
+  return `<div class="card"><div class="card-title">Follow-Up Sequence</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Messages sent in sequence for leads who haven't converted.</p>
+  ${S.messages.followUp.map((v,i)=>`
+  <div class="msg-box">
+    <div class="msg-box-header"><span class="msg-box-label">Day ${[1,3,7,14,30][i]} Follow-Up</span><span class="char-count" id="cc-msg-fu-${i}">${v.length} chars</span></div>
+    <textarea id="msg-fu-${i}" data-msg="followUp:${i}" placeholder="Day ${[1,3,7,14,30][i]} follow-up message…">${v}</textarea>
+  </div>`).join('')}
+  </div>`;
+}
+
+function renderFAQ() {
+  return `<div class="card"><div class="card-title">FAQ Bot (30 Q&A Pairs)</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Questions your bot will automatically answer.</p>
+  ${S.messages.faqBot.map((pair,i)=>`
+  <div class="faq-item">
+    <div class="faq-num">Q${i+1}</div>
+    <input type="text" data-faq-q="${i}" value="${pair.q}" placeholder="Question…">
+    <textarea data-faq-a="${i}" placeholder="Answer…">${pair.a}</textarea>
+  </div>`).join('')}
+  </div>`;
+}
 
 function renderIntegrations() {
-  const {tiktok:tt, meta, whatsapp:wa} = S.int;
   return `
-    <div class="section-header">
-      <div class="section-eyebrow">Step 3 of 3</div>
-      <div class="section-title"><h2>🔗 Integrations</h2></div>
-      <p class="section-desc">Provide your API credentials so Leadly can connect your TikTok, Meta, and WhatsApp accounts inside GHL.</p>
+  <div class="section-header">
+    <div class="section-title">Integrations</div>
+    <div class="section-sub">Enter your API credentials for each platform.</div>
+  </div>
+  <div class="int-card">
+    <div class="int-card-header">
+      <span class="int-icon">🎵</span>
+      <div><div class="int-title">TikTok</div><div class="int-desc">TikTok for Business API credentials</div></div>
     </div>
-    <div class="integration-card">
-      <div class="integration-header">
-        <div class="integration-logo int-logo-tiktok">🎵</div>
-        <div class="integration-info"><div class="integration-name">TikTok for Business</div><div class="integration-desc">Organic comment & DM automation via TikTok Business API</div></div>
-        ${intBadge(tt.bizId)}
+    <div class="field-row">
+      <div class="field"><label>Client Key</label><input type="text" data-int="tiktok:clientKey" value="${S.int.tiktok.clientKey}" placeholder="TikTok client key"></div>
+      <div class="field"><label>Client Secret</label>
+        <div class="pw-wrap">
+          <input type="password" id="tt-secret" data-int="tiktok:clientSecret" value="${S.int.tiktok.clientSecret}" placeholder="TikTok client secret">
+          <button class="pw-toggle" onclick="togglePw('tt-secret')">👁</button>
+        </div>
       </div>
-      <div class="integration-body"><div class="form-grid">
-        <div class="field-group"><label class="field-label">Business Account ID</label><input type="text" placeholder="e.g. 7123456789012345678" value="${esc(tt.bizId)}" oninput="setInt('tiktok','bizId',this.value)"/><div class="field-hint">TikTok Business Center → Settings → Business Info</div></div>
-        <div class="field-group"><label class="field-label">Pixel ID</label><input type="text" placeholder="e.g. C8ABCDE12345" value="${esc(tt.pixelId)}" oninput="setInt('tiktok','pixelId',this.value)"/><div class="field-hint">TikTok Ads Manager → Assets → Events → Web Events</div></div>
-        <div class="field-group form-full"><label class="field-label">Access Token</label><div class="input-wrap"><input type="password" id="ttToken" placeholder="Long-lived access token" value="${esc(tt.token)}" oninput="setInt('tiktok','token',this.value)"/><button class="eye-btn" onclick="toggleEye('ttToken')" type="button">👁</button></div><div class="field-hint">TikTok for Developers → Your App → Authentication</div></div>
-      </div></div>
     </div>
-    <div class="integration-card">
-      <div class="integration-header">
-        <div class="integration-logo int-logo-meta">📘</div>
-        <div class="integration-info"><div class="integration-name">Meta — Facebook & Instagram</div><div class="integration-desc">Page comments, DMs, Instagram automation & ad pixel tracking</div></div>
-        ${intBadge(meta.pageId)}
+    <div class="field-row single">
+      <div class="field"><label>Access Token</label>
+        <div class="pw-wrap">
+          <input type="password" id="tt-token" data-int="tiktok:accessToken" value="${S.int.tiktok.accessToken}" placeholder="TikTok access token">
+          <button class="pw-toggle" onclick="togglePw('tt-token')">👁</button>
+        </div>
       </div>
-      <div class="integration-body"><div class="form-grid">
-        <div class="field-group"><label class="field-label">Facebook Page ID</label><input type="text" placeholder="e.g. 123456789012345" value="${esc(meta.pageId)}" oninput="setInt('meta','pageId',this.value)"/><div class="field-hint">Facebook Page → About → Page Transparency</div></div>
-        <div class="field-group"><label class="field-label">Facebook Page Name</label><input type="text" placeholder="e.g. My Business Page" value="${esc(meta.pageName)}" oninput="setInt('meta','pageName',this.value)"/></div>
-        <div class="field-group"><label class="field-label">Instagram Username</label><input type="text" placeholder="e.g. @mybusiness" value="${esc(meta.igUser)}" oninput="setInt('meta','igUser',this.value)"/></div>
-        <div class="field-group"><label class="field-label">Ad Account ID</label><input type="text" placeholder="e.g. act_123456789" value="${esc(meta.adAcct)}" oninput="setInt('meta','adAcct',this.value)"/><div class="field-hint">Meta Business Manager → Ad Accounts</div></div>
-        <div class="field-group"><label class="field-label">Meta Pixel ID</label><input type="text" placeholder="e.g. 1234567890123456" value="${esc(meta.pixelId)}" oninput="setInt('meta','pixelId',this.value)"/><div class="field-hint">Meta Events Manager → Data Sources → Pixel</div></div>
-        <div class="field-group form-full"><label class="field-label">Meta Access Token</label><div class="input-wrap"><input type="password" id="metaToken" placeholder="Page or system user token" value="${esc(meta.token)}" oninput="setInt('meta','token',this.value)"/><button class="eye-btn" onclick="toggleEye('metaToken')" type="button">👁</button></div><div class="field-hint">Meta Business Settings → System Users → Generate Token</div></div>
-      </div></div>
     </div>
-    <div class="integration-card">
-      <div class="integration-header">
-        <div class="integration-logo int-logo-whatsapp">💬</div>
-        <div class="integration-info"><div class="integration-name">WhatsApp Business API</div><div class="integration-desc">WhatsApp Cloud API via Meta for inbound & outbound messaging</div></div>
-        ${intBadge(wa.phone)}
+  </div>
+  <div class="int-card">
+    <div class="int-card-header">
+      <span class="int-icon">📘</span>
+      <div><div class="int-title">Meta (Facebook / Instagram)</div><div class="int-desc">Meta Business API credentials</div></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>App ID</label><input type="text" data-int="meta:appId" value="${S.int.meta.appId}" placeholder="Meta App ID"></div>
+      <div class="field"><label>App Secret</label>
+        <div class="pw-wrap">
+          <input type="password" id="meta-secret" data-int="meta:appSecret" value="${S.int.meta.appSecret}" placeholder="Meta App Secret">
+          <button class="pw-toggle" onclick="togglePw('meta-secret')">👁</button>
+        </div>
       </div>
-      <div class="integration-body"><div class="form-grid">
-        <div class="field-group"><label class="field-label">WhatsApp Phone Number</label><input type="text" placeholder="e.g. +6512345678" value="${esc(wa.phone)}" oninput="setInt('whatsapp','phone',this.value)"/><div class="field-hint">Number registered in WhatsApp Business Platform</div></div>
-        <div class="field-group"><label class="field-label">WABA ID</label><input type="text" placeholder="e.g. 123456789012345" value="${esc(wa.wabaId)}" oninput="setInt('whatsapp','wabaId',this.value)"/><div class="field-hint">Meta Business Manager → WhatsApp Accounts</div></div>
-        <div class="field-group"><label class="field-label">Webhook Verify Token</label><input type="text" placeholder="A custom string you create" value="${esc(wa.webhookToken)}" oninput="setInt('whatsapp','webhookToken',this.value)"/><div class="field-hint">Used to verify webhook in Meta Developer console</div></div>
-        <div class="field-group form-full"><label class="field-label">WhatsApp API Access Token</label><div class="input-wrap"><input type="password" id="waToken" placeholder="Permanent token from Meta System User" value="${esc(wa.token)}" oninput="setInt('whatsapp','token',this.value)"/><button class="eye-btn" onclick="toggleEye('waToken')" type="button">👁</button></div><div class="field-hint">Meta Business Settings → System Users → Generate Token → WhatsApp</div></div>
-      </div></div>
-    </div>`;
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Page Access Token</label>
+        <div class="pw-wrap">
+          <input type="password" id="meta-token" data-int="meta:pageToken" value="${S.int.meta.pageToken}" placeholder="Page access token">
+          <button class="pw-toggle" onclick="togglePw('meta-token')">👁</button>
+        </div>
+      </div>
+      <div class="field"><label>WABA ID</label><input type="text" data-int="meta:wabaId" value="${S.int.meta.wabaId}" placeholder="WhatsApp Business Account ID"></div>
+    </div>
+  </div>
+  <div class="int-card">
+    <div class="int-card-header">
+      <span class="int-icon">💚</span>
+      <div><div class="int-title">WhatsApp API</div><div class="int-desc">WhatsApp Cloud API credentials</div></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Phone Number ID</label><input type="text" data-int="whatsapp:phoneNumberId" value="${S.int.whatsapp.phoneNumberId}" placeholder="Phone Number ID"></div>
+      <div class="field"><label>API Token</label>
+        <div class="pw-wrap">
+          <input type="password" id="wa-token" data-int="whatsapp:apiToken" value="${S.int.whatsapp.apiToken}" placeholder="WhatsApp API token">
+          <button class="pw-toggle" onclick="togglePw('wa-token')">👁</button>
+        </div>
+      </div>
+    </div>
+    <div class="field-row single">
+      <div class="field"><label>Webhook Secret</label>
+        <div class="pw-wrap">
+          <input type="password" id="wa-webhook" data-int="whatsapp:webhookSecret" value="${S.int.whatsapp.webhookSecret}" placeholder="Webhook verification secret">
+          <button class="pw-toggle" onclick="togglePw('wa-webhook')">👁</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-footer">
+    <button class="btn btn-secondary" onclick="nav(1)">← Automations</button>
+    <button class="btn btn-primary" onclick="showReview()">Review & Finish →</button>
+  </div>`;
 }
 
-function showReview() {
-  document.getElementById("layout").style.display = "none";
-  const rs = document.getElementById("reviewScreen");
-  rs.style.display = "block";
-  const c = S.cal; const ig = S.int;
-  const avail = DAYS.filter(d=>c.avail[d].on).map(d=>`${d}: ${c.avail[d].s} – ${c.avail[d].e}`).join("\n")||"—";
-  let autoRows = "";
-  AUTO_SECS.forEach(sec => { if (!sec.type) sec.channels.forEach(ch => { const v=S.messages[sec.id][ch]; if(v?.trim()) autoRows+=`<div class="review-row"><span class="review-key">${sec.label} / ${ch}</span><span class="review-val">${esc(v)}</span></div>`; }); });
-  const faqsFilled = S.faqs.filter(f=>f.q||f.a);
-  rs.innerHTML = `
+function togglePw(id) {
+  const el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+}function showReview() {
+  const r = document.getElementById('review-screen');
+  r.style.display = 'block';
+  r.innerHTML = buildReview();
+}
+
+function buildReview() {
+  const c = S.cal;
+  const dayNames = {mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'};
+  const activeDays = Object.entries(c.days).filter(([,v])=>v).map(([k])=>dayNames[k]).join(', ') || 'None';
+
+  function group(title, rows) {
+    const id = 'rg-'+Math.random().toString(36).slice(2);
+    return `<div class="review-group">
+      <div class="review-group-header" onclick="toggleGroup('${id}')">
+        <span class="review-group-title">${title}</span>
+        <span class="review-group-toggle" id="${id}-tog">Show ▾</span>
+      </div>
+      <div class="review-group-body" id="${id}">
+        ${rows.map(([k,v])=>`<div class="review-row"><span class="review-key">${k}</span><span class="review-val">${v||'<em style="color:var(--dim)">Not filled</em>'}</span></div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  const calRows = [
+    ['Calendar Name', c.calName],
+    ['Timezone', c.calTimezone],
+    ['Meeting Type', c.meetingType],
+    ['Meeting Location', c.meetingLocation],
+    ['Slot Duration', c.slotDuration+' min'],
+    ['Slot Interval', c.slotInterval+' min'],
+    ['Buffer Before', c.bufferBefore+' min'],
+    ['Buffer After', c.bufferAfter+' min'],
+    ['Booking Window', c.bookingWindow+' days'],
+    ['Min Notice', c.minNotice+' min'],
+    ['Hours', c.startTime+' – '+c.endTime],
+    ['Active Days', activeDays],
+    ['Confirmation', c.confirmType],
+    ['Allow Reschedule', c.allowReschedule?'Yes':'No'],
+    ['Allow Cancel', c.allowCancel?'Yes':'No'],
+    ['Require Payment', c.requirePayment?'Yes':'No'],
+  ];
+
+  const msgRows = [
+    ...S.messages.organicComment.map((v,i)=>['Organic Comment V'+(i+1), v]),
+    ...S.messages.organicDM.map((v,i)=>['Organic DM V'+(i+1), v]),
+    ...S.messages.whatsapp.map((v,i)=>['WhatsApp V'+(i+1), v]),
+    ['Booking Confirmation', S.messages.bookedAppt.confirmation],
+    ['24h Reminder', S.messages.bookedAppt.reminder24],
+    ['1h Reminder', S.messages.bookedAppt.reminder1],
+    ['Post-Appt Follow-Up', S.messages.bookedAppt.followUp],
+    ['No-Show', S.messages.bookedAppt.noShow],
+    ...S.messages.followUp.map((v,i)=>['Follow-Up Day '+[1,3,7,14,30][i], v]),
+  ];
+
+  const faqRows = S.messages.faqBot.filter(p=>p.q||p.a).map((p,i)=>['Q'+(i+1)+': '+p.q, p.a]);
+
+  const intRows = [
+    ['TikTok Client Key', S.int.tiktok.clientKey],
+    ['TikTok Client Secret', S.int.tiktok.clientSecret ? '••••••••' : ''],
+    ['TikTok Access Token', S.int.tiktok.accessToken ? '••••••••' : ''],
+    ['Meta App ID', S.int.meta.appId],
+    ['Meta App Secret', S.int.meta.appSecret ? '••••••••' : ''],
+    ['Meta Page Token', S.int.meta.pageToken ? '••••••••' : ''],
+    ['Meta WABA ID', S.int.meta.wabaId],
+    ['WA Phone Number ID', S.int.whatsapp.phoneNumberId],
+    ['WA API Token', S.int.whatsapp.apiToken ? '••••••••' : ''],
+    ['WA Webhook Secret', S.int.whatsapp.webhookSecret ? '••••••••' : ''],
+  ];
+
+  return `
     <div class="review-header">
       <div class="review-check">✓</div>
       <h1 class="review-title">Onboarding Summary</h1>
-      <p class="review-sub">Review everything below before your GHL setup session.</p>
+      <p class="review-sub">Review everything below before your setup session.</p>
     </div>
     <div class="review-sections">
-      <div class="review-section">
-        <div class="review-sec-header" onclick="toggleReview(this)"><div class="review-sec-left"><span>📅</span><span class="review-sec-title">Calendar Setup</span></div><span class="review-sec-toggle">▾</span></div>
-        <div class="review-body">
-          <div class="review-row"><span class="review-key">Calendar Name</span><span class="review-val">${esc(c.name)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Type</span><span class="review-val">${c.type}</span></div>
-          <div class="review-row"><span class="review-key">Time Zone</span><span class="review-val">${c.timezone||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Calendar Title</span><span class="review-val">${esc(c.calTitle)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Slot Duration</span><span class="review-val">${c.slotDuration} min</span></div>
-          <div class="review-row"><span class="review-key">Slot Interval</span><span class="review-val">Every ${c.slotInterval} min</span></div>
-          <div class="review-row"><span class="review-key">Buffer Before</span><span class="review-val">${c.bufferBefore==="0"?"None":c.bufferBefore+" min"}</span></div>
-          <div class="review-row"><span class="review-key">Buffer After</span><span class="review-val">${c.bufferAfter==="0"?"None":c.bufferAfter+" min"}</span></div>
-          <div class="review-row"><span class="review-key">Min Notice</span><span class="review-val">${c.minNotice} hours</span></div>
-          <div class="review-row"><span class="review-key">Booking Window</span><span class="review-val">${c.bookingWindow} days</span></div>
-          <div class="review-row"><span class="review-key">Max Per Day</span><span class="review-val">${c.maxPerDay||"Unlimited"}</span></div>
-          <div class="review-row"><span class="review-key">Confirmation</span><span class="review-val">${c.confirmType==="auto"?"Auto-confirm":"Manual approval"}</span></div>
-          <div class="review-row"><span class="review-key">Meeting Type</span><span class="review-val">${c.meetingType}</span></div>
-          <div class="review-row"><span class="review-key">Location / Link</span><span class="review-val">${esc(c.meetingLocation)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Assigned To</span><span class="review-val">${esc(c.teamMember)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Notification Email</span><span class="review-val">${esc(c.notifEmail)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Availability</span><span class="review-val">${avail}</span></div>
-        </div>
-      </div>
-      <div class="review-section">
-        <div class="review-sec-header" onclick="toggleReview(this)"><div class="review-sec-left"><span>💬</span><span class="review-sec-title">Automation Messages</span></div><span class="review-sec-toggle">▾</span></div>
-        <div class="review-body">
-          ${autoRows||'<p style="color:var(--dim);font-size:13px;padding:8px 0;">No messages entered yet.</p>'}
-          ${faqsFilled.length?`<div class="review-group-label">Bot FAQs (${faqsFilled.length} filled)</div>${faqsFilled.map(f=>`<div class="review-row"><span class="review-key">Q: ${esc(f.q)}</span><span class="review-val">${esc(f.a)}</span></div>`).join("")}`:""}
-        </div>
-      </div>
-      <div class="review-section">
-        <div class="review-sec-header" onclick="toggleReview(this)"><div class="review-sec-left"><span>🔗</span><span class="review-sec-title">Integrations</span></div><span class="review-sec-toggle">▾</span></div>
-        <div class="review-body">
-          <div class="review-group-label">TikTok</div>
-          <div class="review-row"><span class="review-key">Business Account ID</span><span class="review-val">${esc(ig.tiktok.bizId)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Pixel ID</span><span class="review-val">${esc(ig.tiktok.pixelId)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Access Token</span><span class="review-val">${ig.tiktok.token?"••••••••••••••••":"—"}</span></div>
-          <div class="review-group-label">Meta</div>
-          <div class="review-row"><span class="review-key">Facebook Page ID</span><span class="review-val">${esc(ig.meta.pageId)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Page Name</span><span class="review-val">${esc(ig.meta.pageName)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Instagram</span><span class="review-val">${esc(ig.meta.igUser)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Ad Account ID</span><span class="review-val">${esc(ig.meta.adAcct)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Pixel ID</span><span class="review-val">${esc(ig.meta.pixelId)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Access Token</span><span class="review-val">${ig.meta.token?"••••••••••••••••":"—"}</span></div>
-          <div class="review-group-label">WhatsApp</div>
-          <div class="review-row"><span class="review-key">Phone Number</span><span class="review-val">${esc(ig.whatsapp.phone)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">WABA ID</span><span class="review-val">${esc(ig.whatsapp.wabaId)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Webhook Token</span><span class="review-val">${esc(ig.whatsapp.webhookToken)||"—"}</span></div>
-          <div class="review-row"><span class="review-key">Access Token</span><span class="review-val">${ig.whatsapp.token?"••••••••••••••••":"—"}</span></div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:center;gap:12px;margin-top:28px;padding-bottom:40px;">
-        <button class="btn-ghost" onclick="backToForm()">← Back & Edit</button>
-        <button class="btn-primary" onclick="copyJSON(this)">Copy JSON</button>
-      </div>
+      ${group('📅 Calendar Setup', calRows)}
+      ${group('💬 Automation Messages', msgRows)}
+      ${faqRows.length ? group('🤖 FAQ Bot', faqRows) : ''}
+      ${group('🔗 Integrations', intRows)}
+    </div>
+    <div class="review-actions">
+      <button class="btn btn-ghost" onclick="closeReview()">← Back to Edit</button>
+      <button class="btn btn-secondary" onclick="copyJSON()">Copy JSON</button>
+      <button class="btn btn-primary" onclick="submitAll()">Submit Onboarding ✓</button>
     </div>`;
 }
 
-function toggleReview(header) {
-  const body = header.nextElementSibling;
-  const arrow = header.querySelector(".review-sec-toggle");
-  const hidden = body.style.display === "none";
-  body.style.display = hidden ? "block" : "none";
-  arrow.textContent = hidden ? "▾" : "▸";
-}
-function backToForm() {
-  document.getElementById("reviewScreen").style.display = "none";
-  document.getElementById("layout").style.display = "flex";
-}
-function copyJSON(btn) {
-  navigator.clipboard.writeText(JSON.stringify({calendar:S.cal,messages:S.messages,faqs:S.faqs,integrations:S.int},null,2)).then(()=>{btn.textContent="✓ Copied!";setTimeout(()=>btn.textContent="Copy JSON",2000);});
+function toggleGroup(id) {
+  const body = document.getElementById(id);
+  const tog = document.getElementById(id+'-tog');
+  const open = body.classList.toggle('open');
+  tog.textContent = open ? 'Hide ▴' : 'Show ▾';
 }
 
-function setCal(field, value) { S.cal[field]=value; updateProgress(); renderSidebar(); }
-function toggleDay(day, enabled) {
-  S.cal.avail[day].on = enabled;
-  const row = event.target.closest(".avail-row");
-  const times = row.querySelector(".avail-times");
-  const closed = row.querySelector(".avail-closed");
-  if (enabled) { times.classList.remove("disabled"); if(closed) closed.remove(); }
-  else { times.classList.add("disabled"); if(!closed) times.insertAdjacentHTML("afterend",'<span class="avail-closed">Closed</span>'); }
+function closeReview() {
+  document.getElementById('review-screen').style.display = 'none';
 }
-function setAvail(day, field, value) { S.cal.avail[day][field] = value; }
-function goSection(id) { S.activeSection=id; render(); }
-function goAutoSec(id) { S.activeAutoSec=id; renderMain(); attachMsgListener(); }
-function switchCh(secId, ch) { S.activeChannel[secId]=ch; renderMain(); attachMsgListener(); }
-function attachMsgListener() {
-  const editor = document.getElementById("msgEditor");
-  if (!editor) return;
-  editor.addEventListener("input", () => {
-    const ch = activeCh(S.activeAutoSec);
-    S.messages[S.activeAutoSec][ch] = editor.value;
-    const cc = document.getElementById("charCount");
-    if (cc) { cc.textContent=editor.value.length+" chars"; cc.className="char-count"+(editor.value.length>1000?" warn":""); }
-    updateProgress(); renderSidebar();
+
+function copyJSON() {
+  const data = JSON.stringify(S, null, 2);
+  navigator.clipboard.writeText(data).then(()=>{
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(()=>btn.textContent='Copy JSON', 2000);
   });
 }
-function insertVar(tag) {
-  const editor = document.getElementById("msgEditor");
-  if (!editor) return;
-  const s=editor.selectionStart, e=editor.selectionEnd;
-  editor.value=editor.value.slice(0,s)+tag+editor.value.slice(e);
-  editor.selectionStart=editor.selectionEnd=s+tag.length;
-  editor.focus();
-  S.messages[S.activeAutoSec][activeCh(S.activeAutoSec)]=editor.value;
-  updateProgress();
-}
-function updateFAQ(i, field, value) {
-  S.faqs[i][field]=value; updateProgress(); renderSidebar();
-  const cards=document.querySelectorAll(".faq-card");
-  if(cards[i]){const hdr=cards[i].querySelector(".faq-card-header");const ex=hdr.querySelector(".faq-complete");if(S.faqs[i].q&&S.faqs[i].a){if(!ex)hdr.insertAdjacentHTML("beforeend",'<div class="faq-complete">✓ Complete</div>');}else{if(ex)ex.remove();}}
-}
-function setInt(platform, field, value) { S.int[platform][field]=value; updateProgress(); renderSidebar(); }
-function toggleEye(inputId) { const inp=document.getElementById(inputId); if(inp) inp.type=inp.type==="password"?"text":"password"; }
-function handleSave() {
-  const btn=document.getElementById("btnSave");
-  btn.textContent="✓ Saved"; btn.style.color="var(--green)"; btn.style.borderColor="var(--green-border)";
-  setTimeout(()=>{btn.textContent="Save Draft";btn.style.color="";btn.style.borderColor="";},2000);
+
+function submitAll() {
+  alert('Onboarding complete! Your data has been collected.');
 }
 
-function renderMain() {
-  const m = document.getElementById("main");
-  if (S.activeSection==="calendar")     m.innerHTML=renderCalendar();
-  if (S.activeSection==="automations")  m.innerHTML=renderAutomations();
-  if (S.activeSection==="integrations") m.innerHTML=renderIntegrations();
-  if (S.activeSection==="automations")  attachMsgListener();
-}
-function render() { renderSidebar(); renderMain(); updateProgress(); }
+// Init
 render();
+updateProgress();
 </script>
 </body>
 </html>
